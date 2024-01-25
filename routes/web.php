@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\RootytripController;
 use App\Http\Controllers\CategoryController as CategoryPublic;
 use App\Http\Controllers\MomoController;
 use App\Http\Controllers\ZalopayController;
@@ -199,6 +200,7 @@ Route::prefix('payment')->group(function(){
 Route::get('/', [HomeController::class, 'home'])->name('main.home');
 Route::get('/en', [HomeController::class, 'home'])->name('main.enHome');
 Route::get('/test123', [HomeController::class, 'test'])->name('main.test');
+Route::get('/exportReport', [RootytripController::class, 'exportReport'])->name('main.rootytrip.exportReport');
 /* trang category */
 Route::prefix('category')->group(function(){
     Route::get('/loadMore', [CategoryPublic::class, 'loadMore'])->name('main.category.loadMore');
