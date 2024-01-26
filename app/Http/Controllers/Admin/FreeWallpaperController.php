@@ -14,8 +14,9 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Services\BuildInsertUpdateModel;
 use App\Models\FreeWallpaper;
-use App\Models\RelationProductPriceWallpaperInfo;
+use App\Models\RelationFreewallpaperCategory;
 use App\Helpers\Charactor;
+use App\Models\Category;
 
 // use App\Jobs\UploadSourceAndWallpaper;
 
@@ -53,8 +54,9 @@ class FreeWallpaperController extends Controller {
         set_time_limit(0);
         $xhtml = '';
         if(!empty($request->get('data_id'))){
+            $categories = Category::all();
             foreach($request->get('data_id') as $idBox){
-                $xhtml .= view('admin.freeWallpaper.oneFormUpload', compact('idBox'))->render();
+                $xhtml .= view('admin.freeWallpaper.oneFormUpload', compact('idBox', 'categories'))->render();
             }
         }
         echo $xhtml;
@@ -63,7 +65,6 @@ class FreeWallpaperController extends Controller {
     public function uploadWallpaper(Request $request){
         try {
             DB::beginTransaction();
-
             if (!empty($request->file('files.wallpaper'))){
                 $wallpaper          = $request->file('files.wallpaper');
                 $i                  = $request->get('count');
@@ -93,6 +94,18 @@ class FreeWallpaperController extends Controller {
                     'file_size'     => $fileSizeW,
                     'mine_type'     => $miniTypeW
                 ]);
+                /* lưu relation */
+                foreach(config('main.category_type') as $type){
+                    if(!empty($request->get($type['key']))){
+                        $arrayCategory = explode(',', $request->get($type['key']));
+                        foreach($arrayCategory as $idCategory){
+                            RelationFreewallpaperCategory::insertItem([
+                                'free_wallpaper_info_id'    => $idWallpaper,
+                                'category_info_id'          => $idCategory
+                            ]);
+                        }
+                    }
+                }
                 DB::commit();
                 if(!empty($idWallpaper)){
                     $response = [];
@@ -184,11 +197,11 @@ class FreeWallpaperController extends Controller {
                                         ->where('id', $idWallpaper)
                                         ->first();
             $flag                   = self::delete($infoWallpaper);
-            
-            // /* xóa hết tát cả relation của wallpaper này => tránh lỗi hệ thống ==== chỉ xóa khi xóa hẳn ảnh trong riêng function delete này */
-            // RelationProductPriceWallpaperInfo::select('*')
-            //     ->where('wallpaper_info_id', $idWallpaper)
-            //     ->delete();
+            if($flag==true){
+                RelationFreewallpaperCategory::select('*')
+                    ->where('free_wallpaper_info_id', $idWallpaper)
+                    ->delete();
+            }
             /* xóa trong cơ sở dữ liệu */
             $infoWallpaper->delete();
         }

@@ -118,16 +118,32 @@ return [
         ],
     'category_type' => [
         [
-            'key' => 'category_info',
-            'name' => 'Chủ đề'
+            'key' => 'country_info',
+            'name' => 'Quốc gia'
+        ],
+        [
+            'key' => 'skin_info',
+            'name' => 'Trang phục'
+        ],
+        [
+            'key' => 'type_info',
+            'name' => 'Thể loại'
+        ],
+        [
+            'key' => 'eyecolor_info',
+            'name' => 'Màu mắt'
+        ],
+        [
+            'key' => 'haircolor_info',
+            'name' => 'Màu tóc'
+        ],
+        [
+            'key' => 'maintone_info',
+            'name' => 'Tông chính'
         ],
         [
             'key' => 'style_info',
             'name' => 'Phong cách'
-        ],
-        [
-            'key' => 'event_info',
-            'name' => 'Sự kiện'
         ]
     ]
 ];

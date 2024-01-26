@@ -128,6 +128,8 @@
                         };
                         reader.readAsDataURL(input.files[i]); // Đọc từng tệp ảnh riêng lẻ
                     }
+                    /* select2 */ 
+                    $(".select2").select2();
                 }).fail(function (jqXHR, textStatus, errorThrown) {
                     console.error("Ajax request failed: " + textStatus, errorThrown);
                 });
@@ -221,19 +223,25 @@
             return new Promise(function (resolve, reject) {
                 // Mảng chứa tất cả các promises từ các request AJAX
                 var promises = [];
+                
                 for (var i = 0; i < fileWallpapers.length; i++) {
                     var formData = new FormData();
                     formData.append('count', i);
                     formData.append('files[wallpaper]', fileWallpapers[i]);
-                    /* name */
-                    const inputName  = $(`[name="name[${i}]"]`).val();
-                    formData.append('name', inputName);
-                    /* name */
-                    const inputEnName  = $(`[name="en_name[${i}]"]`).val();
-                    formData.append('en_name', inputEnName);
-                    /* description */
-                    const inputDescription  = $(`[name="description[${i}]"]`).val();
-                    formData.append('description', inputDescription);
+                    
+                    // Lặp qua tất cả các input và textarea trong #js_uploadWallpaper_i
+                    $(".js_uploadWallpaper_" + i + " input, .js_uploadWallpaper_" + i + " textarea, .js_uploadWallpaper_" + i + " select").each(function() {
+                        var inputName = $(this).attr('name');
+                        var inputValue = $(this).val();
+                        // Kiểm tra xem input có tên và giá trị không rỗng
+                        if (inputName && inputValue !== undefined) {
+                            // Lọc tên để chỉ giữ lại phần không có tiền tố [i]
+                            var filteredName = inputName.replace(/\[\d+\]/, '');
+                            // Thêm input vào FormData
+                            formData.append(filteredName, inputValue);
+                        }
+                    });
+
                     // Thực hiện request AJAX và đưa promise vào mảng
                     promises.push(
                         $.ajax({
@@ -249,6 +257,7 @@
                         })
                     );
                 }
+
                 // Khi tất cả các promises đã hoàn thành, resolve Promise chính
                 Promise.all(promises)
                     .then(function (responses) {
@@ -324,6 +333,41 @@
                     if(data==true) $('#'+idBox).hide();
                 }, 500)
             });
+        }
+
+        function autoFillNameAndEnName(keyId) {
+            var valueName = 'Ảnh cô gái xinh đẹp ';
+            var valueEnName = 'Photo of beautiful girl ';
+            
+            const limitBox = $('.js_uploadWallpaper_' + keyId);
+
+            limitBox.find('select').each(function() {
+                // Chọn tất cả các option được chọn trong select
+                var selectedOptions = $(this).find('option:selected');
+
+                // Lặp qua từng option được chọn
+                selectedOptions.each(function() {
+                    // Lấy giá trị của thuộc tính data-name và data-en-name
+                    var dataNameValue = $(this).data('name');
+                    var dataEnNameValue = $(this).data('en-name');
+
+                    // Kiểm tra xem có giá trị data-name hay không
+                    if (dataNameValue) {
+                        // Nếu có giá trị data-name, cập nhật giá trị valueName
+                        valueName += dataNameValue + ' ';
+                    }
+
+                    // Kiểm tra xem có giá trị data-en-name hay không
+                    if (dataEnNameValue) {
+                        // Nếu có giá trị data-en-name, cập nhật giá trị valueEnName
+                        valueEnName += dataEnNameValue + ' ';
+                    }
+                });
+            });
+
+            /* điền vào value của name và en_name */
+            limitBox.find('[name*="name"]').val(valueName.trim());
+            limitBox.find('[name*="en_name"]').val(valueEnName.trim());
         }
 
         function addLoading(idBox, heightBox = 300){
