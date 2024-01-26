@@ -115,7 +115,7 @@ return [
         'en'    => [
             'product_empty' => 'No wallpapers matching your search!'
         ]
-        ],
+    ],
     'category_type' => [
         [
             'key' => 'country_info',

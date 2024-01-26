@@ -1,8 +1,8 @@
 <div class="formFreeWallpaperBox_item js_uploadWallpaper_{{ $idBox }}">
     <div id="js_addFormUpload_wallpaper_{{ $idBox }}" class="formFreeWallpaperBox_item_gallery">
-        {{-- @if(!empty($wallpaper))
-            <input class="form-control" type="file" name="wallpapers[]" onChange="readImageWhenChoose(this);" />
-        @endif --}}
+        @if(!empty($wallpaper))
+            <img src="{{ config('main.google_cloud_storage.default_domain').$wallpaper->file_cloud }}" style="width:100%;" />
+        @endif
     </div>
     <div class="formFreeWallpaperBox_item_form">
         <div class="formBox">
@@ -25,6 +25,14 @@
                                     @if(!empty($category->seo->type)&&$category->seo->type==$type['key'])
                                         @php
                                             $selected   = null;
+                                            if(!empty($wallpaper)){
+                                                foreach($wallpaper->categories as $relationCategory){
+                                                    if($relationCategory->category_info_id==$category->id) {
+                                                        $selected = ' selected';
+                                                        break;
+                                                    }
+                                                }
+                                            }
                                         @endphp
                                         <option value="{{ $category->id }}" data-name="{{ $category->name }}" data-en-name="{{ $category->en_name }}" {{ $selected }}>{{ $category->name }}</option>
                                     @endif

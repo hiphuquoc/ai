@@ -64,7 +64,7 @@
         @if(!empty($wallpaperMobile))
             <li>
                 @php
-                    $titlePhoneWallpaper = empty($language)||$language=='vi' ?  'Chủ Đề hình nền' : 'Wallpaper Themes';
+                    $titlePhoneWallpaper = empty($language)||$language=='vi' ?  'Thể loại ảnh' : 'Photo Categories';
                     $url      = empty($language)||$language=='vi' ? $wallpaperMobile->seo->slug : $wallpaperMobile->en_seo->slug;
                     $classTmp = 'close';
                     $styleTmp = '';
@@ -86,21 +86,23 @@
                 </div>
                 <ul id="{{ $url }}" class="filterLinkSelected" {!! $styleTmp !!}>
                     @foreach($wallpaperMobile->childs as $type)
-                        @if(!empty($type->seo->type)&&$type->seo->type=='category_info'&&$type->products->count()>0)
-                            @php
-                                if(empty($language)||$language=='vi'){
-                                    $title  = $type->name ?? $type->seo->title ?? null;
-                                    $url    = $type->seo->slug_full ?? null;
-                                }else {
-                                    $title  = $type->en_name ?? $type->en_seo->title ?? null;
-                                    $url    = $type->en_seo->slug_full ?? null;
-                                }
-                            @endphp
-                            <li>
-                                <a href="{{ env('APP_URL') }}/{{ $url }}" title="{{ $title }}" aria-label="{{ $title }}">
-                                    <div>{{ $title }} {!! $type->products->count()>0 ? '(<span class="highLight">'.$type->products->count().'</span>)' : null !!}</div>
-                                </a>
-                            </li>
+                        @if(!empty($type->seo->type))
+                            @if($type->seo->type=='type_info'||$type->seo->type=='skin_info')
+                                @php
+                                    if(empty($language)||$language=='vi'){
+                                        $title  = $type->name ?? $type->seo->title ?? null;
+                                        $url    = $type->seo->slug_full ?? null;
+                                    }else {
+                                        $title  = $type->en_name ?? $type->en_seo->title ?? null;
+                                        $url    = $type->en_seo->slug_full ?? null;
+                                    }
+                                @endphp
+                                <li>
+                                    <a href="{{ env('APP_URL') }}/{{ $url }}" title="{{ $title }}" aria-label="{{ $title }}">
+                                        <div>{{ $title }} {!! $type->products->count()>0 ? '(<span class="highLight">'.$type->products->count().'</span>)' : null !!}</div>
+                                    </a>
+                                </li>
+                            @endif
                         @endif
                     @endforeach
                 </ul>
@@ -113,13 +115,13 @@
             @if(empty($language)||$language=='vi')
                 <div class="open">
                     {!! $icon !!}
-                    <div style="margin-left:-3px;">Phong Cách hình nền</div>
+                    <div style="margin-left:-3px;">Phong Cách ảnh</div>
                     <i class="fa-solid fa-plus"  onclick="showHideListMenuMobile(this, 'phong-cach')"></i>
                 </div>
             @else
                 <div class="open">
                     {!! $icon !!}
-                    <div style="margin-left:-3px;">Wallpaper Styles</div>
+                    <div style="margin-left:-3px;">Photo Styles</div>
                     <i class="fa-solid fa-plus"  onclick="showHideListMenuMobile(this, 'phong-cach')"></i>
                 </div>
             @endif
@@ -144,7 +146,7 @@
                 @endforeach
             </ul>
         </li>
-        <li>
+        {{-- <li>
             @if(empty($language)||$language=='vi')
                 <div class="open">
                     <img src="{{ Storage::url('images/svg/icon-event-1.png') }}" alt="Hình nền điện thoại theo sự kiện" title="Hình nền điện thoại theo sự kiện" />
@@ -178,24 +180,7 @@
                     @endif
                 @endforeach
             </ul>
-        </li>
-        <li>
-            @php
-                $icon = file_get_contents('storage/images/svg/icon-share-1.svg');
-            @endphp
-            @if(empty($language)||$language=='vi')
-                <a href="{{ env('APP_URL') }}/anh-gai-xinh/hinh-nen-dien-thoai-mien-phi" title="Hình nền điện thoại miễn phí" aria-label="Hình nền điện thoại miễn phí">
-                    {!! $icon !!}
-                    <div>Hình nền miễn phí</div>
-                </a>
-            @else
-                <a href="{{ env('APP_URL') }}/photo-beautiful-girl/free-phone-wallpapers" title="Free phone wallpapers" aria-label="Free phone wallpapers">
-                    {!! $icon !!}
-                    <div>Free wallpapers</div>
-                </a>
-            @endif
-            
-        </li>
+        </li> --}}
         {{-- <li>
             @if(empty($language)||$language=='vi')
                 <a href="{{ route('main.saleOff') }}" title="Hình nền điện thoại khuyến mãi" aria-label="Hình nền điện thoại khuyến mãi">

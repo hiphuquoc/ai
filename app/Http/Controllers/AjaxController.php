@@ -137,7 +137,7 @@ class AjaxController extends Controller {
     public function buildTocContentMain(Request $request){
         $xhtml       = null;
         if(!empty($request->get('data'))){
-            $xhtml   = view('main.template.tocContentMain', ['data' => $request->get('data')])->render();
+            $xhtml   = view('wallpaper.template.tocContentMain', ['data' => $request->get('data')])->render();
         }
         echo $xhtml;
     }
@@ -330,7 +330,13 @@ class AjaxController extends Controller {
             $language       = Cookie::get('language') ?? 'vi';
             $loaded         = $request->get('loaded');
             $requestLoad    = $request->get('requestLoad');
+            $arrayIdCategory = json_decode($request->get('arrayIdCategory'));
             $wallpapers     = FreeWallpaper::select('*')
+                                ->when(!empty($arrayIdCategory), function($query) use($arrayIdCategory){
+                                    $query->whereHas('categories', function($subquery) use($arrayIdCategory){
+                                        $subquery->whereIn('category_info_id', $arrayIdCategory);
+                                    });
+                                })
                                 ->orderBy('id', 'DESC')
                                 ->skip($loaded)
                                 ->take($requestLoad)

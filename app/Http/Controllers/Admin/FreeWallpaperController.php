@@ -124,70 +124,38 @@ class FreeWallpaperController extends Controller {
         }
     }
 
-    // public function changeWallpaperWithSource(Request $request){
-    //     // try {
-    //     //     DB::beginTransaction();
-    //         $extensionDefault   = config('image.extension');
-    //         $wallpaper          = $request->file('files.freeWallpaper');
-    //         $source             = $request->file('files.source');
-    //         $idWallpaper        = $request->get('wallpaper_id');
-    //         $infoWallpaper      = FreeWallpaper::select('*')
-    //                                 ->where('id', $idWallpaper)
-    //                                 ->first();
-    //         $fileName           = pathinfo($infoWallpaper->file_name)['filename'];
-    //         /* trường hợp có thay đổi wallpaper */
-    //         if(!empty($wallpaper)){
-    //             $extensionWallpaper     = $wallpaper->getClientOriginalExtension();
-    //             $fileNameFull           = $fileName.'.'.$extensionWallpaper;
-    //             /* xóa wallpaper trong storage */
-    //             $extensionDefault       = config('image.extension');
-    //             $wallpaperPathInStorage = Storage::path(config('image.folder_upload').$fileName.'.'.$extensionDefault);
-    //             if(file_exists($wallpaperPathInStorage)) unlink($wallpaperPathInStorage);
-    //             /* xóa ảnh wallpaper mini trong storage */
-    //             $filenameNotExtension   = pathinfo($infoWallpaper->file_name)['filename'];
-    //             $wallpaperMiniPathInStorage = Storage::path(config('image.folder_upload').$filenameNotExtension.'-mini.'.$extensionDefault);
-    //             if(file_exists($wallpaperMiniPathInStorage)) unlink($wallpaperMiniPathInStorage);
-    //             /* xóa ảnh wallpaper small trong storage */
-    //             $wallpaperSmallPathInStorage = Storage::path(config('image.folder_upload').$filenameNotExtension.'-small.'.$extensionDefault);
-    //             if(file_exists($wallpaperSmallPathInStorage)) unlink($wallpaperSmallPathInStorage);
-    //             /* xóa wallpaper trong google_cloud_storage */
-    //             $fileUrlW                   = config('main.google_cloud_storage.freeWallpapers').$fileNameFull;
-    //             Storage::disk('gcs')->delete($fileUrlW);
-    //             /* upload lại wallpaper mới */
-    //             \App\Helpers\Upload::uploadWallpaper($wallpaper, $fileName.'.'.$extensionDefault);
-    //             Storage::disk('gcs')->put($fileUrlW, file_get_contents($wallpaper));
-    //         }
-    //         /* trường hợp có thay đổi source */
-    //         if(!empty($source)){
-    //             $extensionSource    = $source->getClientOriginalExtension();
-    //             $fileNameS          = $fileName.'.'.$extensionSource;
-    //             /* xóa wallpaper trong google_cloud_storage */
-    //             $fileUrlS           = config('main.google_cloud_storage.sources').$fileNameFull;
-    //             Storage::disk('gcs')->delete($fileUrlS);
-    //             /* upload lại source mới */
-    //             Storage::disk('gcs')->put($fileUrlS, file_get_contents($source));
-    //         }
-    //         /* cập nhật cơ sở dữ liệu */
-    //         $imageInfo  = getimagesize($wallpaper);
-    //         $width      = $imageInfo[0];
-    //         $height     = $imageInfo[1];
-    //         $fileSize   = filesize($wallpaper);
-    //         FreeWallpaper::updateItem($idWallpaper, [
-    //             'name'              => $request->get('name'),
-    //             'description'       => $request->get('description') ?? null,
-    //             'width'             => $width,
-    //             'height'            => $height,
-    //             'file_size'         => $fileSize,
-    //             'extension'         => $extensionWallpaper,
-    //             'mime_type'         => $imageInfo['mime']
-    //         ]);
-    //     //     DB::commit();
-    //         return true;
-    //     // } catch (\Exception $exception){
-    //     //     DB::rollBack();
-    //     //     return false;
-    //     // }
-    // }
+    public function updateWallpaper(Request $request){
+        try {
+            DB::beginTransaction();
+            $idWallpaper        = $request->get('wallpaper_info_id');
+            /* cập nhật cở sở dữ liệu */
+            FreeWallpaper::updateItem($idWallpaper, [
+                'name'              => $request->get('name'),
+                'en_name'           => $request->get('en_name'),
+                'description'       => $request->get('description') ?? null,
+            ]);
+            /* lưu relation */
+            RelationFreewallpaperCategory::select('*')
+                ->where('free_wallpaper_info_id', $idWallpaper)
+                ->delete();
+            foreach(config('main.category_type') as $type){
+                if(!empty($request->get($type['key']))){
+                    $arrayCategory = explode(',', $request->get($type['key']));
+                    foreach($arrayCategory as $idCategory){
+                        RelationFreewallpaperCategory::insertItem([
+                            'free_wallpaper_info_id'    => $idWallpaper,
+                            'category_info_id'          => $idCategory
+                        ]);
+                    }
+                }
+            }
+            DB::commit();
+            return true;
+        } catch (\Exception $exception){
+            DB::rollBack();
+            return false;
+        }
+    }
 
     public function deleteWallpaper(Request $request){
         $flag                       = false;
@@ -229,7 +197,8 @@ class FreeWallpaperController extends Controller {
                             ->where('id', $request->get('wallpaper_id'))
                             ->first();
         }
-        $result         = view('admin.freeWallpaper.formModalUploadAndEdit', compact('wallpaper'))->render();
+        $categories     = Category::all();
+        $result         = view('admin.freeWallpaper.formModalUploadAndEdit', compact('wallpaper', 'categories'))->render();
         echo $result;
     }
 

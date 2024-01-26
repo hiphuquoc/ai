@@ -67,7 +67,7 @@ class FreeWallpaper extends Model {
         return $flag;
     }
     
-    // public function priceUses(){
-    //     return $this->hasMany(\App\Models\RelationProductPriceWallpaperInfo::class, 'wallpaper_info_id', 'id');
-    // }
+    public function categories(){
+        return $this->hasMany(\App\Models\RelationFreewallpaperCategory::class, 'free_wallpaper_info_id', 'id');
+    }
 }

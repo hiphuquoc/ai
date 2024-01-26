@@ -123,7 +123,7 @@
                             /* Sử dụng .css() để đặt background image */
                             box.css({
                                 'background'        : "url('" + e.target.result + "') no-repeat",
-                                'background-size'   : '100% 100%'
+                                'background-size'   : '100% auto'
                             });
                         };
                         reader.readAsDataURL(input.files[i]); // Đọc từng tệp ảnh riêng lẻ
@@ -160,33 +160,44 @@
                             // Xử lý khi có lỗi
                         });
                 }else {
-                    // var formData        = new FormData();
-                    // formData.append('name', inputName);
-                    // formData.append('description', inputDesc);
-                    // const fileWallpaper = $('input[name="wallpapers[0]"]')[0].files;
-                    // formData.append('files[wallpaper]', fileWallpaper[0]);
-                    // const fileSource    = $('input[name="sources[0]"]')[0].files;
-                    // formData.append('files[source]', fileSource[0]);
-                    // /* truyền thêm wallpaper_id */
-                    // formData.append('wallpaper_id', idWallpaper);
-                    // $.ajax({
-                    //     url: "{{ route('admin.wallpaper.changeWallpaperWithSource') }}",
-                    //     type: "post",
-                    //     data: formData,
-                    //     processData: false, // Không xử lý dữ liệu gửi đi
-                    //     contentType: false, // Không thiết lập header Content-Type
-                    //     headers: {
-                    //         'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    //     },
-                    // }).done(function (response) {
-                    //     /* load lại box */
-                    //     loadOneRow(idWallpaper);
-                    //     /* tắt modal và loading */
-                    //     addLoadingModal();
-                    //     $('#modalFormWallpaper').modal('hide');
-                    // }).fail(function (jqXHR, textStatus, errorThrown) {
-                    //     console.error("Ajax request failed: " + textStatus, errorThrown);
-                    // });
+                    var formData = new FormData();
+                    const i     = 0;
+                    formData.append('count', i);
+                    formData.append('wallpaper_info_id', idWallpaper);
+                    /* không sửa ảnh */
+                    // formData.append('files[wallpaper]', fileWallpapers[i]);
+                    
+                    // Lặp qua tất cả các input và textarea trong #js_uploadWallpaper_i
+                    $(".js_uploadWallpaper_" + i + " input, .js_uploadWallpaper_" + i + " textarea, .js_uploadWallpaper_" + i + " select").each(function() {
+                        var inputName = $(this).attr('name');
+                        var inputValue = $(this).val();
+                        // Kiểm tra xem input có tên và giá trị không rỗng
+                        if (inputName && inputValue !== undefined) {
+                            // Lọc tên để chỉ giữ lại phần không có tiền tố [i]
+                            var filteredName = inputName.replace(/\[\d+\]/, '');
+                            // Thêm input vào FormData
+                            formData.append(filteredName, inputValue);
+                        }
+                    });
+                    $.ajax({
+                        url: "{{ route('admin.freeWallpaper.updateWallpaper') }}",
+                        type: "post",
+                        dataType: 'json',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                    }).done(function (response) {
+                        /* load lại box */
+                        loadOneRow(idWallpaper);
+                        /* tắt modal và loading */
+                        addLoadingModal();
+                        $('#modalFormWallpaper').modal('hide');
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        console.error("Ajax request failed: " + textStatus, errorThrown);
+                    });
                 }   
                 /* tải lại source => dùng cho loadOneRow */
                 setTimeout(function(){
@@ -313,6 +324,8 @@
                 }
             }).done(function(data){
                 $('#js_loadModalUploadAndEdit_box').html(data);
+                /* select2 */ 
+                $(".select2").select2();
                 // console.log($('#modalFormWallpaper').html());
             });
         }

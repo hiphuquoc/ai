@@ -1,7 +1,7 @@
 @extends('layouts.wallpaper')
 @push('headCustom')
 <!-- ===== START:: SCHEMA ===== -->
-    <!-- STRAT:: Product Schema -->
+    {{-- <!-- STRAT:: Product Schema -->
     @php
         if(empty($language)||$language=='vi'){
             $currency           = 'VND';
@@ -30,14 +30,16 @@
         }
     @endphp
     @include('wallpaper.schema.product', ['item' => $item, 'lowPrice' => $lowPrice, 'highPrice' => $highPrice, 'currency' => $currency])
-    <!-- END:: Product Schema -->
+    <!-- END:: Product Schema --> --}}
 
     <!-- STRAT:: Title - Description - Social -->
-    @include('wallpaper.schema.social', compact('item', 'lowPrice', 'highPrice'))
+    @include('wallpaper.schema.social', compact('item'))
     <!-- END:: Title - Description - Social -->
 
     <!-- STRAT:: Title - Description - Social -->
-    @include('wallpaper.schema.breadcrumb', compact('breadcrumb'))
+    @if(!empty($breadcrumb))
+        @include('wallpaper.schema.breadcrumb', compact('breadcrumb'))
+    @endif
     <!-- END:: Title - Description - Social -->
 
     <!-- STRAT:: Organization Schema -->
@@ -52,12 +54,12 @@
     @include('wallpaper.schema.creativeworkseries', compact('item'))
     <!-- END:: Article Schema -->
 
-    <!-- STRAT:: FAQ Schema -->
-    @include('wallpaper.schema.itemlist', ['data' => $products])
-    <!-- END:: FAQ Schema -->
+    {{-- <!-- STRAT:: FAQ Schema -->
+    @include('wallpaper.schema.itemlist', ['data' => $wallpapers])
+    <!-- END:: FAQ Schema --> --}}
 
     <!-- STRAT:: ImageObject Schema -->
-    @php
+    {{-- @php
         $dataImages = new \Illuminate\Database\Eloquent\Collection;
         foreach($products as $product){
             foreach($product->prices as $price){
@@ -66,8 +68,8 @@
                 }
             }
         }
-    @endphp
-    @include('wallpaper.schema.imageObject', ['data' => $dataImages])
+    @endphp --}}
+    @include('wallpaper.schema.imageObject', ['data' => $wallpapers])
     <!-- END:: ImageObject Schema -->
 
     <!-- STRAT:: FAQ Schema -->
@@ -87,12 +89,13 @@
             <div style="display:flex;">
                 @php
                     if(empty($language)||$language=='vi'){
-                        $titlePage = $item->seo->slug=='anh-gai-xinh' ? $item->name : 'Hình nền điện thoại '.$item->name;
+                        $titlePage = $item->seo->slug=='anh-gai-xinh' ? $item->name : 'Ảnh gái xinh '.$item->name;
                     }else {
-                        $titlePage = $item->en_seo->slug=='photo-beautiful-girl' ? $item->en_name : $item->en_name.' Phone Wallpapers';
+                        $titlePage = $item->en_seo->slug=='photo-beautiful-girl' ? $item->en_name : 'Beautiful girl '.$item->en_name;
                     }
+                    $show = !empty($home)&&$home==true ? 'style="display:none;"' : '';
                 @endphp
-                <h1>{{ $titlePage }}</h1>
+                <h1 {!! $show !!}>{{ $titlePage }}</h1>
                 <!-- từ khóa vừa search -->
                 @if(!empty(request('search')))
                     <div class="keySearchBadge">
@@ -111,7 +114,7 @@
                 @endif
             </div>
             <!-- Sort Box -->
-            @php
+            {{-- @php
                 $totalSet   = $products->count();
                 $totalWallpaper  = 0;
                 foreach($products as $product){
@@ -127,7 +130,7 @@
                 'totalSet'          => $totalSet,
                 'totalWallpaper'    => $totalWallpaper,
                 'viewBy'            => $viewBy
-            ])
+            ]) --}}
 
             <!-- filter box -->
             {{-- <div class="filterStyleWallpaper">
@@ -139,22 +142,16 @@
             </div> --}}
 
             <!-- Product Box -->
-            @php
-                $loaded         = 5;
-                $arrayIdProduct = [];
-                $i              = 0;
-                foreach($products as $p) {
-                    if($i>=5) $arrayIdProduct[] = $p->id;
-                    ++$i;
-                }
-            @endphp
-            @include('wallpaper.template.wallpaperGrid', [
-                'products'          => $products ?? null,
-                'headingTitle'      => 'h2',
-                'contentEmpty'      => true,
-                'loaded'            => $loaded,
-                'arrayIdProduct'    => $arrayIdProduct
-            ])
+            <!-- load more -->
+            <input type="hidden" id="total" name="total" value="{{ $total }}" />
+            <input type="hidden" id="loaded" name="loaded" value="{{ $loaded ?? 0 }}" />
+            <input type="hidden" id="topLoad" name="topLoad" value="" />
+            <input type="hidden" id="arrayIdCategory" name="arrayIdCategory" value="{{ json_encode($arrayIdCategory) }}" />
+            <div class="freeWallpaperBox">
+            @foreach($wallpapers as $wallpaper)
+                @include('wallpaper.free.item', compact('wallpaper', 'language'))
+            @endforeach
+            </div>
             {{-- @include('main.template.productGridLoading')
             <div id="js_filterProduct_hidden"></div> --}}
         </div>
@@ -194,9 +191,6 @@
 @push('scriptCustom')
     <script type="text/javascript">
         $(window).ready(function(){
-            // /* load more lần đầu nếu nằm trong vùng xem */
-            // loadWallpaperMore();
-
             /* build tocContent khi scroll gần tới */
             const elementBuildTocContent = $('#js_buildTocContentMain_element');
             /* build toc content */
@@ -204,7 +198,18 @@
                 if (!elementBuildTocContent.hasClass('loaded')) {
                     buildTocContentMain('js_buildTocContentMain_element');
                 }
-            }    
+            }  
+            /* lazyload image */
+            lazyload();
+            /* load more */
+            loadFreeWallpaperMore(50);
+            $(window).scroll(function(){
+                loadFreeWallpaperMore(50);
+            })
+            /* tính lại khi resize */
+            $(window).resize(function(){
+                setViewAllImage();
+            })  
         })
     </script>
 @endpush

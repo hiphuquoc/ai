@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Route;
 use App\Models\Page;
-use App\Models\Category;
+use App\Models\FreeWallpaper;
 use App\Http\Controllers\SettingController;
 use App\Models\Product;
 use App\Models\RelationSeoEnSeo;
@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Bus;
 
 class HomeController extends Controller{
     public static function home(Request $request){
+        $home                   = true;
         /* xác định trang tiếng anh hay tiếng việt */
         $currentRoute           = Route::currentRouteName();
         /* lưu ngôn ngữ sử dụng */
@@ -53,40 +54,16 @@ class HomeController extends Controller{
                                     })
                                     ->with('seo', 'en_seo', 'type')
                                     ->first();
-            /* lấy hình nền điện thoại tết */
-            $slug               = 'hinh-nen-dien-thoai-tet';
-            $infoCategoryTet    = Category::select('category_info.*', 'seo.slug')
-                                    ->join('seo', 'seo.id', '=', 'category_info.seo_id')
-                                    ->where('seo.slug', '=', $slug)
-                                    // ->whereHas('products.infoProduct.prices.wallpapers', function($query){
-                                    //     // Điều kiện để kiểm tra xem có ít nhất một wallpaper
-                                    //     $query->whereNotNull('id');
-                                    // })
-                                    ->with('seo')
-                                    ->with('products', function($query){
-                                        $query->orderBy('id', 'DESC');
-                                    })
-                                    ->first();
-            /* lấy hình nền điện thoại noel */
-            $slug               = 'hinh-nen-dien-thoai-giang-sinh-noel';
-            $infoCategoryNoel   = Category::select('category_info.*', 'seo.slug')
-                                    ->join('seo', 'seo.id', '=', 'category_info.seo_id')
-                                    ->where('seo.slug', '=', $slug)
-                                    // ->whereHas('products.infoProduct.prices.wallpapers', function($query){
-                                    //     // Điều kiện để kiểm tra xem có ít nhất một wallpaper
-                                    //     $query->whereNotNull('id');
-                                    // })
-                                    ->with('seo')
-                                    ->with('products', function($query){
-                                        $query->orderBy('id', 'DESC');
-                                    })
-                                    ->first();
-            $viewBy             = $request->cookie('view_by') ?? 'set';
-            // /* select của filter */
-            // $categories         = Category::all();
-            // $styles             = Style::all();
-            // $events             = Event::all();
-            $xhtml              = view('wallpaper.home.index', compact('item', 'language', 'infoCategoryTet', 'infoCategoryNoel', 'viewBy'))->render();
+            /* lấy wallpapers */
+            $arrayIdCategory = [];
+            $loaded     = 10;
+            $wallpapers = FreeWallpaper::select('*')
+                            ->orderBy('id', 'DESC')
+                            ->skip(0)
+                            ->take($loaded)
+                            ->get();
+            $total      = FreeWallpaper::count();
+            $xhtml      = view('wallpaper.category.index', compact('home', 'item', 'arrayIdCategory', 'wallpapers', 'total', 'loaded', 'language'))->render();
             /* Ghi dữ liệu - Xuất kết quả */
             if(env('APP_CACHE_HTML')==true) Storage::put(config('main.cache.folderSave').$nameCache, $xhtml);
         }
