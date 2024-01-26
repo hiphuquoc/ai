@@ -68,11 +68,11 @@
             </div>
             <div class="selectCustom_box">
                 @if(empty($language)||$language=='vi')
-                    <a href="{{env('APP_URL') }}/hinh-nen-dien-thoai" class="selectCustom_box_item {{ !empty($categoryChoose->seo)&&$categoryChoose->seo->title!='Hình nền điện thoại' ? '' : 'selected' }}">
+                    <a href="{{env('APP_URL') }}/anh-gai-xinh" class="selectCustom_box_item {{ !empty($categoryChoose->seo)&&$categoryChoose->seo->title!='Hình nền điện thoại' ? '' : 'selected' }}">
                         Tất cả
                     </a>
                 @else 
-                    <a href="{{env('APP_URL') }}/phone-wallpapers" class="selectCustom_box_item {{ !empty($categoryChoose->en_seo)&&$categoryChoose->en_seo->title!='Phone Wallpaper' ? '' : 'selected' }}">
+                    <a href="{{env('APP_URL') }}/photo-beautiful-girl" class="selectCustom_box_item {{ !empty($categoryChoose->en_seo)&&$categoryChoose->en_seo->title!='Phone Wallpaper' ? '' : 'selected' }}">
                         All
                     </a>
                 @endif
@@ -111,11 +111,11 @@
             </div>
             <div class="selectCustom_box">
                 @if(empty($language)||$language=='vi')
-                    <a href="{{env('APP_URL') }}/hinh-nen-dien-thoai" class="selectCustom_box_item {{ !empty($styleChoose->id) ? '' : 'selected' }}">
+                    <a href="{{env('APP_URL') }}/anh-gai-xinh" class="selectCustom_box_item {{ !empty($styleChoose->id) ? '' : 'selected' }}">
                         Tất cả
                     </a>
                 @else 
-                    <a href="{{env('APP_URL') }}/phone-wallpapers" class="selectCustom_box_item {{ !empty($styleChoose->id) ? '' : 'selected' }}">
+                    <a href="{{env('APP_URL') }}/photo-beautiful-girl" class="selectCustom_box_item {{ !empty($styleChoose->id) ? '' : 'selected' }}">
                         All
                     </a>
                 @endif
@@ -152,11 +152,11 @@
             </div>
             <div class="selectCustom_box">
                 @if(empty($language)||$language=='vi')
-                    <a href="{{env('APP_URL') }}/hinh-nen-dien-thoai" class="selectCustom_box_item {{ !empty($eventChoose->id) ? '' : 'selected' }}">
+                    <a href="{{env('APP_URL') }}/anh-gai-xinh" class="selectCustom_box_item {{ !empty($eventChoose->id) ? '' : 'selected' }}">
                         Tất cả
                     </a>
                 @else 
-                    <a href="{{env('APP_URL') }}/phone-wallpapers" class="selectCustom_box_item {{ !empty($eventChoose->id) ? '' : 'selected' }}">
+                    <a href="{{env('APP_URL') }}/photo-beautiful-girl" class="selectCustom_box_item {{ !empty($eventChoose->id) ? '' : 'selected' }}">
                         All
                     </a>
                 @endif

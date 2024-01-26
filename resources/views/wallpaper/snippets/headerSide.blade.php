@@ -5,7 +5,7 @@
         'flag_show' => 1
     ]);
     foreach($tmp as $categoryLv1){
-        if($categoryLv1->seo->slug=='hinh-nen-dien-thoai'){
+        if($categoryLv1->seo->slug=='anh-gai-xinh'){
             $wallpaperMobile    = $categoryLv1;
             break;
         }
@@ -184,12 +184,12 @@
                 $icon = file_get_contents('storage/images/svg/icon-share-1.svg');
             @endphp
             @if(empty($language)||$language=='vi')
-                <a href="{{ env('APP_URL') }}/hinh-nen-dien-thoai/hinh-nen-dien-thoai-mien-phi" title="Hình nền điện thoại miễn phí" aria-label="Hình nền điện thoại miễn phí">
+                <a href="{{ env('APP_URL') }}/anh-gai-xinh/hinh-nen-dien-thoai-mien-phi" title="Hình nền điện thoại miễn phí" aria-label="Hình nền điện thoại miễn phí">
                     {!! $icon !!}
                     <div>Hình nền miễn phí</div>
                 </a>
             @else
-                <a href="{{ env('APP_URL') }}/phone-wallpapers/free-phone-wallpapers" title="Free phone wallpapers" aria-label="Free phone wallpapers">
+                <a href="{{ env('APP_URL') }}/photo-beautiful-girl/free-phone-wallpapers" title="Free phone wallpapers" aria-label="Free phone wallpapers">
                     {!! $icon !!}
                     <div>Free wallpapers</div>
                 </a>

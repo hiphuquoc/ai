@@ -99,10 +99,10 @@ class AjaxController extends Controller {
                                     </a>';
                 }
                 if(empty($language)||$language=='vi'){
-                    $url            = route('routing', ['slug' => 'hinh-nen-dien-thoai']).'?search='.$keySearch;
+                    $url            = route('routing', ['slug' => 'anh-gai-xinh']).'?search='.$keySearch;
                     $contentButton  = 'Xem tất cả (<span>'.$count.'</span>) kết quả <i class="fa-solid fa-angles-right"></i>';
                 }else {
-                    $url            = route('routing', ['slug' => 'phone-wallpapers']).'?search='.$keySearch;
+                    $url            = route('routing', ['slug' => 'photo-beautiful-girl']).'?search='.$keySearch;
                     $contentButton  = 'See all (<span>'.$count.'</span>) results <i class="fa-solid fa-angles-right"></i>';
                 }
                 $response           .= '<a href="'.$url.'" class="searchViewBefore_selectbox_item">'.$contentButton.'</a>';

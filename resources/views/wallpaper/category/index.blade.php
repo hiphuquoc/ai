@@ -87,9 +87,9 @@
             <div style="display:flex;">
                 @php
                     if(empty($language)||$language=='vi'){
-                        $titlePage = $item->seo->slug=='hinh-nen-dien-thoai' ? $item->name : 'Hình nền điện thoại '.$item->name;
+                        $titlePage = $item->seo->slug=='anh-gai-xinh' ? $item->name : 'Hình nền điện thoại '.$item->name;
                     }else {
-                        $titlePage = $item->en_seo->slug=='phone-wallpapers' ? $item->en_name : $item->en_name.' Phone Wallpapers';
+                        $titlePage = $item->en_seo->slug=='photo-beautiful-girl' ? $item->en_name : $item->en_name.' Phone Wallpapers';
                     }
                 @endphp
                 <h1>{{ $titlePage }}</h1>

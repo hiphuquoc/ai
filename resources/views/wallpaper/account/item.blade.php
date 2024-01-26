@@ -41,7 +41,7 @@
         <div class="emptyCartBox">
             <img src="/storage/images/svg/icon-blank-cart.svg" alt="danh sách sản phẩm trong giỏ hàng" title="danh sách sản phẩm trong giỏ hàng">
             <div class="emptyCart_text">Tải xuống của bạn trống!</div> 
-            <a href="/hinh-nen-dien-thoai" class="emptyCartBox_button button" aria-label="Bắt đầu mua sắm">Bắt đầu mua hàng</a>
+            <a href="/anh-gai-xinh" class="emptyCartBox_button button" aria-label="Bắt đầu mua sắm">Bắt đầu mua hàng</a>
         </div>
     </div>
     @endif
