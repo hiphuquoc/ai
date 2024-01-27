@@ -70,4 +70,8 @@ class FreeWallpaper extends Model {
     public function categories(){
         return $this->hasMany(\App\Models\RelationFreewallpaperCategory::class, 'free_wallpaper_info_id', 'id');
     }
+
+    public function tags(){
+        return $this->hasMany(\App\Models\RelationTagInfoOrther::class, 'reference_id', 'id')->where('reference_type', 'free_wallpaper_info');
+    }
 }

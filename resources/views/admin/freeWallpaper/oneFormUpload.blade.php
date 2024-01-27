@@ -25,7 +25,7 @@
                                     @if(!empty($category->seo->type)&&$category->seo->type==$type['key'])
                                         @php
                                             $selected   = null;
-                                            if(!empty($wallpaper)){
+                                            if(!empty($wallpaper)&&!empty($wallpaper->categories)){
                                                 foreach($wallpaper->categories as $relationCategory){
                                                     if($relationCategory->category_info_id==$category->id) {
                                                         $selected = ' selected';
@@ -41,6 +41,33 @@
                         </select>
                     </div>
                 @endforeach
+                <div class="formBox_full_item">
+                    @php
+                        $arrayTagName           = [];
+                        if(!empty($wallpaper->tags)){
+                            foreach($wallpaper->tags as $tag){
+                                $arrayTagName[] = $tag->infoTag->name;
+                            }
+                        }
+                        $strTagName             = implode(',', $arrayTagName);
+                    @endphp
+                    <label for="tagName_{{ $idBox }}" class="form-label">Tag name</label>
+                    <input id="tagName_{{ $idBox }}" name="tag[{{ $idBox }}]" class="form-control" placeholder="Nhập tag name" value="{{ $strTagName }}">
+                    <!-- script custom tag -->
+                    <script type="text/javascript">
+                        var strTag = {!! json_encode($arrayTag) !!};
+                        new Tagify(document.querySelector("#tagName_{{ $idBox }}"), {
+                            whitelist: strTag,
+                            maxTags: 100, // allows to select max items
+                            dropdown: {
+                                maxItems: 20, // display max items
+                                classname: "tags-inline", // Custom inline class
+                                enabled: 0,
+                                closeOnSelect: false
+                            }
+                        });
+                    </script>
+                </div>
                 <div class="formBox_full_item">
                     <label class="form-label" for="description">Prompt Midjourney</label>
                     <textarea class="form-control" name="description[{{ $idBox }}]" rows="2"></textarea>

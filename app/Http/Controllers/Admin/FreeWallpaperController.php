@@ -17,8 +17,8 @@ use App\Models\FreeWallpaper;
 use App\Models\RelationFreewallpaperCategory;
 use App\Helpers\Charactor;
 use App\Models\Category;
-
-// use App\Jobs\UploadSourceAndWallpaper;
+use App\Models\RelationTagInfoOrther;
+use App\Models\Tag;
 
 class FreeWallpaperController extends Controller {
 
@@ -55,8 +55,13 @@ class FreeWallpaperController extends Controller {
         $xhtml = '';
         if(!empty($request->get('data_id'))){
             $categories = Category::all();
+            /* tag name */
+            $tags           = Tag::all();
+            $arrayTag       = [];
+            foreach($tags as $tag) $arrayTag[] = $tag->name;
+            // $strTag         = implode(',', $arrayTag);
             foreach($request->get('data_id') as $idBox){
-                $xhtml .= view('admin.freeWallpaper.oneFormUpload', compact('idBox', 'categories'))->render();
+                $xhtml .= view('admin.freeWallpaper.oneFormUpload', compact('idBox', 'categories', 'tags', 'arrayTag'))->render();
             }
         }
         echo $xhtml;
@@ -106,6 +111,34 @@ class FreeWallpaperController extends Controller {
                         }
                     }
                 }
+                /* lưu tag name */
+                if(!empty($request->get('tag'))){
+                    $tag    = json_decode($request->get('tag'), true);
+                    foreach($tag as $t){
+                        $nameTag    = strtolower($t['value']);
+                        /* kiểm tra xem tag name đã tồn tại chưa */
+                        $infoTag    = Tag::select('*')
+                                        ->where('name', $nameTag)
+                                        ->first();
+                        /* chưa tồn tại -> tạo và láy ra */
+                        if(empty($infoTag)){
+                            $enNameTag  = strtolower(Charactor::translateViToEn($nameTag));
+                            $idTag      = Tag::insertItem([
+                                'name'      => $nameTag,
+                                'en_name'   => $enNameTag
+                            ]);
+                            $infoTag    = Tag::select('*')
+                                            ->where('id', $idTag)
+                                            ->first();
+                        }
+                        /* insert relation */
+                        RelationTagInfoOrther::insertItem([
+                            'tag_info_id'       => $infoTag->id,
+                            'reference_type'    => 'free_wallpaper_info',
+                            'reference_id'      => $idWallpaper
+                        ]);
+                    }
+                }
                 DB::commit();
                 if(!empty($idWallpaper)){
                     $response = [];
@@ -149,6 +182,39 @@ class FreeWallpaperController extends Controller {
                     }
                 }
             }
+            /* lưu tag name */
+            /* delete relation có sẵn */
+            RelationTagInfoOrther::select('*')
+                ->where('reference_type', 'free_wallpaper_info')
+                ->where('reference_id', $idWallpaper)
+                ->delete();
+            if(!empty($request->get('tag'))){
+                $tag    = json_decode($request->get('tag'), true);
+                foreach($tag as $t){
+                    $nameTag    = strtolower($t['value']);
+                    /* kiểm tra xem tag name đã tồn tại chưa */
+                    $infoTag    = Tag::select('*')
+                                    ->where('name', $nameTag)
+                                    ->first();
+                    /* chưa tồn tại -> tạo và láy ra */
+                    if(empty($infoTag)){
+                        $enNameTag  = strtolower(Charactor::translateViToEn($nameTag));
+                        $idTag      = Tag::insertItem([
+                            'name'      => $nameTag,
+                            'en_name'   => $enNameTag
+                        ]);
+                        $infoTag    = Tag::select('*')
+                                        ->where('id', $idTag)
+                                        ->first();
+                    }
+                    /* insert relation */
+                    RelationTagInfoOrther::insertItem([
+                        'tag_info_id'       => $infoTag->id,
+                        'reference_type'    => 'free_wallpaper_info',
+                        'reference_id'      => $idWallpaper
+                    ]);
+                }
+            }
             DB::commit();
             return true;
         } catch (\Exception $exception){
@@ -165,9 +231,14 @@ class FreeWallpaperController extends Controller {
                                         ->where('id', $idWallpaper)
                                         ->first();
             $flag                   = self::delete($infoWallpaper);
+            /* xóa relation */
             if($flag==true){
                 RelationFreewallpaperCategory::select('*')
                     ->where('free_wallpaper_info_id', $idWallpaper)
+                    ->delete();
+                RelationTagInfoOrther::select('*')
+                    ->where('reference_id', $idWallpaper)
+                    ->where('reference_type', 'free_wallpaper_info')
                     ->delete();
             }
             /* xóa trong cơ sở dữ liệu */
@@ -198,7 +269,11 @@ class FreeWallpaperController extends Controller {
                             ->first();
         }
         $categories     = Category::all();
-        $result         = view('admin.freeWallpaper.formModalUploadAndEdit', compact('wallpaper', 'categories'))->render();
+        /* tag name */
+        $tags           = Tag::all();
+        $arrayTag       = [];
+        foreach($tags as $tag) $arrayTag[] = $tag->name;
+        $result         = view('admin.freeWallpaper.formModalUploadAndEdit', compact('wallpaper', 'categories', 'arrayTag', 'tags'))->render();
         echo $result;
     }
 

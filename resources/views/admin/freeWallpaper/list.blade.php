@@ -54,7 +54,7 @@
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
     <!-- END: SLICK -->
     <script type="text/javascript">
-
+    
         function loadOneRow(idWallpaper){
             const idBox         = 'js_deleteWallpaperAndSource_'+idWallpaper;
             var boxWallpaper    = $('#'+idBox);
