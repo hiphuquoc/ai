@@ -179,50 +179,23 @@ class AjaxController extends Controller {
         return redirect()->back()->withInput();
     }
 
-    public function showSortBox(Request $request){
+    public function showSortBoxFreeWallpaper(Request $request){
         $xhtml              = '';
-        $type               = $request->get('type');
         $id                 = $request->get('id');
-        $totalSet           = $request->get('totalSet');
-        $totalWallpaper     = $request->get('totalWallpaper');
-        $viewBy             = Cookie::get('view_by') ?? 'set';
+        $total              = $request->get('total');
         /* select của filter */
         $categories         = Category::all();
-        $styles             = Style::all();
-        $events             = Event::all();
         /* giá trị selectBox */
         $categoryChoose     = new \Illuminate\Database\Eloquent\Collection;
-        if($type=='category_info'){
-            $categoryChoose = Category::select('*')
+        $categoryChoose     = Category::select('*')
                                 ->where('id', $id)
                                 ->with('seo', 'en_seo')
                                 ->first();
-        }
-        $styleChoose        = new \Illuminate\Database\Eloquent\Collection;
-        if($type=='style_info'){
-            $styleChoose    = Style::select('*')
-                                ->where('id', $id)
-                                ->with('seo', 'en_seo')
-                                ->first();
-        }
-        $eventChoose        = new \Illuminate\Database\Eloquent\Collection;
-        if($type=='event_info'){
-            $eventChoose    = Event::select('*')
-                                ->where('id', $id)
-                                ->with('seo', 'en_seo')
-                                ->first();
-        }
         $xhtml              = view('wallpaper.template.sortContent', [
             'language'          => $language ?? 'vi',
-            'totalSet'          => $totalSet,
-            'totalWallpaper'    => $totalWallpaper,
-            'viewBy'            => $viewBy,
+            'total'             => $total,
             'categories'        => $categories,
-            'styles'            => $styles,
-            'events'            => $events,
-            'categoryChoose'    => $categoryChoose,
-            'styleChoose'       => $styleChoose,
-            'eventChoose'       => $eventChoose
+            'categoryChoose'    => $categoryChoose
         ])->render();
         return $xhtml;
     }

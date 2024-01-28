@@ -244,7 +244,7 @@ Route::get('/loadImageWithResize', [AjaxController::class, 'loadImageWithResize'
 Route::get('/loadImageSource', [AjaxController::class, 'loadImageSource'])->name('ajax.loadImageSource');
 Route::get('/downloadImageSource', [AjaxController::class, 'downloadImageSource'])->name('ajax.downloadImageSource');
 Route::get('/settingViewBy', [AjaxController::class, 'settingViewBy'])->name('ajax.settingViewBy');
-Route::get('/showSortBox', [AjaxController::class, 'showSortBox'])->name('ajax.showSortBox');
+Route::get('/showSortBoxFreeWallpaper', [AjaxController::class, 'showSortBoxFreeWallpaper'])->name('ajax.showSortBoxFreeWallpaper');
 Route::get('/loadmoreFreeWallpapers', [AjaxController::class, 'loadmoreFreeWallpapers'])->name('admin.freeWallpaper.loadmoreFreeWallpapers');
 /* login */
 Route::get('/he-thong', [LoginController::class, 'loginForm'])->name('admin.loginForm');

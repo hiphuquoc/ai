@@ -68,9 +68,12 @@
                         });
                     </script>
                 </div>
+                {{-- @php
+                    dd($wallpaper->description);
+                @endphp --}}
                 <div class="formBox_full_item">
                     <label class="form-label" for="description">Prompt Midjourney</label>
-                    <textarea class="form-control" name="description[{{ $idBox }}]" rows="2"></textarea>
+                    <textarea class="form-control" name="description[{{ $idBox }}]" rows="2">{{ $wallpaper->description ?? null }}</textarea>
                 </div>
             </div>
         </div>

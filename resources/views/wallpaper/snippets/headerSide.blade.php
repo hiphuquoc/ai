@@ -64,7 +64,7 @@
         @if(!empty($wallpaperMobile))
             <li>
                 @php
-                    $titlePhoneWallpaper = empty($language)||$language=='vi' ?  'Thể loại ảnh' : 'Photo Categories';
+                    $titleTypeCategory = empty($language)||$language=='vi' ?  'Thể loại ảnh' : 'Photo Categories';
                     $url      = empty($language)||$language=='vi' ? $wallpaperMobile->seo->slug : $wallpaperMobile->en_seo->slug;
                     $classTmp = 'close';
                     $styleTmp = '';
@@ -78,9 +78,9 @@
                 <div class="{{ $classTmp }}">
                     {!! $icon !!}
                     @if($flagOpen==true)
-                        <div>{{ $titlePhoneWallpaper }}</div>
+                        <div>{{ $titleTypeCategory }}</div>
                     @else 
-                        <a href="{{ env('APP_URL') }}/{{ $url }}" arira-label="{{ $wallpaperMobile->name }}">{{ $titlePhoneWallpaper }}</a>
+                        <a href="{{ env('APP_URL') }}/{{ $url }}" arira-label="{{ $wallpaperMobile->name }}">{{ $titleTypeCategory }}</a>
                     @endif
                     <i class="fa-solid fa-plus" onclick="showHideListMenuMobile(this, '{{ $url }}')"></i>
                 </div>

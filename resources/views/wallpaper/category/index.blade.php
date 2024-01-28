@@ -114,26 +114,23 @@
                 @endif
             </div>
             <!-- Sort Box -->
-            {{-- @php
-                $totalSet   = $products->count();
-                $totalWallpaper  = 0;
-                foreach($products as $product){
-                    foreach($product->prices as $price){
-                        foreach($price->wallpapers as $wallpaper){
-                            ++$totalWallpaper;
-                        }
-                    }
-                }
+            @php
+                // dd($wallpapers);
+                // $totalSet   = $products->count();
+                // $totalWallpaper  = 0;
+                // foreach($products as $product){
+                //     foreach($product->prices as $price){
+                        
+                //     }
+                // }
             @endphp
             @include('wallpaper.template.sort', [
                 'language'          => $language ?? 'vi',
-                'totalSet'          => $totalSet,
-                'totalWallpaper'    => $totalWallpaper,
-                'viewBy'            => $viewBy
-            ]) --}}
+                'total'             => $total
+            ])
 
-            <!-- filter box -->
-            {{-- <div class="filterStyleWallpaper">
+            {{-- <!-- filter box -->
+            <div class="filterStyleWallpaper">
                 @for($i=0;$i<20;++$i)
                     <div class="filterStyleWallpaper_item badge badgePrimary">
                         Phong cách dân dã

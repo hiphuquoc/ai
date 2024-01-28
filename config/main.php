@@ -119,31 +119,38 @@ return [
     'category_type' => [
         [
             'key' => 'country_info',
-            'name' => 'Quốc gia'
+            'name' => 'Quốc gia',
+            'en_name' => 'Country'
         ],
         [
             'key' => 'skin_info',
-            'name' => 'Trang phục'
+            'name' => 'Trang phục',
+            'en_name'   => 'Clothes'
         ],
         [
             'key' => 'type_info',
-            'name' => 'Thể loại'
+            'name' => 'Thể loại',
+            'en_name'   => 'Category'
         ],
         [
             'key' => 'eyecolor_info',
-            'name' => 'Màu mắt'
+            'name' => 'Màu mắt',
+            'en_name'   => 'Eye Color'
         ],
         [
             'key' => 'haircolor_info',
-            'name' => 'Màu tóc'
+            'name' => 'Màu tóc',
+            'en_name'   => 'Hair Color'
         ],
         [
             'key' => 'maintone_info',
-            'name' => 'Tông chính'
+            'name' => 'Tông chính',
+            'en_name'   => 'Main Tone'
         ],
         [
             'key' => 'style_info',
-            'name' => 'Phong cách'
+            'name' => 'Phong cách',
+            'en_name'   => 'Style'
         ]
     ]
 ];
