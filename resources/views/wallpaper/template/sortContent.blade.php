@@ -15,7 +15,7 @@
             </div>
         </div>
         <!-- Chủ đề -->
-        <div class="selectCustom hide-990">
+        <div class="selectCustom">
             <div class="selectCustom_text">
                 {{ empty($language)||$language=='vi' ? 'Lọc theo Thể Loại' : 'Filter by Category' }}
             </div>
@@ -102,63 +102,71 @@
         </div>
         <!-- icon filter nâng cao -->
         <div class="filterAdvanced">
-            <div class="filterAdvanced_icon" onclick="toggleFilterAdvancde(this);">
+            <div id="js_toggleFilterAdvanced_element" class="filterAdvanced_icon" onclick="toggleFilterAdvanced('js_toggleFilterAdvanced_element');">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true" height="18" class="sm:mr-2 sm:text-slate-400"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
             </div>
             <div class="filterAdvanced_text">
                 Bộ lọc nâng cao
             </div>
             <div class="filterAdvanced_box">
-                @foreach(config('main.category_type') as $type)
-                    @if($type['key']!='type_info'&&$type['key']!='style_info')
-                        <div class="filterAdvanced_box_item">
-                            <div class="selectCustom">
-                                <div class="selectCustom_text">
-                                    {{ empty($language)||$language=='vi' ? 'Lọc theo '.$type['name'] : 'Filter by '.$type['en_name'] }}
-                                </div>
-                                <div class="selectCustom_input">
-                                    {{-- @if(!empty($categoryChoose->seo)&&$categoryChoose->seo->type=='style_info')
-                                        {{ empty($language)||$language=='vi' ? $categoryChoose->seo->title : $categoryChoose->en_seo->title }}
-                                    @else 
+                <div class="filterAdvanced_box_title">
+                    <span>Bộ lọc nâng cao</span>
+                    <div class="filterAdvanced_box_title_close" onclick="toggleFilterAdvanced('js_toggleFilterAdvanced_element');">
+                        <i class="fa-solid fa-xmark"></i>
+                    </div>
+                </div>
+                
+                <div class="filterAdvanced_box_content">
+                    @foreach(config('main.category_type') as $type)
+                        @if($type['key']!='type_info'&&$type['key']!='style_info')
+                            <div class="filterAdvanced_box_content_item">
+                                <div class="selectCustom">
+                                    <div class="selectCustom_text">
+                                        {{ empty($language)||$language=='vi' ? 'Lọc theo '.$type['name'] : 'Filter by '.$type['en_name'] }}
+                                    </div>
+                                    <div class="selectCustom_input">
+                                        {{-- @if(!empty($categoryChoose->seo)&&$categoryChoose->seo->type=='style_info')
+                                            {{ empty($language)||$language=='vi' ? $categoryChoose->seo->title : $categoryChoose->en_seo->title }}
+                                        @else 
+                                            {{ empty($language)||$language=='vi' ? 'Tất cả' : 'All' }}
+                                        @endif --}}
                                         {{ empty($language)||$language=='vi' ? 'Tất cả' : 'All' }}
-                                    @endif --}}
-                                    {{ empty($language)||$language=='vi' ? 'Tất cả' : 'All' }}
-                                </div>
-                                <div class="selectCustom_box">
-                                    @if(empty($language)||$language=='vi')
-                                        <a href="{{env('APP_URL') }}/anh-gai-xinh" class="selectCustom_box_item {{ !empty($styleChoose->id) ? '' : 'selected' }}">
-                                            Tất cả
-                                        </a>
-                                    @else 
-                                        <a href="{{env('APP_URL') }}/photo-beautiful-girl" class="selectCustom_box_item {{ !empty($styleChoose->id) ? '' : 'selected' }}">
-                                            All
-                                        </a>
-                                    @endif
-                                    @if(!empty($categories)&&$categories->isNotEmpty())
-                                        @foreach($categories as $category)
-                                            @if(!empty($category->seo->type)&&$category->seo->type==$type['key']&&$category->flag_show==true)
-                                                @php
-                                                    $selected = '';
-                                                    if(!empty($categoryChoose->id)&&$categoryChoose->id==$category->id) $selected = 'selected';
-                                                @endphp
-                                                @if(empty($language)||$language=='vi')
-                                                    <a href="{{ env('APP_URL') }}/{{ $category->seo->slug_full }}" class="selectCustom_box_item {{ $selected }}">
-                                                        {{ $category->seo->title }}
-                                                    </a>
-                                                @else   
-                                                    <a href="{{ env('APP_URL') }}/{{ $category->en_seo->slug_full }}" class="selectCustom_box_item {{ $selected }}">
-                                                        {{ $category->en_seo->title }}
-                                                    </a>
+                                    </div>
+                                    <div class="selectCustom_box">
+                                        @if(empty($language)||$language=='vi')
+                                            <a href="{{env('APP_URL') }}/anh-gai-xinh" class="selectCustom_box_item {{ !empty($styleChoose->id) ? '' : 'selected' }}">
+                                                Tất cả
+                                            </a>
+                                        @else 
+                                            <a href="{{env('APP_URL') }}/photo-beautiful-girl" class="selectCustom_box_item {{ !empty($styleChoose->id) ? '' : 'selected' }}">
+                                                All
+                                            </a>
+                                        @endif
+                                        @if(!empty($categories)&&$categories->isNotEmpty())
+                                            @foreach($categories as $category)
+                                                @if(!empty($category->seo->type)&&$category->seo->type==$type['key']&&$category->flag_show==true)
+                                                    @php
+                                                        $selected = '';
+                                                        if(!empty($categoryChoose->id)&&$categoryChoose->id==$category->id) $selected = 'selected';
+                                                    @endphp
+                                                    @if(empty($language)||$language=='vi')
+                                                        <a href="{{ env('APP_URL') }}/{{ $category->seo->slug_full }}" class="selectCustom_box_item {{ $selected }}">
+                                                            {{ $category->seo->title }}
+                                                        </a>
+                                                    @else   
+                                                        <a href="{{ env('APP_URL') }}/{{ $category->en_seo->slug_full }}" class="selectCustom_box_item {{ $selected }}">
+                                                            {{ $category->en_seo->title }}
+                                                        </a>
+                                                    @endif
                                                 @endif
-                                            @endif
-                                        @endforeach
-                                    @endif
+                                            @endforeach
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    @endif
-                @endforeach
-
+                        @endif
+                    @endforeach
+                </div>
             </div>
         </div>
     </div>
@@ -174,8 +182,8 @@
 @pushonce('scriptCustom')
     <script type="text/javascript">
 
-        function toggleFilterAdvancde(element){
-            $(element).toggleClass('active');
+        function toggleFilterAdvanced(idElement){
+            $('#'+idElement).toggleClass('active');
         }
         
         function setValueViewBy(idSelect) {
