@@ -4,7 +4,7 @@
         @php
             $titleSortBy    = empty($language)||$language=='vi' ? 'Sắp xếp theo' : 'Sort by';
             $dataSort       = config('main.sort_type');
-            $sortBy         = Cookie::get('sort_by') ?? null;
+            $sortBy         = Cookie::get('sort_by') ?? config('main.sort_type')[0]['key'];
             $inputSortBy    = null;
             foreach($dataSort as $sortItem){
                 if($sortBy==$sortItem['key']) {
