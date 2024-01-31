@@ -1,17 +1,35 @@
 <div class="sortBox">
     <div class="sortBox_left">
         <!-- sort by -->
+        @php
+            $titleSortBy    = empty($language)||$language=='vi' ? 'Sắp xếp theo' : 'Sort by';
+            $dataSort       = config('main.sort_type');
+            $sortBy         = Cookie::get('sort_by') ?? null;
+            $inputSortBy    = null;
+            foreach($dataSort as $sortItem){
+                if($sortBy==$sortItem['key']) {
+                    $tmp            = empty($language)||$language=='vi' ? $sortItem['name'] : $sortItem['en_name'];
+                    $inputSortBy    = $sortItem['icon'].$tmp;
+                }
+            }
+        @endphp
         <div class="selectCustom hide-990">
             <div class="selectCustom_text">
-                Sắp xếp theo
+                {!! $titleSortBy !!}
             </div>
             <div class="selectCustom_input">
-                <i class="fa-solid fa-star"></i>Đề xuất
+                {!! $inputSortBy !!}
             </div>
             <div class="selectCustom_box">
-                <div class="selectCustom_box_item selected" data-value-sort-by="">
-                    <i class="fa-solid fa-star"></i>Đề xuất
-                </div>
+                @foreach($dataSort as $sortItem)
+                    @php
+                        $selected = null;
+                        if($sortBy==$sortItem['key']) $selected = 'selected';
+                    @endphp
+                    <div class="selectCustom_box_item {{ $selected }}" data-value-sort-by="{{ $sortItem['key'] }}" onClick="setSortBy('{{ $sortItem['key'] }}')">
+                        {!! $sortItem['icon'] !!}{{ empty($language)||$language=='vi' ? $sortItem['name'] : $sortItem['en_name'] }}
+                    </div>
+                @endforeach
             </div>
         </div>
         <!-- Chủ đề -->
@@ -101,16 +119,19 @@
             </div>
         </div>
         <!-- icon filter nâng cao -->
+        @php
+            $titleAdvancedFilter = empty($language)||$language=='vi' ? 'Bộ lọc nâng cao' : 'Advanced filters';
+        @endphp
         <div class="filterAdvanced">
             <div id="js_toggleFilterAdvanced_element" class="filterAdvanced_icon" onclick="toggleFilterAdvanced('js_toggleFilterAdvanced_element');">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true" height="18" class="sm:mr-2 sm:text-slate-400"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
             </div>
             <div class="filterAdvanced_text">
-                Bộ lọc nâng cao
+                {{ $titleAdvancedFilter }}
             </div>
             <div class="filterAdvanced_box">
                 <div class="filterAdvanced_box_title">
-                    <span>Bộ lọc nâng cao</span>
+                    <span>{{ $titleAdvancedFilter}}</span>
                     <div class="filterAdvanced_box_title_close" onclick="toggleFilterAdvanced('js_toggleFilterAdvanced_element');">
                         <i class="fa-solid fa-xmark"></i>
                     </div>
@@ -210,6 +231,20 @@
                 element.closest(".selectCustom").find("input").val(selectedValue);
                 $('#formViewBy').submit();
             }
+        }
+
+        function setSortBy(key){
+            $.ajax({
+                url         : '{{ route("ajax.setSortBy") }}',
+                type        : 'get',
+                dataType    : 'json',
+                data        : {
+                    key
+                },
+                success     : function(response){
+                    location.reload();
+                }
+            });
         }
         
     </script>

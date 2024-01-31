@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Page;
 use App\Models\FreeWallpaper;
 use App\Http\Controllers\SettingController;
+use Illuminate\Support\Facades\Cookie;
 use App\Models\Product;
 use App\Models\RelationSeoEnSeo;
 use Intervention\Image\ImageManagerStatic;
@@ -57,8 +58,21 @@ class HomeController extends Controller{
             /* lấy wallpapers */
             $arrayIdCategory = [];
             $loaded     = 10;
+            $sortBy     = Cookie::get('sort_by') ?? null;
             $wallpapers = FreeWallpaper::select('*')
-                            ->orderBy('id', 'DESC')
+                            ->when(empty($sortBy), function($query){
+                                $query->orderBy('id', 'DESC');
+                            })
+                            ->when($sortBy=='new'||$sortBy=='propose', function($query){
+                                $query->orderBy('id', 'DESC');
+                            })
+                            ->when($sortBy=='favourite', function($query){
+                                $query->orderBy('heart', 'DESC')
+                                        ->orderBy('id', 'DESC');
+                            })
+                            ->when($sortBy=='old', function($query){
+                                $query->orderBy('id', 'ASC');
+                            })
                             ->skip(0)
                             ->take($loaded)
                             ->get();

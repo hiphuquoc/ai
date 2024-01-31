@@ -12,12 +12,13 @@
                 <img type="submit" src="{{ Storage::url('images/svg/search.svg') }}" alt="tìm kiếm hình nền điện thoại" title="tìm kiếm hình nền điện thoại" />
             </div>
         </div>
-        @if(!Route::is('main.cart')&&!Route::is('main.enCart'))
-            {{-- @include('wallpaper.template.search') --}}
+        
+        {{-- @if(!Route::is('main.cart')&&!Route::is('main.enCart'))
             <div id="js_viewSortCart_idWrite">
                 @include('wallpaper.cart.cartSort', ['products' => null])
             </div>
-        @endif
+        @endif --}}
+
         <!-- button đăng nhập desktop -->
         <div id="js_checkLoginAndSetShow_button" class="hide-1023" style="height:100%;display:none !important;">
             <!-- tải ajax checkLoginAndSetShow() -->

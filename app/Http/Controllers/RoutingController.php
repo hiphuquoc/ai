@@ -74,20 +74,33 @@ class RoutingController extends Controller{
                         }
                         /* lấy wallpapers */
                         $loaded         = 10;
+                        $sortBy         = Cookie::get('sort_by') ?? null;
                         $wallpapers     = FreeWallpaper::select('*')
-                                        ->whereHas('categories', function($query) use($arrayIdCategory){
-                                            $query->whereIn('category_info_id', $arrayIdCategory);
-                                        })
-                                        ->orderBy('id', 'DESC')
-                                        ->skip(0)
-                                        ->take($loaded)
-                                        ->get();
-                        $total      = FreeWallpaper::select('*')
-                                        ->whereHas('categories', function($query) use($arrayIdCategory){
-                                            $query->whereIn('category_info_id', $arrayIdCategory);
-                                        })
-                                        ->count();
-                        $xhtml      = view('wallpaper.category.index', compact('item', 'breadcrumb', 'content', 'wallpapers', 'arrayIdCategory', 'total', 'loaded', 'language'))->render();
+                                            ->whereHas('categories', function($query) use($arrayIdCategory){
+                                                $query->whereIn('category_info_id', $arrayIdCategory);
+                                            })
+                                            ->when(empty($sortBy), function($query){
+                                                $query->orderBy('id', 'DESC');
+                                            })
+                                            ->when($sortBy=='new'||$sortBy=='propose', function($query){
+                                                $query->orderBy('id', 'DESC');
+                                            })
+                                            ->when($sortBy=='favourite', function($query){
+                                                $query->orderBy('heart', 'DESC')
+                                                        ->orderBy('id', 'DESC');
+                                            })
+                                            ->when($sortBy=='old', function($query){
+                                                $query->orderBy('id', 'ASC');
+                                            })
+                                            ->skip(0)
+                                            ->take($loaded)
+                                            ->get();
+                        $total          = FreeWallpaper::select('*')
+                                            ->whereHas('categories', function($query) use($arrayIdCategory){
+                                                $query->whereIn('category_info_id', $arrayIdCategory);
+                                            })
+                                            ->count();
+                        $xhtml          = view('wallpaper.category.index', compact('item', 'breadcrumb', 'content', 'wallpapers', 'arrayIdCategory', 'total', 'loaded', 'language'))->render();
                     }
                 }
                 

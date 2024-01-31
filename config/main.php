@@ -152,5 +152,31 @@ return [
             'name' => 'Phong cách',
             'en_name'   => 'Style'
         ]
+    ],
+    'sort_type' => [
+        [
+            'icon'      => '<i class="fa-solid fa-star"></i>',
+            'key'       => 'propose',
+            'name'      => 'Đề xuất',
+            'en_name'   => 'Propose'
+        ],
+        [
+            'icon'      => '<i class="fa-solid fa-heart"></i>',
+            'key'       => 'favourite',
+            'name'      => 'Yêu thích',
+            'en_name'   => 'Favourite'
+        ],
+        [
+            'icon'      => '<i class="fa-solid fa-arrow-down"></i>',
+            'key'       => 'new',
+            'name'      => 'Mới nhất',
+            'en_name'   => 'Latest'
+        ],
+        [
+            'icon'      => '<i class="fa-solid fa-arrow-up"></i>',
+            'key'       => 'old',
+            'name'      => 'Cũ nhất',
+            'en_name'   => 'Oldest'
+        ],
     ]
 ];

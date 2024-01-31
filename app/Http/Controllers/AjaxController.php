@@ -183,6 +183,7 @@ class AjaxController extends Controller {
         $xhtml              = '';
         $id                 = $request->get('id');
         $total              = $request->get('total');
+        $language           = $request->session()->get('language') ?? 'vi';
         /* select của filter */
         $categories         = Category::all();
         /* giá trị selectBox */
@@ -304,13 +305,26 @@ class AjaxController extends Controller {
             $loaded         = $request->get('loaded');
             $requestLoad    = $request->get('requestLoad');
             $arrayIdCategory = json_decode($request->get('arrayIdCategory'));
+            $sortBy         = Cookie::get('sort_by') ?? null;
             $wallpapers     = FreeWallpaper::select('*')
                                 ->when(!empty($arrayIdCategory), function($query) use($arrayIdCategory){
                                     $query->whereHas('categories', function($subquery) use($arrayIdCategory){
                                         $subquery->whereIn('category_info_id', $arrayIdCategory);
                                     });
                                 })
-                                ->orderBy('id', 'DESC')
+                                ->when(empty($sortBy), function($query){
+                                    $query->orderBy('id', 'DESC');
+                                })
+                                ->when($sortBy=='new'||$sortBy=='propose', function($query){
+                                    $query->orderBy('id', 'DESC');
+                                })
+                                ->when($sortBy=='favourite', function($query){
+                                    $query->orderBy('heart', 'DESC')
+                                            ->orderBy('id', 'DESC');
+                                })
+                                ->when($sortBy=='old', function($query){
+                                    $query->orderBy('id', 'ASC');
+                                })
                                 ->skip($loaded)
                                 ->take($requestLoad)
                                 ->get();
@@ -321,5 +335,10 @@ class AjaxController extends Controller {
         $response['content']    = $content;
         $response['loaded']     = $loaded + $requestLoad;
         return json_encode($response);
+    }
+
+    public function setSortBy(Request $request){
+        Cookie::queue('sort_by', $request->get('key'), 3600);
+        return true;
     }
 }
