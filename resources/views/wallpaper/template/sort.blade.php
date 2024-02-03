@@ -1,11 +1,17 @@
-<form id="formViewBy" action="{{ route('ajax.settingViewBy') }}" method="GET">
-    @include('wallpaper.template.sortContent', [
-        'language'          => $language ?? 'vi',
-        'total'             => $total,
-        'categories'        => $categories ?? null,
-        'categoryChoose'    => $categoryChoose ?? null
-    ])
-</form>
+@if(!empty($infoFreeWallpaper))
+    <!-- search -->
+    @include('wallpaper.template.test', compact('total', 'infoFreeWallpaper', 'language'))
+@else 
+    <!-- filter box -->
+    <form id="formViewBy" action="{{ route('ajax.settingViewBy') }}" method="GET">
+        @include('wallpaper.template.sortContent', [
+            'language'          => $language ?? 'vi',
+            'total'             => $total,
+            'categories'        => $categories ?? null,
+            'categoryChoose'    => $categoryChoose ?? null
+        ])
+    </form>
+@endif
 
 @pushonce('scriptCustom')
     <script type="text/javascript">

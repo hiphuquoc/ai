@@ -305,11 +305,21 @@ class AjaxController extends Controller {
             $loaded         = $request->get('loaded');
             $requestLoad    = $request->get('requestLoad');
             $arrayIdCategory = json_decode($request->get('arrayIdCategory'));
+            $typeWhere      = $request->get('typeWhere') ?? 'or';
             $sortBy         = Cookie::get('sort_by') ?? null;
             $wallpapers     = FreeWallpaper::select('*')
-                                ->when(!empty($arrayIdCategory), function($query) use($arrayIdCategory){
-                                    $query->whereHas('categories', function($subquery) use($arrayIdCategory){
+                                ->whereHas('categories', function($query) use($arrayIdCategory, $typeWhere){
+                                    /* tìm ảnh có một trong category trong array */
+                                    $query->when($typeWhere=='or', function($subquery) use($arrayIdCategory){
                                         $subquery->whereIn('category_info_id', $arrayIdCategory);
+                                    })
+                                    /* tìm ảnh có tất cả category trong array */
+                                    ->when($typeWhere == 'and', function($subquery) use($arrayIdCategory) {
+                                        foreach($arrayIdCategory as $c) {
+                                            $subquery->where(function($query) use($c) {
+                                                $query->where('category_info_id', $c);
+                                            });
+                                        }
                                     });
                                 })
                                 ->when(empty($sortBy), function($query){

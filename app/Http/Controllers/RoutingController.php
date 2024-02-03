@@ -19,7 +19,7 @@ use App\Models\Seo;
 
 
 class RoutingController extends Controller{
-    public function routing($slug, $slug2 = null, $slug3 = null, $slug4 = null, $slug5 = null, $slug6 = null, $slug7 = null, $slug8 = null, $slug9 = null, $slug10 = null){
+    public function routing(Request $request, $slug, $slug2 = null, $slug3 = null, $slug4 = null, $slug5 = null, $slug6 = null, $slug7 = null, $slug8 = null, $slug9 = null, $slug10 = null, $searchByImage = null){
         /* dùng request uri */
         $tmpSlug        = explode('/', $_SERVER['REQUEST_URI']);
         /* loại bỏ phần tử rỗng */
@@ -62,22 +62,46 @@ class RoutingController extends Controller{
                                             ->where('seo_id', $idSeo)
                                             ->with('seo', 'en_seo')
                                             ->first();
-                        /* lấy danh sách category hiện tại và con (nếu có) */
-                        $tmp            = Category::getTreeCategoryByInfoCategory($item, []);
-                        $arrayIdCategory = [$item->id];
-                        foreach($tmp as $t) $arrayIdCategory[] = $t->id;
+                        
                         /* content */
                         if($language=='en'){
                             $content        = Blade::render(Storage::get(config('main.storage.enContentCategory').$item->en_seo->slug.'.blade.php'));
                         }else {
                             $content        = Blade::render(Storage::get(config('main.storage.contentCategory').$item->seo->slug.'.blade.php'));
                         }
+                        /* tìm kiếm bằng hình ảnh */
+                        $idFreeWallpaper    = $request->get('idFreeWallpaper') ?? 0;
+                        $infoFreeWallpaper  = FreeWallpaper::select('*')
+                                                ->where('id', $idFreeWallpaper)
+                                                ->first();
+                        if(!empty($infoFreeWallpaper)){
+                            /* trường hợp search bằng hình ảnh ::: */
+                            $arrayIdCategory    = [];
+                            foreach($infoFreeWallpaper->categories as $category){
+                                $arrayIdCategory[] = $category->infoCategory->id;
+                            }
+                            $typeWhere          = 'and';
+                        }else {
+                            /* trường hợp bình thường không phải search ::: lấy danh sách category hiện tại và con (nếu có) */
+                            $tmp                = Category::getTreeCategoryByInfoCategory($item, []);
+                            $arrayIdCategory = [$item->id];
+                            foreach($tmp as $t) $arrayIdCategory[] = $t->id;
+                            $typeWhere          = 'or';
+                        }
                         /* lấy wallpapers */
                         $loaded         = 10;
                         $sortBy         = Cookie::get('sort_by') ?? null;
                         $wallpapers     = FreeWallpaper::select('*')
-                                            ->whereHas('categories', function($query) use($arrayIdCategory){
-                                                $query->whereIn('category_info_id', $arrayIdCategory);
+                                            ->whereHas('categories', function($query) use($arrayIdCategory, $typeWhere) {
+                                                if ($typeWhere == 'or') {
+                                                    $query->whereIn('category_info_id', $arrayIdCategory);
+                                                } elseif ($typeWhere == 'and') {
+                                                    $query->where(function($subquery) use($arrayIdCategory) {
+                                                        foreach($arrayIdCategory as $c) {
+                                                            $subquery->where('category_info_id', $c);
+                                                        }
+                                                    });
+                                                }
                                             })
                                             ->when(empty($sortBy), function($query){
                                                 $query->orderBy('id', 'DESC');
@@ -96,11 +120,19 @@ class RoutingController extends Controller{
                                             ->take($loaded)
                                             ->get();
                         $total          = FreeWallpaper::select('*')
-                                            ->whereHas('categories', function($query) use($arrayIdCategory){
-                                                $query->whereIn('category_info_id', $arrayIdCategory);
+                                            ->whereHas('categories', function($query) use($arrayIdCategory, $typeWhere) {
+                                                if ($typeWhere == 'or') {
+                                                    $query->whereIn('category_info_id', $arrayIdCategory);
+                                                } elseif ($typeWhere == 'and') {
+                                                    $query->where(function($subquery) use($arrayIdCategory) {
+                                                        foreach($arrayIdCategory as $c) {
+                                                            $subquery->where('category_info_id', $c);
+                                                        }
+                                                    });
+                                                }
                                             })
                                             ->count();
-                        $xhtml          = view('wallpaper.category.index', compact('item', 'breadcrumb', 'content', 'wallpapers', 'arrayIdCategory', 'total', 'loaded', 'language'))->render();
+                        $xhtml              = view('wallpaper.category.index', compact('item', 'breadcrumb', 'content', 'wallpapers', 'arrayIdCategory', 'total', 'loaded', 'language', 'infoFreeWallpaper', 'typeWhere'))->render();
                     }
                 }
                 

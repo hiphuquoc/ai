@@ -35,9 +35,9 @@
             </div>
             <!-- action -->
             <div class="action">
-                <div class="action_item">
+                <a href="{{ route('search.searchByImage', ['free_wallpaper_info_id' => $wallpaper->id]) }}" class="action_item">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                </div>
+                </a>
                 <div class="action_item">
                     <i class="fa-regular fa-thumbs-up"></i>
                 </div>

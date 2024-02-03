@@ -15,6 +15,7 @@ use App\Http\Controllers\OrderController as OrderPublic;
 use App\Http\Controllers\PageController as PagePublic;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AjaxController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\CookieController;
 use App\Http\Controllers\SitemapController;
 
@@ -248,6 +249,8 @@ Route::get('/showSortBoxFreeWallpaper', [AjaxController::class, 'showSortBoxFree
 Route::get('/loadmoreFreeWallpapers', [AjaxController::class, 'loadmoreFreeWallpapers'])->name('admin.freeWallpaper.loadmoreFreeWallpapers');
 Route::get('/setSortBy', [AjaxController::class, 'setSortBy'])->name('ajax.setSortBy');
 Route::get('/downloadImgFreeWallpaper', [AjaxController::class, 'downloadImgFreeWallpaper'])->name('ajax.downloadImgFreeWallpaper');
+/* SEARCH */
+Route::get('/searchByImage', [SearchController::class, 'searchByImage'])->name('search.searchByImage');
 /* login */
 Route::get('/he-thong', [LoginController::class, 'loginForm'])->name('admin.loginForm');
 Route::post('/loginAdmin', [LoginController::class, 'loginAdmin'])->name('admin.loginAdmin');
