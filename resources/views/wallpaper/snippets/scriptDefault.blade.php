@@ -34,16 +34,8 @@
         /* check login để hiện thị button */
         checkLoginAndSetShow();
 
-        preventClickImg();
+        preventClickImgAndEffectDownload();
     });
-
-    function preventClickImg(){
-        $("img").on("contextmenu", function (e) {
-            e.preventDefault();
-            alert("Chức năng chuột phải đã bị vô hiệu hóa cho ảnh này.");
-            // // Bạn có thể tùy chỉnh thông báo này hoặc thêm logic của mình để xử lý sự kiện chuột phải.
-        });
-    }
     
     function lazyload(){
         /* đối với ảnh */
@@ -802,11 +794,34 @@
                             setViewAllImage();
                         });
                         // ngân click chuột phải các ảnh được load
-                        preventClickImg();
+                        preventClickImgAndEffectDownload();
                     }
                 });
             }
         }
+    }
+    function preventClickImgAndEffectDownload(){
+        $("img").on("contextmenu", function (e) {
+            e.preventDefault();
+            alert("Chức năng chuột phải đã bị vô hiệu hóa cho ảnh này.");
+        });
+        // Xử lý sự kiện click trên .action_item ẩn box khi click download
+        $('.freeWallpaperBox_item .download').on('click', function (e) {
+            e.stopPropagation(); // Ngăn chặn sự kiện click từ lan tỏa lên các phần tử cha
+
+            // Tìm phần tử .freeWallpaperBox_item_box trong phần tử cha của .action_item và thêm style display: none; với !important
+            $(this).closest('.freeWallpaperBox_item').find('.freeWallpaperBox_item_box').attr('style', 'display: none !important');
+        });
+        $('.freeWallpaperBox_item').hover(
+            function () {
+                // Khi di chuột vào
+                $(this).find('.freeWallpaperBox_item_box').css('display', 'flex !important');
+            },
+            function () {
+                // Khi di chuột ra
+                $(this).find('.freeWallpaperBox_item_box').css('display', 'none');
+            }
+        );
     }
     // Hàm kiểm tra khi tất cả các hình ảnh trong boxCategory đã được load xong
     function waitForImagesLoaded(boxCategory, callback) {
