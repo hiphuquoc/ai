@@ -247,6 +247,7 @@ Route::get('/settingViewBy', [AjaxController::class, 'settingViewBy'])->name('aj
 Route::get('/showSortBoxFreeWallpaper', [AjaxController::class, 'showSortBoxFreeWallpaper'])->name('ajax.showSortBoxFreeWallpaper');
 Route::get('/loadmoreFreeWallpapers', [AjaxController::class, 'loadmoreFreeWallpapers'])->name('admin.freeWallpaper.loadmoreFreeWallpapers');
 Route::get('/setSortBy', [AjaxController::class, 'setSortBy'])->name('ajax.setSortBy');
+Route::get('/downloadImgFreeWallpaper', [AjaxController::class, 'downloadImgFreeWallpaper'])->name('ajax.downloadImgFreeWallpaper');
 /* login */
 Route::get('/he-thong', [LoginController::class, 'loginForm'])->name('admin.loginForm');
 Route::post('/loginAdmin', [LoginController::class, 'loginAdmin'])->name('admin.loginAdmin');

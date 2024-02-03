@@ -207,6 +207,25 @@
             $(window).resize(function(){
                 setViewAllImage();
             })  
+
+            // Xử lý sự kiện click trên .action_item ẩn box khi click download
+            $('.freeWallpaperBox_item .download').on('click', function (e) {
+                e.stopPropagation(); // Ngăn chặn sự kiện click từ lan tỏa lên các phần tử cha
+
+                // Tìm phần tử .freeWallpaperBox_item_box trong phần tử cha của .action_item và thêm style display: none; với !important
+                $(this).closest('.freeWallpaperBox_item').find('.freeWallpaperBox_item_box').attr('style', 'display: none !important');
+            });
+            $('.freeWallpaperBox_item').hover(
+                function () {
+                    // Khi di chuột vào
+                    $(this).find('.freeWallpaperBox_item_box').css('display', 'flex !important');
+                },
+                function () {
+                    // Khi di chuột ra
+                    $(this).find('.freeWallpaperBox_item_box').css('display', 'none');
+                }
+            );
+
         })
     </script>
 @endpush

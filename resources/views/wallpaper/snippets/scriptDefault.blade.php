@@ -33,7 +33,17 @@
 
         /* check login để hiện thị button */
         checkLoginAndSetShow();
+
+        preventClickImg();
     });
+
+    function preventClickImg(){
+        $("img").on("contextmenu", function (e) {
+            e.preventDefault();
+            alert("Chức năng chuột phải đã bị vô hiệu hóa cho ảnh này.");
+            // // Bạn có thể tùy chỉnh thông báo này hoặc thêm logic của mình để xử lý sự kiện chuột phải.
+        });
+    }
     
     function lazyload(){
         /* đối với ảnh */
@@ -791,6 +801,8 @@
                         waitForImagesLoaded(boxCategory, function () {
                             setViewAllImage();
                         });
+                        // ngân click chuột phải các ảnh được load
+                        preventClickImg();
                     }
                 });
             }

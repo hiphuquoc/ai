@@ -151,7 +151,20 @@
                                         @else 
                                             {{ empty($language)||$language=='vi' ? 'Tất cả' : 'All' }}
                                         @endif --}}
-                                        {{ empty($language)||$language=='vi' ? 'Tất cả' : 'All' }}
+                                        @php
+                                            $nameSelect = empty($language)||$language=='vi' ? 'Tất cả' : 'All';
+                                            if(!empty($categoryChoose->seo->type)&&$categoryChoose->seo->type==$type['key']){
+                                                if(!empty($categories)&&$categories->isNotEmpty()){
+                                                    foreach($categories as $category){
+                                                        if($category->name==$categoryChoose->name) {
+                                                            $nameSelect = empty($language)||$language=='vi' ? $category->name : $category->en_name;
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        @endphp
+                                        {{ $nameSelect }}
                                     </div>
                                     <div class="selectCustom_box">
                                         @if(empty($language)||$language=='vi')

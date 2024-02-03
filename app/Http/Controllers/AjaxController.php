@@ -341,4 +341,22 @@ class AjaxController extends Controller {
         Cookie::queue('sort_by', $request->get('key'), 3600);
         return true;
     }
+
+    public function downloadImgFreeWallpaper(Request $request){
+        $fileName = $request->get('file_cloud');
+        // Lấy đường dẫn đến ảnh trong Google Cloud Storage
+        $imagePath = config('main.google_cloud_storage.default_domain') . $fileName;
+
+        // Đọc nội dung của ảnh
+        $imageContents = file_get_contents($imagePath);
+
+        // Tạo một phản hồi có kiểu MIME phù hợp
+        $response = Response::make($imageContents, 200);
+
+        // Thêm header để cho phép trang web của bạn tải ảnh
+        $response->header('Content-Type', 'image/jpeg');
+        $response->header('Content-Disposition', 'attachment; filename="' . $fileName . '"');
+
+        return $response;
+    }
 }

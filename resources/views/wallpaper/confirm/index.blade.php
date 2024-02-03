@@ -188,29 +188,7 @@
                 }
             }).done(function (response) {
                 if (response.url) {
-                    // Sử dụng XMLHttpRequest để tải ảnh dưới dạng blob
-                    var xhr = new XMLHttpRequest();
-                    xhr.open("GET", response.url, true);
-                    xhr.responseType = "blob";
-
-                    xhr.onload = function () {
-                        if (xhr.status === 200) {
-                            var blob = xhr.response;
-                            // Tạo một đường dẫn (URL) từ blob
-                            var blobUrl = URL.createObjectURL(blob);
-                            // Tạo một thẻ a để tải xuống và kích hoạt nó
-                            var a = document.createElement("a");
-                            a.href = blobUrl;
-                            a.download = response.file_name;
-                            a.style.display = "none";
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-                            // Giải phóng đường dẫn blob khi đã sử dụng xong
-                            URL.revokeObjectURL(blobUrl);
-                        }
-                    };
-                    xhr.send();
+                    downloadImage(response.url);
                     /* đánh dấu ảnh đã tải */ 
                     $(box).addClass('alreadyDownload');
                 } else {

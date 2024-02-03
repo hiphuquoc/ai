@@ -3,11 +3,11 @@
 @if(Route::is('main.confirm'))
     <meta name="robots" content="noindex,nofollow">
 @else
-    {{-- @if(!empty($index)&&$index=='no') --}}
+    @if(!empty($index)&&$index=='no')
         <meta name="robots" content="noindex,nofollow">
-    {{-- @else 
+    @else 
         <meta name="robots" content="index,follow">
-    @endif --}}
+    @endif
 @endif
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="fragment" content="!" />
