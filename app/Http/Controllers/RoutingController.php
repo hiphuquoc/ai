@@ -93,14 +93,16 @@ class RoutingController extends Controller{
                         $sortBy         = Cookie::get('sort_by') ?? null;
                         $wallpapers     = FreeWallpaper::select('*')
                                             ->whereHas('categories', function($query) use($arrayIdCategory, $typeWhere) {
-                                                if ($typeWhere == 'or') {
-                                                    $query->whereIn('category_info_id', $arrayIdCategory);
-                                                } elseif ($typeWhere == 'and') {
-                                                    $query->where(function($subquery) use($arrayIdCategory) {
-                                                        foreach($arrayIdCategory as $c) {
-                                                            $subquery->where('category_info_id', $c);
-                                                        }
-                                                    });
+                                                if(!empty($arrayIdCategory)){
+                                                    if ($typeWhere == 'or') {
+                                                        $query->whereIn('category_info_id', $arrayIdCategory);
+                                                    } elseif ($typeWhere == 'and') {
+                                                        $query->where(function($subquery) use($arrayIdCategory) {
+                                                            foreach($arrayIdCategory as $c) {
+                                                                $subquery->where('category_info_id', $c);
+                                                            }
+                                                        });
+                                                    }
                                                 }
                                             })
                                             ->when(empty($sortBy), function($query){
@@ -121,14 +123,16 @@ class RoutingController extends Controller{
                                             ->get();
                         $total          = FreeWallpaper::select('*')
                                             ->whereHas('categories', function($query) use($arrayIdCategory, $typeWhere) {
-                                                if ($typeWhere == 'or') {
-                                                    $query->whereIn('category_info_id', $arrayIdCategory);
-                                                } elseif ($typeWhere == 'and') {
-                                                    $query->where(function($subquery) use($arrayIdCategory) {
-                                                        foreach($arrayIdCategory as $c) {
-                                                            $subquery->where('category_info_id', $c);
-                                                        }
-                                                    });
+                                                if(!empty($arrayIdCategory)){
+                                                    if ($typeWhere == 'or') {
+                                                        $query->whereIn('category_info_id', $arrayIdCategory);
+                                                    } elseif ($typeWhere == 'and') {
+                                                        $query->where(function($subquery) use($arrayIdCategory) {
+                                                            foreach($arrayIdCategory as $c) {
+                                                                $subquery->where('category_info_id', $c);
+                                                            }
+                                                        });
+                                                    }
                                                 }
                                             })
                                             ->count();

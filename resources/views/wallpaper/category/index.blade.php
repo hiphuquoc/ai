@@ -143,7 +143,7 @@
             <input type="hidden" id="total" name="total" value="{{ $total }}" />
             <input type="hidden" id="loaded" name="loaded" value="{{ $loaded ?? 0 }}" />
             <input type="hidden" id="topLoad" name="topLoad" value="" />
-            <input type="hidden" id="typeWhere" name="typeWhere" value="{{ $typeWhere ?? null }}" />
+            <input type="hidden" id="typeWhere" name="typeWhere" value="{{ $typeWhere ?? 'or' }}" />
             <input type="hidden" id="arrayIdCategory" name="arrayIdCategory" value="{{ json_encode($arrayIdCategory) }}" />
             <div class="freeWallpaperBox">
             @foreach($wallpapers as $wallpaper)

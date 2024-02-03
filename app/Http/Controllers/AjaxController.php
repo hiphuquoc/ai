@@ -308,19 +308,18 @@ class AjaxController extends Controller {
             $typeWhere      = $request->get('typeWhere') ?? 'or';
             $sortBy         = Cookie::get('sort_by') ?? null;
             $wallpapers     = FreeWallpaper::select('*')
-                                ->whereHas('categories', function($query) use($arrayIdCategory, $typeWhere){
-                                    /* tìm ảnh có một trong category trong array */
-                                    $query->when($typeWhere=='or', function($subquery) use($arrayIdCategory){
-                                        $subquery->whereIn('category_info_id', $arrayIdCategory);
-                                    })
-                                    /* tìm ảnh có tất cả category trong array */
-                                    ->when($typeWhere == 'and', function($subquery) use($arrayIdCategory) {
-                                        foreach($arrayIdCategory as $c) {
-                                            $subquery->where(function($query) use($c) {
-                                                $query->where('category_info_id', $c);
+                                ->whereHas('categories', function($query) use($arrayIdCategory, $typeWhere) {
+                                    if(!empty($arrayIdCategory)){
+                                        if ($typeWhere == 'or') {
+                                            $query->whereIn('category_info_id', $arrayIdCategory);
+                                        } elseif ($typeWhere == 'and') {
+                                            $query->where(function($subquery) use($arrayIdCategory) {
+                                                foreach($arrayIdCategory as $c) {
+                                                    $subquery->where('category_info_id', $c);
+                                                }
                                             });
                                         }
-                                    });
+                                    }
                                 })
                                 ->when(empty($sortBy), function($query){
                                     $query->orderBy('id', 'DESC');
