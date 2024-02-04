@@ -945,7 +945,7 @@ $heightSelect : 35px;
         border-radius: 50px;
         height: calc($heightSelect + 5px);
         padding: 0 0.75rem;
-        min-width: 80px;
+        min-width: fit-content;
         display: flex;
         align-items: center;
         justify-content: center;
