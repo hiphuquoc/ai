@@ -1655,9 +1655,6 @@ $heightMenu : 52.5px;
             .freeWallpaperBox_item_box {
                 display: flex !important;
             }
-            .freeWallpaperBox_item_icon {
-                display: none !important;
-            }
         }
         &_image {
             img {
@@ -1683,8 +1680,10 @@ $heightMenu : 52.5px;
             z-index: 2;
             &_item {
                 display: flex;
-                width: 50%;
+                width: fit-content;
                 overflow: hidden;
+                position: relative;
+                width: 50%;
                 .author {
                     display: flex;
                     width: 100%;
@@ -1703,9 +1702,15 @@ $heightMenu : 52.5px;
                     display: none;
                     width: 100%;
                     justify-content: flex-end;
+                    position: absolute;
+                    right: 0;
+                    top: 50%;
+                    z-index: 3;
+                    background: $colorBackgroundLv1;
+                    transform: translateY(-50%);
                     &_item {
                         aspect-ratio: 1/1;
-                        padding: 0.35rem;
+                        padding: 0.4rem;
                         display: flex;
                         justify-content: center;
                         align-items: center;

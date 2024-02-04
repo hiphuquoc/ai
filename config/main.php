@@ -118,6 +118,21 @@ return [
     ],
     'category_type' => [
         [
+            'key' => 'type_info',
+            'name' => 'Thể loại',
+            'en_name'   => 'Category'
+        ],
+        [
+            'key' => 'style_info',
+            'name' => 'Phong cách',
+            'en_name'   => 'Style'
+        ],
+        [
+            'key' => 'maintone_info',
+            'name' => 'Tông chính',
+            'en_name'   => 'Main Tone'
+        ],
+        [
             'key' => 'country_info',
             'name' => 'Quốc gia',
             'en_name' => 'Country'
@@ -128,11 +143,6 @@ return [
             'en_name'   => 'Clothes'
         ],
         [
-            'key' => 'type_info',
-            'name' => 'Thể loại',
-            'en_name'   => 'Category'
-        ],
-        [
             'key' => 'eyecolor_info',
             'name' => 'Màu mắt',
             'en_name'   => 'Eye Color'
@@ -141,16 +151,6 @@ return [
             'key' => 'haircolor_info',
             'name' => 'Màu tóc',
             'en_name'   => 'Hair Color'
-        ],
-        [
-            'key' => 'maintone_info',
-            'name' => 'Tông chính',
-            'en_name'   => 'Main Tone'
-        ],
-        [
-            'key' => 'style_info',
-            'name' => 'Phong cách',
-            'en_name'   => 'Style'
         ]
     ],
     'sort_type' => [
@@ -177,6 +177,36 @@ return [
             'key'       => 'old',
             'name'      => 'Cũ nhất',
             'en_name'   => 'Oldest'
+        ]
+    ],
+    'feeling_type'  => [
+        [
+            'icon'          => 'storage/images/svg/icon-vomit-2.svg',
+            'icon_unactive' => 'storage/images/svg/icon-vomit-2-unactive.svg',
+            'key'           => 'vomit',
+            'name'          => 'Ói',
+            'en_name'       => 'Vomit'
         ],
+        [
+            'icon'      => 'storage/images/svg/icon-notLike-2.svg',
+            'icon_unactive' => 'storage/images/svg/icon-notLike-2-unactive.svg',
+            'key'       => 'notlike',
+            'name'      => 'Không thích',
+            'en_name'   => 'Not like'
+        ],
+        [
+            'icon'      => 'storage/images/svg/icon-haha-2.svg',
+            'icon_unactive' => 'storage/images/svg/icon-haha-2-unactive.svg',
+            'key'       => 'haha',
+            'name'      => 'Haha',
+            'en_name'   => 'Haha'
+        ],
+        [
+            'icon'      => 'storage/images/svg/icon-heart-2.svg',
+            'icon_unactive' => 'storage/images/svg/icon-heart-2-unactive.svg',
+            'key'       => 'heart',
+            'name'      => 'Thả tim',
+            'en_name'   => 'Heart'
+        ]
     ]
 ];

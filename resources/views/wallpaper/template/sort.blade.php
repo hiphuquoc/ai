@@ -1,6 +1,6 @@
 @if(!empty($infoFreeWallpaper))
     <!-- search -->
-    @include('wallpaper.template.test', compact('total', 'infoFreeWallpaper', 'language'))
+    @include('wallpaper.template.searchMessage', compact('total', 'infoFreeWallpaper', 'language'))
 @else 
     <!-- filter box -->
     <form id="formViewBy" action="{{ route('ajax.settingViewBy') }}" method="GET">

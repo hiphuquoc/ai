@@ -1,5 +1,9 @@
 <div class="sortBox">
     <div class="sortBox_left">
+        <!-- số lương -->
+        <span id="js_filterProduct_count" class="quantity">
+            {{ empty($language)||$language=='vi' ? 'Ảnh' : 'Photos' }} {{ $total }}
+        </span> 
         <!-- sort by -->
         @php
             $titleSortBy    = empty($language)||$language=='vi' ? 'Sắp xếp theo' : 'Sort by';
@@ -33,7 +37,7 @@
             </div>
         </div>
         <!-- Chủ đề -->
-        <div class="selectCustom">
+        <div class="selectCustom hide-990">
             <div class="selectCustom_text">
                 {{ empty($language)||$language=='vi' ? 'Lọc theo Thể Loại' : 'Filter by Category' }}
             </div>
@@ -139,66 +143,68 @@
                 
                 <div class="filterAdvanced_box_content">
                     @foreach(config('main.category_type') as $type)
-                        @if($type['key']!='type_info'&&$type['key']!='style_info')
-                            <div class="filterAdvanced_box_content_item">
-                                <div class="selectCustom">
-                                    <div class="selectCustom_text">
-                                        {{ empty($language)||$language=='vi' ? 'Lọc theo '.$type['name'] : 'Filter by '.$type['en_name'] }}
-                                    </div>
-                                    <div class="selectCustom_input">
-                                        {{-- @if(!empty($categoryChoose->seo)&&$categoryChoose->seo->type=='style_info')
-                                            {{ empty($language)||$language=='vi' ? $categoryChoose->seo->title : $categoryChoose->en_seo->title }}
-                                        @else 
-                                            {{ empty($language)||$language=='vi' ? 'Tất cả' : 'All' }}
-                                        @endif --}}
-                                        @php
-                                            $nameSelect = empty($language)||$language=='vi' ? 'Tất cả' : 'All';
-                                            if(!empty($categoryChoose->seo->type)&&$categoryChoose->seo->type==$type['key']){
-                                                if(!empty($categories)&&$categories->isNotEmpty()){
-                                                    foreach($categories as $category){
-                                                        if($category->name==$categoryChoose->name) {
-                                                            $nameSelect = empty($language)||$language=='vi' ? $category->name : $category->en_name;
-                                                            break;
-                                                        }
+                        @php
+                            $addClass = null;
+                            if($type['key']=='type_info'||$type['key']=='style_info') $addClass = 'show-990';
+                        @endphp
+                        <div class="filterAdvanced_box_content_item {{ $addClass }}">
+                            <div class="selectCustom">
+                                <div class="selectCustom_text">
+                                    {{ empty($language)||$language=='vi' ? 'Lọc theo '.$type['name'] : 'Filter by '.$type['en_name'] }}
+                                </div>
+                                <div class="selectCustom_input">
+                                    {{-- @if(!empty($categoryChoose->seo)&&$categoryChoose->seo->type=='style_info')
+                                        {{ empty($language)||$language=='vi' ? $categoryChoose->seo->title : $categoryChoose->en_seo->title }}
+                                    @else 
+                                        {{ empty($language)||$language=='vi' ? 'Tất cả' : 'All' }}
+                                    @endif --}}
+                                    @php
+                                        $nameSelect = empty($language)||$language=='vi' ? 'Tất cả' : 'All';
+                                        if(!empty($categoryChoose->seo->type)&&$categoryChoose->seo->type==$type['key']){
+                                            if(!empty($categories)&&$categories->isNotEmpty()){
+                                                foreach($categories as $category){
+                                                    if($category->name==$categoryChoose->name) {
+                                                        $nameSelect = empty($language)||$language=='vi' ? $category->name : $category->en_name;
+                                                        break;
                                                     }
                                                 }
                                             }
-                                        @endphp
-                                        {{ $nameSelect }}
-                                    </div>
-                                    <div class="selectCustom_box">
-                                        @if(empty($language)||$language=='vi')
-                                            <a href="{{env('APP_URL') }}/anh-gai-xinh" class="selectCustom_box_item {{ !empty($styleChoose->id) ? '' : 'selected' }}">
-                                                Tất cả
-                                            </a>
-                                        @else 
-                                            <a href="{{env('APP_URL') }}/photo-beautiful-girl" class="selectCustom_box_item {{ !empty($styleChoose->id) ? '' : 'selected' }}">
-                                                All
-                                            </a>
-                                        @endif
-                                        @if(!empty($categories)&&$categories->isNotEmpty())
-                                            @foreach($categories as $category)
-                                                @if(!empty($category->seo->type)&&$category->seo->type==$type['key']&&$category->flag_show==true)
-                                                    @php
-                                                        $selected = '';
-                                                        if(!empty($categoryChoose->id)&&$categoryChoose->id==$category->id) $selected = 'selected';
-                                                    @endphp
-                                                    @if(empty($language)||$language=='vi')
-                                                        <a href="{{ env('APP_URL') }}/{{ $category->seo->slug_full }}" class="selectCustom_box_item {{ $selected }}">
-                                                            {{ $category->seo->title }}
-                                                        </a>
-                                                    @else   
-                                                        <a href="{{ env('APP_URL') }}/{{ $category->en_seo->slug_full }}" class="selectCustom_box_item {{ $selected }}">
-                                                            {{ $category->en_seo->title }}
-                                                        </a>
-                                                    @endif
+                                        }
+                                    @endphp
+                                    {{ $nameSelect }}
+                                </div>
+                                <div class="selectCustom_box">
+                                    @if(empty($language)||$language=='vi')
+                                        <a href="{{env('APP_URL') }}/anh-gai-xinh" class="selectCustom_box_item {{ !empty($styleChoose->id) ? '' : 'selected' }}">
+                                            Tất cả
+                                        </a>
+                                    @else 
+                                        <a href="{{env('APP_URL') }}/photo-beautiful-girl" class="selectCustom_box_item {{ !empty($styleChoose->id) ? '' : 'selected' }}">
+                                            All
+                                        </a>
+                                    @endif
+                                    @if(!empty($categories)&&$categories->isNotEmpty())
+                                        @foreach($categories as $category)
+                                            @if(!empty($category->seo->type)&&$category->seo->type==$type['key']&&$category->flag_show==true)
+                                                @php
+                                                    $selected = '';
+                                                    if(!empty($categoryChoose->id)&&$categoryChoose->id==$category->id) $selected = 'selected';
+                                                @endphp
+                                                @if(empty($language)||$language=='vi')
+                                                    <a href="{{ env('APP_URL') }}/{{ $category->seo->slug_full }}" class="selectCustom_box_item {{ $selected }}">
+                                                        {{ $category->seo->title }}
+                                                    </a>
+                                                @else   
+                                                    <a href="{{ env('APP_URL') }}/{{ $category->en_seo->slug_full }}" class="selectCustom_box_item {{ $selected }}">
+                                                        {{ $category->en_seo->title }}
+                                                    </a>
                                                 @endif
-                                            @endforeach
-                                        @endif
-                                    </div>
+                                            @endif
+                                        @endforeach
+                                    @endif
                                 </div>
                             </div>
-                        @endif
+                        </div>
                     @endforeach
                 </div>
             </div>
@@ -206,9 +212,17 @@
     </div>
     <div class="sortBox_right">
         <div class="sortBox_right_item">
-            <span id="js_filterProduct_count" class="highLight">
-                {{ $total }}
-            </span> {{ empty($language)||$language=='vi' ? 'ảnh' : 'photos' }}
+            <!-- feeling -->
+            <div class="feelingBox">
+                <div class="feelingBox_item">
+                    Tất cả
+                </div>
+                @foreach(config('main.feeling_type') as $feeling)
+                    <div class="feelingBox_item">
+                        {!! file_get_contents(public_path($feeling['icon_unactive'])) !!}
+                    </div>
+                @endforeach
+            </div>
         </div>
     </div>
 </div>

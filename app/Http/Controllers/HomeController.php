@@ -18,7 +18,7 @@ use Goutte\Client;
 use Symfony\Component\HttpClient\HttpClient;
 
 use Illuminate\Support\Facades\Http;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 use App\Jobs\ReadWebsiteFix;
@@ -59,6 +59,7 @@ class HomeController extends Controller{
             $arrayIdCategory = [];
             $loaded     = 10;
             $sortBy     = Cookie::get('sort_by') ?? null;
+            $idUser     = Auth::user()->id ?? 0;
             $wallpapers = FreeWallpaper::select('*')
                             ->when(empty($sortBy), function($query){
                                 $query->orderBy('id', 'DESC');
@@ -72,6 +73,11 @@ class HomeController extends Controller{
                             })
                             ->when($sortBy=='old', function($query){
                                 $query->orderBy('id', 'ASC');
+                            })
+                            ->when(!empty($idUser), function($query) use($idUser){
+                                $query->with(['feeling' => function($subquery) use($idUser){
+                                    $subquery->where('user_info_id', $idUser);
+                                }]);
                             })
                             ->skip(0)
                             ->take($loaded)

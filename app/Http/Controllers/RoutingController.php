@@ -16,6 +16,7 @@ use App\Models\Page;
 use App\Models\CategoryBlog;
 use App\Models\FreeWallpaper;
 use App\Models\Seo;
+use Illuminate\Support\Facades\Auth;
 
 
 class RoutingController extends Controller{
@@ -91,6 +92,8 @@ class RoutingController extends Controller{
                         /* lấy wallpapers */
                         $loaded         = 10;
                         $sortBy         = Cookie::get('sort_by') ?? null;
+                        $user           = Auth::user();
+                        $idUser         = $user->id ?? 0;
                         $wallpapers     = FreeWallpaper::select('*')
                                             ->whereHas('categories', function($query) use($arrayIdCategory, $typeWhere) {
                                                 if(!empty($arrayIdCategory)){
@@ -118,6 +121,11 @@ class RoutingController extends Controller{
                                             ->when($sortBy=='old', function($query){
                                                 $query->orderBy('id', 'ASC');
                                             })
+                                            ->when(!empty($idUser), function($query) use($idUser){
+                                                $query->with(['feeling' => function($subquery) use($idUser){
+                                                    $subquery->where('user_info_id', $idUser);
+                                                }]);
+                                            })
                                             ->skip(0)
                                             ->take($loaded)
                                             ->get();
@@ -136,7 +144,7 @@ class RoutingController extends Controller{
                                                 }
                                             })
                                             ->count();
-                        $xhtml              = view('wallpaper.category.index', compact('item', 'breadcrumb', 'content', 'wallpapers', 'arrayIdCategory', 'total', 'loaded', 'language', 'infoFreeWallpaper', 'typeWhere'))->render();
+                        $xhtml              = view('wallpaper.category.index', compact('item', 'breadcrumb', 'content', 'wallpapers', 'arrayIdCategory', 'total', 'loaded', 'language', 'infoFreeWallpaper', 'typeWhere', 'user'))->render();
                     }
                 }
                 

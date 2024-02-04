@@ -14,8 +14,11 @@ use App\Models\Style;
 use App\Models\Event;
 use App\Models\FreeWallpaper;
 use App\Models\RegistryEmail;
+use App\Models\RelationFreeWallpaperUser;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use App\Services\BuildInsertUpdateModel;
+use SebastianBergmann\Type\FalseType;
 
 class AjaxController extends Controller {
 
@@ -307,6 +310,8 @@ class AjaxController extends Controller {
             $arrayIdCategory = json_decode($request->get('arrayIdCategory'));
             $typeWhere      = $request->get('typeWhere') ?? 'or';
             $sortBy         = Cookie::get('sort_by') ?? null;
+            $user           = Auth::user();
+            $idUser         = $user->id ?? 0;
             $wallpapers     = FreeWallpaper::select('*')
                                 ->whereHas('categories', function($query) use($arrayIdCategory, $typeWhere) {
                                     if(!empty($arrayIdCategory)){
@@ -334,11 +339,16 @@ class AjaxController extends Controller {
                                 ->when($sortBy=='old', function($query){
                                     $query->orderBy('id', 'ASC');
                                 })
+                                ->when(!empty($idUser), function($query) use($idUser){
+                                    $query->with(['feeling' => function($subquery) use($idUser){
+                                        $subquery->where('user_info_id', $idUser);
+                                    }]);
+                                })
                                 ->skip($loaded)
                                 ->take($requestLoad)
                                 ->get();
             foreach($wallpapers as $wallpaper){
-                $content    .= view('wallpaper.free.item', compact('wallpaper', 'language'))->render();
+                $content    .= view('wallpaper.free.item', compact('wallpaper', 'language', 'user'))->render();
             }
         }
         $response['content']    = $content;
@@ -367,5 +377,60 @@ class AjaxController extends Controller {
         $response->header('Content-Disposition', 'attachment; filename="' . $fileName . '"');
 
         return $response;
+    }
+
+    public function setFeelingFreeWallpaper(Request $request){
+        $type               = $request->get('type') ?? null;
+        $idFreeWallpaper    = $request->get('free_wallpaper_info_id') ?? 0;
+        $response           = [];
+        if(!empty($type)&&!empty($idFreeWallpaper)){
+            $user   = Auth::user();
+            if(!empty($user)){
+                $infoRelation = RelationFreeWallpaperUser::select('*')
+                    ->where('free_wallpaper_info_id', $idFreeWallpaper)
+                    ->where('user_info_id', $user->id)
+                    ->first();
+                if(!empty($infoRelation)){
+                    /* update */
+                    RelationFreeWallpaperUser::updateItem($infoRelation->id, [
+                        'type'  => $type
+                    ]);
+                }else {
+                    /* insert */
+                    RelationFreeWallpaperUser::insertItem([
+                        'free_wallpaper_info_id'    => $idFreeWallpaper,
+                        'user_info_id'  => $user->id,
+                        'type'  => $type
+                    ]);
+                }
+                $response['flag']   = true;
+            }else {
+                $response['flag']   = false;
+                $response['empty_user']   = true;
+            }
+        }else {
+            $response['flag'] = false;
+        }
+        return json_encode($response);
+    }
+
+    public function loadOneFreeWallpaper(Request $request){
+        $response                   = null;
+        if(!empty($request->get('free_wallpaper_info_id'))){
+            $idFreeWallpaper        = $request->get('free_wallpaper_info_id');
+            $language               = Cookie::get('language') ?? 'vi';
+            $user                   = Auth::user();
+            $idUser                 = $user->id ?? 0;
+            $wallpaper              = FreeWallpaper::select('*')
+                                        ->where('id', $idFreeWallpaper)
+                                        ->when(!empty($idUser), function($query) use($idUser){
+                                            $query->with(['feeling' => function($subquery) use($idUser){
+                                                $subquery->where('user_info_id', $idUser);
+                                            }]);
+                                        })
+                                        ->first();
+            if(!empty($wallpaper)) $response = view('wallpaper.free.item', compact('wallpaper', 'language', 'user'))->render();
+        }
+        echo $response;
     }
 }

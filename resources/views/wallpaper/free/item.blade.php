@@ -20,30 +20,26 @@
         <div class="freeWallpaperBox_item_box_item">
             <!-- feeling -->
             <div class="feeling">
-                <div class="feeling_item">
-                    {!! file_get_contents(public_path('storage/images/svg/icon-vomit-2.svg')) !!}
-                </div>
-                <div class="feeling_item">
-                    {!! file_get_contents(public_path('storage/images/svg/icon-notLike-2.svg')) !!}
-                </div>
-                <div class="feeling_item">
-                    {!! file_get_contents(public_path('storage/images/svg/icon-haha-2.svg')) !!}
-                </div>
-                <div class="feeling_item">
-                    {!! file_get_contents(public_path('storage/images/svg/icon-heart-2.svg')) !!}
-                </div>
+                @foreach(config('main.feeling_type') as $feeling)
+                    @if(!empty($user->id))
+                        <div class="feeling_item" onclick="setFeelingFreeWallpaper(this, {{ $wallpaper->id }}, '{{ $feeling['key'] }}');">
+                            {!! file_get_contents(public_path($feeling['icon'])) !!}
+                        </div>
+                    @else 
+                        <div class="feeling_item" onclick="toggleModalCustomerLoginForm('modalLoginFormCustomerBox');">
+                            {!! file_get_contents(public_path($feeling['icon'])) !!}
+                        </div>
+                    @endif
+                @endforeach
             </div>
             <!-- action -->
             <div class="action">
                 <a href="{{ route('search.searchByImage', ['free_wallpaper_info_id' => $wallpaper->id]) }}" class="action_item">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </a>
-                <div class="action_item">
+                <div class="action_item" onclick="showBoxFeeling(this);">
                     <i class="fa-regular fa-thumbs-up"></i>
                 </div>
-                {{-- <div class="action_item" onClick="downloadImg('{{ $wallpaper->file_cloud }}');">
-                    <i class="fa-solid fa-download"></i>
-                </div> --}}
                 <a class="action_item download" href="{{ route('ajax.downloadImgFreeWallpaper', ['file_cloud' => $wallpaper->file_cloud]) }}" download>
                     <i class="fa-solid fa-download"></i>
                 </a>
@@ -51,8 +47,16 @@
             </div>
         </div>
     </div>
-    <div class="freeWallpaperBox_item_icon">
-        {!! file_get_contents(public_path('storage/images/svg/icon-heart-2.svg')) !!}
-    </div>
+    @if(!empty($wallpaper->feeling))
+        @php
+            $icon = null;
+            foreach(config('main.feeling_type') as $feeling){
+                if($wallpaper->feeling->type==$feeling['key']) $icon = $feeling['icon'];
+            }
+        @endphp
+        <div class="freeWallpaperBox_item_icon">
+            {!! file_get_contents(public_path($icon)) !!}
+        </div>
+    @endif
     <div class="freeWallpaperBox_item_preventClick"></div>
 </div>

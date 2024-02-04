@@ -249,6 +249,8 @@ Route::get('/showSortBoxFreeWallpaper', [AjaxController::class, 'showSortBoxFree
 Route::get('/loadmoreFreeWallpapers', [AjaxController::class, 'loadmoreFreeWallpapers'])->name('admin.freeWallpaper.loadmoreFreeWallpapers');
 Route::get('/setSortBy', [AjaxController::class, 'setSortBy'])->name('ajax.setSortBy');
 Route::get('/downloadImgFreeWallpaper', [AjaxController::class, 'downloadImgFreeWallpaper'])->name('ajax.downloadImgFreeWallpaper');
+Route::get('/setFeelingFreeWallpaper', [AjaxController::class, 'setFeelingFreeWallpaper'])->name('ajax.setFeelingFreeWallpaper');
+Route::get('/loadOneFreeWallpaper', [AjaxController::class, 'loadOneFreeWallpaper'])->name('ajax.loadOneFreeWallpaper');
 /* SEARCH */
 Route::get('/searchByImage', [SearchController::class, 'searchByImage'])->name('search.searchByImage');
 /* login */
