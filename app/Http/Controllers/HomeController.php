@@ -59,7 +59,8 @@ class HomeController extends Controller{
             $arrayIdCategory = [];
             $loaded     = 10;
             $sortBy     = Cookie::get('sort_by') ?? null;
-            $idUser     = Auth::user()->id ?? 0;
+            $user       = Auth::user();
+            $idUser     = $user->id ?? 0;
             $wallpapers = FreeWallpaper::select('*')
                             ->when(empty($sortBy), function($query){
                                 $query->orderBy('id', 'DESC');
@@ -83,7 +84,7 @@ class HomeController extends Controller{
                             ->take($loaded)
                             ->get();
             $total      = FreeWallpaper::count();
-            $xhtml      = view('wallpaper.category.index', compact('home', 'item', 'arrayIdCategory', 'wallpapers', 'total', 'loaded', 'language'))->render();
+            $xhtml      = view('wallpaper.category.index', compact('home', 'item', 'arrayIdCategory', 'wallpapers', 'total', 'loaded', 'language', 'user'))->render();
             /* Ghi dữ liệu - Xuất kết quả */
             if(env('APP_CACHE_HTML')==true) Storage::put(config('main.cache.folderSave').$nameCache, $xhtml);
         }
