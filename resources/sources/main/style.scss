@@ -813,69 +813,7 @@
         }
     }
 }
-.sortBox {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    @include colorOpacity('color', $colorText, 0.7);
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-    &_left {
-        display: flex;
-        align-items: flex-end;
-        > * {
-            &:not(:first-child){
-                margin-left: 0.5rem;
-            }
-        }
-    }
-    &_right {
-        display: flex;
-        > * {
-            &:not(:first-child){
-                margin-left: 0.5rem;
-            }
-        }
-        &_item {
-            display: flex;
-            justify-content: flex-end;
-            align-items: flex-end;
-            > * {
-                &:not(:first-child){
-                    margin-left: 0.5rem;
-                }
-            }
-            select {
-                padding: 0;
-                @include colorOpacity('color', $colorText, 0.8);
-                border: none;
-                background: transparent;
-                font-size: 0.95rem;
-            }
-        }
-    }
-    .quantity {
-        font-size: 0.9rem;
-        background: $colorBackgroundLv2;
-        border-radius: 50px;
-        height: 35px;
-        min-width: 80px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        i {
-            margin-right: 0.35rem;
-            font-size: 0.8rem;
-            @include colorOpacity('color', $colorText, 0.25);
-        }
-    }
-    @media(max-width: 1023px){
-        margin-bottom: 0.75rem;
-    }
-    // @media(max-width: 1023px){
-    //     margin-bottom: 0.5rem;
-    // }
-}
+
 $heightSelect : 35px;
 .selectCustom {
     display: flex;
@@ -960,6 +898,70 @@ $heightSelect : 35px;
         margin-top: 7.5px;
     }
 }
+.sortBox {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    @include colorOpacity('color', $colorText, 0.7);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    &_left {
+        display: flex;
+        align-items: flex-end;
+        > * {
+            &:not(:first-child){
+                margin-left: 0.5rem;
+            }
+        }
+    }
+    &_right {
+        display: flex;
+        > * {
+            &:not(:first-child){
+                margin-left: 0.5rem;
+            }
+        }
+        &_item {
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-end;
+            > * {
+                &:not(:first-child){
+                    margin-left: 0.5rem;
+                }
+            }
+            select {
+                padding: 0;
+                @include colorOpacity('color', $colorText, 0.8);
+                border: none;
+                background: transparent;
+                font-size: 0.95rem;
+            }
+        }
+    }
+    .quantity {
+        font-size: 0.9rem;
+        background: $colorBackgroundLv2;
+        border-radius: 50px;
+        height: calc($heightSelect + 5px);
+        padding: 0 0.75rem;
+        min-width: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        i {
+            margin-right: 0.35rem;
+            font-size: 0.8rem;
+            @include colorOpacity('color', $colorText, 0.25);
+        }
+    }
+    @media(max-width: 1023px){
+        margin-bottom: 0.75rem;
+    }
+    // @media(max-width: 1023px){
+    //     margin-bottom: 0.5rem;
+    // }
+}
 .filterAdvanced {
     position: relative;
     font-size: 0.75rem;
@@ -969,7 +971,7 @@ $heightSelect : 35px;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: $heightSelect;
+        width: calc($heightSelect + 5px);
         aspect-ratio: 1/1;
         @include colorOpacity('background', $colorBackgroundLv2, 0.8);
         border-radius: 10px;
