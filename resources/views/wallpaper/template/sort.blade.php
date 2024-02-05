@@ -3,14 +3,13 @@
     @include('wallpaper.template.searchMessage', compact('total', 'infoFreeWallpaper', 'language'))
 @else 
     <!-- filter box -->
-    <form id="formViewBy" action="{{ route('ajax.settingViewBy') }}" method="GET">
-        @include('wallpaper.template.sortContent', [
-            'language'          => $language ?? 'vi',
-            'total'             => $total,
-            'categories'        => $categories ?? null,
-            'categoryChoose'    => $categoryChoose ?? null
-        ])
-    </form>
+    @include('wallpaper.template.sortContent', [
+        'language'          => $language ?? 'vi',
+        'total'             => $total,
+        'categories'        => $categories ?? null,
+        'categoryChoose'    => $categoryChoose ?? null,
+        'searchFeeling'     => $searchFeeling
+    ])
 @endif
 
 @pushonce('scriptCustom')

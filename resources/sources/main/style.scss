@@ -836,7 +836,7 @@ $heightSelect : 35px;
         border-radius: 10px;
         font-size: 0.75rem;
         font-family: $fontTitle;
-        @include colorOpacity('color', $colorText, 0.5);
+        @include colorOpacity('color', $colorText, 0.55);
     }
     &_input {
         padding: 0.3rem 0.75rem 0.1rem 0.75rem;
@@ -954,6 +954,9 @@ $heightSelect : 35px;
             font-size: 0.8rem;
             @include colorOpacity('color', $colorText, 0.25);
         }
+        @media(max-width: 990px){
+            height: $heightSelect;
+        }
     }
     @media(max-width: 1023px){
         margin-bottom: 0.75rem;
@@ -992,6 +995,9 @@ $heightSelect : 35px;
             ~ .filterAdvanced_box {
                 display: flex !important;
             }
+        }
+        @media(max-width: 990px){
+            width: $heightSelect;
         }
     }
 
@@ -1207,15 +1213,20 @@ $heightSelect : 35px;
     display: flex;
     width: 100%;
     justify-content: flex-end;
+    margin-bottom: -4px;
     &_item {
-        padding: 0 0.25rem;
+        padding: 0 0.15rem;
         display: flex;
         justify-content: center;
         align-items: center;
         border-radius: 6px;
         cursor: pointer;
-        svg {
-            fill: #808080;
+        color: #808080;
+        &.selected {
+            @include colorOpacity('color', $colorText, 0.75);
+        }
+        input {
+            display: none;
         }
     }
 }

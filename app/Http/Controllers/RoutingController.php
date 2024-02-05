@@ -89,6 +89,11 @@ class RoutingController extends Controller{
                             foreach($tmp as $t) $arrayIdCategory[] = $t->id;
                             $typeWhere          = 'or';
                         }
+                        /* tìm kiếm bằng feeling */
+                        $searchFeeling = $request->get('search_feeling') ?? [];
+                        if(!empty($request->get('search_feeling'))){
+
+                        }
                         /* lấy wallpapers */
                         $loaded         = 10;
                         $sortBy         = Cookie::get('sort_by') ?? null;
@@ -144,7 +149,7 @@ class RoutingController extends Controller{
                                                 }
                                             })
                                             ->count();
-                        $xhtml              = view('wallpaper.category.index', compact('item', 'breadcrumb', 'content', 'wallpapers', 'arrayIdCategory', 'total', 'loaded', 'language', 'infoFreeWallpaper', 'typeWhere', 'user'))->render();
+                        $xhtml              = view('wallpaper.category.index', compact('item', 'breadcrumb', 'content', 'wallpapers', 'arrayIdCategory', 'total', 'loaded', 'language', 'infoFreeWallpaper', 'typeWhere', 'user', 'searchFeeling'))->render();
                     }
                 }
                 
