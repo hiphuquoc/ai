@@ -55,6 +55,11 @@ class HomeController extends Controller{
                                     })
                                     ->with('seo', 'en_seo', 'type')
                                     ->first();
+            /* tìm kiếm bằng feeling */
+            $searchFeeling = $request->get('search_feeling') ?? [];
+            if(!empty($request->get('search_feeling'))){
+
+            }
             /* lấy wallpapers */
             $arrayIdCategory = [];
             $loaded     = 10;
@@ -84,7 +89,7 @@ class HomeController extends Controller{
                             ->take($loaded)
                             ->get();
             $total      = FreeWallpaper::count();
-            $xhtml      = view('wallpaper.category.index', compact('home', 'item', 'arrayIdCategory', 'wallpapers', 'total', 'loaded', 'language', 'user'))->render();
+            $xhtml      = view('wallpaper.category.index', compact('home', 'item', 'arrayIdCategory', 'wallpapers', 'total', 'loaded', 'language', 'user', 'searchFeeling'))->render();
             /* Ghi dữ liệu - Xuất kết quả */
             if(env('APP_CACHE_HTML')==true) Storage::put(config('main.cache.folderSave').$nameCache, $xhtml);
         }
