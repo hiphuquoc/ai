@@ -91,14 +91,16 @@ class RoutingController extends Controller{
                         }
                         /* tìm kiếm bằng feeling */
                         $searchFeeling = $request->get('search_feeling') ?? [];
-                        if(!empty($request->get('search_feeling'))){
-
+                        foreach($searchFeeling as $feeling){
+                            if($feeling=='all'){ /* trường hợp tìm kiếm có all thì clear */
+                                $searchFeeling = [];
+                                break;
+                            }
                         }
                         /* lấy wallpapers */
                         $loaded         = 10;
                         $sortBy         = Cookie::get('sort_by') ?? null;
                         $user           = Auth::user();
-                        $idUser         = $user->id ?? 0;
                         $wallpapers     = FreeWallpaper::select('*')
                                             ->whereHas('categories', function($query) use($arrayIdCategory, $typeWhere) {
                                                 if(!empty($arrayIdCategory)){
@@ -113,6 +115,11 @@ class RoutingController extends Controller{
                                                     }
                                                 }
                                             })
+                                            ->when(!empty($searchFeeling), function($query) use ($searchFeeling) {
+                                                $query->whereHas('feeling', function($subquery) use ($searchFeeling) {
+                                                    $subquery->whereIn('type', $searchFeeling);
+                                                });
+                                            })
                                             ->when(empty($sortBy), function($query){
                                                 $query->orderBy('id', 'DESC');
                                             })
@@ -125,11 +132,6 @@ class RoutingController extends Controller{
                                             })
                                             ->when($sortBy=='old', function($query){
                                                 $query->orderBy('id', 'ASC');
-                                            })
-                                            ->when(!empty($idUser), function($query) use($idUser){
-                                                $query->with(['feeling' => function($subquery) use($idUser){
-                                                    $subquery->where('user_info_id', $idUser);
-                                                }]);
                                             })
                                             ->skip(0)
                                             ->take($loaded)

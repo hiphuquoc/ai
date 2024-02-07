@@ -213,12 +213,12 @@
         </div>
     </form>
     
-    <form action="{{ Url::current() }}" method="get">
+    <form id="search_feeling" action="{{ Url::current() }}" method="get">
         <div class="sortBox_right">
             <div class="sortBox_right_item">
                 <!-- feeling -->
                 <div class="feelingBox">
-                    <div class="feelingBox_item selected">
+                    <div class="feelingBox_item selected" onclick="setFeelingAndSubmit(this);">
                         Tất cả
                         <input type="checkbox" name="search_feeling[]" value="all" /> 
                     </div>

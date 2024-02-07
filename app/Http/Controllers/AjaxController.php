@@ -301,6 +301,14 @@ class AjaxController extends Controller {
     }
 
     public static function loadmoreFreeWallpapers(Request $request){
+        /* tìm kiếm bằng feeling */
+        $searchFeeling = $request->get('search_feeling') ?? [];
+        foreach($searchFeeling as $feeling){
+            if($feeling=='all'){ /* trường hợp tìm kiếm có all thì clear */
+                $searchFeeling = [];
+                break;
+            }
+        }
         $response           = [];
         $content            = '';
         if(!empty($request->get('total'))){
@@ -311,7 +319,6 @@ class AjaxController extends Controller {
             $typeWhere      = $request->get('typeWhere') ?? 'or';
             $sortBy         = Cookie::get('sort_by') ?? null;
             $user           = Auth::user();
-            $idUser         = $user->id ?? 0;
             $wallpapers     = FreeWallpaper::select('*')
                                 ->whereHas('categories', function($query) use($arrayIdCategory, $typeWhere) {
                                     if(!empty($arrayIdCategory)){
@@ -326,6 +333,11 @@ class AjaxController extends Controller {
                                         }
                                     }
                                 })
+                                ->when(!empty($searchFeeling), function($query) use ($searchFeeling) {
+                                    $query->whereHas('feeling', function($subquery) use ($searchFeeling) {
+                                        $subquery->whereIn('type', $searchFeeling);
+                                    });
+                                })
                                 ->when(empty($sortBy), function($query){
                                     $query->orderBy('id', 'DESC');
                                 })
@@ -338,11 +350,6 @@ class AjaxController extends Controller {
                                 })
                                 ->when($sortBy=='old', function($query){
                                     $query->orderBy('id', 'ASC');
-                                })
-                                ->when(!empty($idUser), function($query) use($idUser){
-                                    $query->with(['feeling' => function($subquery) use($idUser){
-                                        $subquery->where('user_info_id', $idUser);
-                                    }]);
                                 })
                                 ->skip($loaded)
                                 ->take($requestLoad)
