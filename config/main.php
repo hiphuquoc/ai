@@ -208,5 +208,15 @@ return [
             'name'      => 'Thả tim',
             'en_name'   => 'Heart'
         ]
-    ]
+    ],
+    'auto_fill' => [
+        'alt'   => [
+            'vi'    => 'Ảnh cô gái xinh đẹp',
+            'en'    => 'Beautiful girl photo'
+        ],
+        'slug'  => [
+            'vi'    => 'anh-gai-xinh',
+            'en'    => 'photo-beautiful-girl'
+        ]
+    ],
 ];

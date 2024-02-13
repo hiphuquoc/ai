@@ -19,7 +19,11 @@ class FreeWallpaper extends Model {
         'width',
         'height',
         'file_size',
-        'mine_type'
+        'mine_type',
+        'heart',
+        'ha_ha',
+        'not_like',
+        'vomit'
     ];
     public $timestamps = true;
 

@@ -845,6 +845,12 @@ $heightSelect : 35px;
         font-size: 0.85rem;
         @include colorOpacity('color', $colorText, 0.75);
         min-width: 140px;
+        @media(max-width: 990px){
+            min-width: 120px;
+        }
+        @media(max-width: 577px){
+            min-width: 100px;
+        }
     }
     &_box {
         visibility: hidden;
@@ -916,6 +922,7 @@ $heightSelect : 35px;
     }
     &_right {
         display: flex;
+        margin-left: 0.5rem;
         > * {
             &:not(:first-child){
                 margin-left: 0.5rem;
@@ -938,6 +945,9 @@ $heightSelect : 35px;
                 font-size: 0.95rem;
             }
         }
+    }
+    input {
+        display: none;
     }
     .quantity {
         font-size: 0.9rem;
@@ -1067,6 +1077,7 @@ $heightSelect : 35px;
         &_content {
             flex-wrap: wrap;
             display: flex;
+            width: 100%;
             &_item {
                 width: calc(50% - 0.375rem);
                 

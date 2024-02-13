@@ -91,14 +91,10 @@
         <!-- content -->
         <div class="contentBox">
             <div style="display:flex;">
-                @if(!empty($home)&&$home==true)
-                    <h1 style="display:none;">{{ empty($language)||$language=='vi' ? $item->name : $item->en_name }}</h1>
-                @else 
-                    <h1>Hình nền điện thoại {{ empty($language)||$language=='vi' ? $item->name : $item->en_name }}</h1>
-                @endif
+                <h1>Hình nền điện thoại {{ empty($language)||$language=='vi' ? $item->name : $item->en_name }}</h1>
             </div>
             <!-- Sort Box -->
-            @include('wallpaper.category.sort', [
+            @include('wallpaper.tag.sort', [
                 'language'          => $language ?? 'vi',
                 'total'             => $total
             ])
@@ -131,7 +127,7 @@
             </div>
         @endif
         {{-- <div class="categoryWithFilterBox_filter">
-            @include('main.category.sidebarContent')
+            @include('main.tag.sidebarContent')
         </div> --}}
         
     </div>

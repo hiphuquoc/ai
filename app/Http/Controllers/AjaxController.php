@@ -175,31 +175,56 @@ class AjaxController extends Controller {
         return json_encode($result);
     }
 
-    public function settingViewBy(Request $request){
-        if(!empty($request->get('view_by'))){
-            Cookie::queue('view_by', $request->get('view_by'), 3600);
-        }
-        return redirect()->back()->withInput();
-    }
-
     public function showSortBoxFreeWallpaper(Request $request){
         $xhtml              = '';
         $id                 = $request->get('id');
         $total              = $request->get('total');
         $language           = $request->session()->get('language') ?? 'vi';
         /* select của filter */
-        $categories         = Category::all();
+        $categories         = Category::select('*')
+                                ->where('flag_show', true)
+                                ->get();
+        /* filter (nếu có) */
+        $filters            = $request->get('filters') ?? [];
         /* giá trị selectBox */
         $categoryChoose     = new \Illuminate\Database\Eloquent\Collection;
         $categoryChoose     = Category::select('*')
                                 ->where('id', $id)
                                 ->with('seo', 'en_seo')
                                 ->first();
-        $xhtml              = view('wallpaper.template.sortContent', [
+        $xhtml              = view('wallpaper.category.sortContent', [
             'language'          => $language ?? 'vi',
             'total'             => $total,
             'categories'        => $categories,
-            'categoryChoose'    => $categoryChoose
+            'categoryChoose'    => $categoryChoose,
+            'filters'           => $filters
+        ])->render();
+        return $xhtml;
+    }
+
+    public function showSortBoxFreeWallpaperInTag(Request $request){
+        $xhtml              = '';
+        $id                 = $request->get('id');
+        $total              = $request->get('total');
+        $language           = $request->session()->get('language') ?? 'vi';
+        /* select của filter */
+        $categories         = Category::select('*')
+                                ->where('flag_show', true)
+                                ->get();
+        /* filter (nếu có) */
+        $filters            = $request->get('filters') ?? [];
+        /* giá trị selectBox */
+        $categoryChoose     = new \Illuminate\Database\Eloquent\Collection;
+        $categoryChoose     = Tag::select('*')
+                                ->where('id', $id)
+                                ->with('seo', 'en_seo')
+                                ->first();
+        $xhtml              = view('wallpaper.tag.sortContent', [
+            'language'          => $language ?? 'vi',
+            'total'             => $total,
+            'categories'        => $categories,
+            'categoryChoose'    => $categoryChoose,
+            'filters'           => $filters
         ])->render();
         return $xhtml;
     }
@@ -300,67 +325,9 @@ class AjaxController extends Controller {
         return $flag;
     }
 
-    public static function loadmoreFreeWallpapers(Request $request){
-        /* tìm kiếm bằng feeling */
-        $searchFeeling = $request->get('search_feeling') ?? [];
-        foreach($searchFeeling as $feeling){
-            if($feeling=='all'){ /* trường hợp tìm kiếm có all thì clear */
-                $searchFeeling = [];
-                break;
-            }
-        }
-        $response           = [];
-        $content            = '';
-        if(!empty($request->get('total'))){
-            $language       = Cookie::get('language') ?? 'vi';
-            $loaded         = $request->get('loaded');
-            $requestLoad    = $request->get('requestLoad');
-            $arrayIdCategory = json_decode($request->get('arrayIdCategory'));
-            $typeWhere      = $request->get('typeWhere') ?? 'or';
-            $sortBy         = Cookie::get('sort_by') ?? null;
-            $user           = Auth::user();
-            $wallpapers     = FreeWallpaper::select('*')
-                                ->whereHas('categories', function($query) use($arrayIdCategory, $typeWhere) {
-                                    if(!empty($arrayIdCategory)){
-                                        if ($typeWhere == 'or') {
-                                            $query->whereIn('category_info_id', $arrayIdCategory);
-                                        } elseif ($typeWhere == 'and') {
-                                            $query->where(function($subquery) use($arrayIdCategory) {
-                                                foreach($arrayIdCategory as $c) {
-                                                    $subquery->where('category_info_id', $c);
-                                                }
-                                            });
-                                        }
-                                    }
-                                })
-                                ->when(!empty($searchFeeling), function($query) use ($searchFeeling) {
-                                    $query->whereHas('feeling', function($subquery) use ($searchFeeling) {
-                                        $subquery->whereIn('type', $searchFeeling);
-                                    });
-                                })
-                                ->when(empty($sortBy), function($query){
-                                    $query->orderBy('id', 'DESC');
-                                })
-                                ->when($sortBy=='new'||$sortBy=='propose', function($query){
-                                    $query->orderBy('id', 'DESC');
-                                })
-                                ->when($sortBy=='favourite', function($query){
-                                    $query->orderBy('heart', 'DESC')
-                                            ->orderBy('id', 'DESC');
-                                })
-                                ->when($sortBy=='old', function($query){
-                                    $query->orderBy('id', 'ASC');
-                                })
-                                ->skip($loaded)
-                                ->take($requestLoad)
-                                ->get();
-            foreach($wallpapers as $wallpaper){
-                $content    .= view('wallpaper.free.item', compact('wallpaper', 'language', 'user'))->render();
-            }
-        }
-        $response['content']    = $content;
-        $response['loaded']     = $loaded + $requestLoad;
-        return json_encode($response);
+    public function setViewBy(Request $request){
+        Cookie::queue('view_by', $request->get('key'), 3600);
+        return true;
     }
 
     public function setSortBy(Request $request){

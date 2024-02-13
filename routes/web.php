@@ -28,6 +28,7 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ThemeController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\CategoryBlogController;
 use App\Http\Controllers\Admin\BlogController;
@@ -40,7 +41,6 @@ use App\Http\Controllers\Admin\RedirectController;
 
 use App\Http\Controllers\Auth\ProviderController;
 use App\Http\Controllers\GoogledriveController;
-use App\Http\Controllers\PaypalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -99,11 +99,19 @@ Route::middleware('auth', 'role:admin')->group(function (){
         });
         /* category */
         Route::prefix('category')->group(function(){
-            Route::get('/list', [CategoryController::class, 'list'])->name('admin.category.list');
-            Route::get('/view', [CategoryController::class, 'view'])->name('admin.category.view');
-            Route::post('/create', [CategoryController::class, 'create'])->name('admin.category.create');
-            Route::post('/update', [CategoryController::class, 'update'])->name('admin.category.update');
-            Route::get('/delete', [CategoryController::class, 'delete'])->name('admin.category.delete');
+            Route::get('/list', [CategoryController::class, 'list'])->name('admin.categoryMoney.list');
+            Route::get('/view', [CategoryController::class, 'view'])->name('admin.categoryMoney.view');
+            Route::post('/create', [CategoryController::class, 'create'])->name('admin.categoryMoney.create');
+            Route::post('/update', [CategoryController::class, 'update'])->name('admin.categoryMoney.update');
+            Route::get('/delete', [CategoryController::class, 'delete'])->name('admin.categoryMoney.delete');
+        });
+        /* tag */
+        Route::prefix('tag')->group(function(){
+            Route::get('/list', [TagController::class, 'list'])->name('admin.tag.list');
+            Route::get('/view', [TagController::class, 'view'])->name('admin.tag.view');
+            Route::post('/create', [TagController::class, 'create'])->name('admin.tag.create');
+            Route::post('/update', [TagController::class, 'update'])->name('admin.tag.update');
+            Route::get('/delete', [TagController::class, 'delete'])->name('admin.tag.delete');
         });
         /* page */
         Route::prefix('page')->group(function(){
@@ -244,13 +252,16 @@ Route::get('/loadImageFromGoogleCloud', [AjaxController::class, 'loadImageFromGo
 Route::get('/loadImageWithResize', [AjaxController::class, 'loadImageWithResize'])->name('ajax.loadImageWithResize');
 Route::get('/loadImageSource', [AjaxController::class, 'loadImageSource'])->name('ajax.loadImageSource');
 Route::get('/downloadImageSource', [AjaxController::class, 'downloadImageSource'])->name('ajax.downloadImageSource');
-Route::get('/settingViewBy', [AjaxController::class, 'settingViewBy'])->name('ajax.settingViewBy');
+Route::get('/setViewBy', [AjaxController::class, 'setViewBy'])->name('ajax.setViewBy');
 Route::get('/showSortBoxFreeWallpaper', [AjaxController::class, 'showSortBoxFreeWallpaper'])->name('ajax.showSortBoxFreeWallpaper');
-Route::get('/loadmoreFreeWallpapers', [AjaxController::class, 'loadmoreFreeWallpapers'])->name('admin.freeWallpaper.loadmoreFreeWallpapers');
+Route::get('/showSortBoxWallpaper', [AjaxController::class, 'showSortBoxWallpaper'])->name('ajax.showSortBoxWallpaper');
+Route::get('/showSortBoxFreeWallpaperInTag', [AjaxController::class, 'showSortBoxFreeWallpaperInTag'])->name('ajax.showSortBoxFreeWallpaperInTag');
 Route::get('/setSortBy', [AjaxController::class, 'setSortBy'])->name('ajax.setSortBy');
 Route::get('/downloadImgFreeWallpaper', [AjaxController::class, 'downloadImgFreeWallpaper'])->name('ajax.downloadImgFreeWallpaper');
 Route::get('/setFeelingFreeWallpaper', [AjaxController::class, 'setFeelingFreeWallpaper'])->name('ajax.setFeelingFreeWallpaper');
 Route::get('/loadOneFreeWallpaper', [AjaxController::class, 'loadOneFreeWallpaper'])->name('ajax.loadOneFreeWallpaper');
+Route::get('/loadMoreWallpaper', [CategoryPublic::class, 'loadMoreWallpaper'])->name('main.category.loadMoreWallpaper');
+Route::get('/loadmoreFreeWallpapers', [CategoryPublic::class, 'loadmoreFreeWallpapers'])->name('main.category.loadmoreFreeWallpapers');
 /* SEARCH */
 Route::get('/searchByImage', [SearchController::class, 'searchByImage'])->name('search.searchByImage');
 /* login */

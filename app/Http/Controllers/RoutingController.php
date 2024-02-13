@@ -10,8 +10,7 @@ use Illuminate\Support\Facades\Blade;
 use App\Helpers\Url;
 use App\Models\Product;
 use App\Models\Category;
-use App\Models\Style;
-use App\Models\Event;
+use App\Models\Tag;
 use App\Models\Page;
 use App\Models\CategoryBlog;
 use App\Models\FreeWallpaper;
@@ -37,12 +36,12 @@ class RoutingController extends Controller{
             return Redirect::to($checkExists->slug_full, 301);
         }
         /* ============== nếu đúng => xuất dữ liệu */
-        /* ngôn ngữ */
-        $language                   = $checkExists->language;
-        SettingController::settingLanguage($language);
-        /* chế đệ xem */
-        $viewBy     = Cookie::get('view_by') ?? 'set';
         if(!empty($checkExists->type)){
+            /* ngôn ngữ */
+            $language                   = $checkExists->language;
+            SettingController::settingLanguage($language);
+            /* chế đệ xem */
+            $viewBy     = Cookie::get('view_by') ?? 'set';
             $flagMatch              = false;
             /* cache HTML */
             $nameCache              = self::buildNameCache($checkExists['slug_full'], [$viewBy]).'.'.config('main.cache.extension');
@@ -52,9 +51,235 @@ class RoutingController extends Controller{
                 $xhtml              = file_get_contents($pathCache);
                 echo $xhtml;
             }else {
+                // /* ===== Các trang chủ đề/phong cách/sự kiện ==== */
+                // foreach(config('main.category_type') as $type){
+                //     if($checkExists->type==$type['key']){
+                //         $flagMatch      = true;
+                //         /* breadcrumb */
+                //         $breadcrumb     = Url::buildBreadcrumb($checkExists->slug_full, $language);
+                //         $idSeo          = $language=='vi' ? $checkExists->id : $checkExists->seo->infoSeo->id;
+                //         $item           = Category::select('*')
+                //                             ->where('seo_id', $idSeo)
+                //                             ->with('seo', 'en_seo')
+                //                             ->first();
+                        
+                //         /* content */
+                //         if($language=='en'){
+                //             $content        = Blade::render(Storage::get(config('main.storage.enContentCategory').$item->en_seo->slug.'.blade.php'));
+                //         }else {
+                //             $content        = Blade::render(Storage::get(config('main.storage.contentCategory').$item->seo->slug.'.blade.php'));
+                //         }
+                //         /* tìm kiếm bằng hình ảnh */
+                //         $idFreeWallpaper    = $request->get('idFreeWallpaper') ?? 0;
+                //         $infoFreeWallpaper  = FreeWallpaper::select('*')
+                //                                 ->where('id', $idFreeWallpaper)
+                //                                 ->first();
+                //         if(!empty($infoFreeWallpaper)){
+                //             /* trường hợp search bằng hình ảnh ::: */
+                //             $arrayIdCategory    = [];
+                //             foreach($infoFreeWallpaper->categories as $category){
+                //                 $arrayIdCategory[] = $category->infoCategory->id;
+                //             }
+                //             $typeWhere          = 'and';
+                //         }else {
+                //             /* trường hợp bình thường không phải search ::: lấy danh sách category hiện tại và con (nếu có) */
+                //             $tmp                = Category::getTreeCategoryByInfoCategory($item, []);
+                //             $arrayIdCategory = [$item->id];
+                //             foreach($tmp as $t) $arrayIdCategory[] = $t->id;
+                //             $typeWhere          = 'or';
+                //         }
+                //         /* tìm kiếm bằng feeling */
+                //         $searchFeeling = $request->get('search_feeling') ?? [];
+                //         foreach($searchFeeling as $feeling){
+                //             if($feeling=='all'){ /* trường hợp tìm kiếm có all thì clear */
+                //                 $searchFeeling = [];
+                //                 break;
+                //             }
+                //         }
+                //         /* lấy wallpapers */
+                //         $loaded         = 10;
+                //         $sortBy         = Cookie::get('sort_by') ?? null;
+                //         $user           = Auth::user();
+                //         $wallpapers     = FreeWallpaper::select('*')
+                //                             ->whereHas('categories', function($query) use($arrayIdCategory, $typeWhere) {
+                //                                 if(!empty($arrayIdCategory)){
+                //                                     if ($typeWhere == 'or') {
+                //                                         $query->whereIn('category_info_id', $arrayIdCategory);
+                //                                     } elseif ($typeWhere == 'and') {
+                //                                         $query->where(function($subquery) use($arrayIdCategory) {
+                //                                             foreach($arrayIdCategory as $c) {
+                //                                                 $subquery->where('category_info_id', $c);
+                //                                             }
+                //                                         });
+                //                                     }
+                //                                 }
+                //                             })
+                //                             ->when(!empty($searchFeeling), function($query) use ($searchFeeling) {
+                //                                 $query->whereHas('feeling', function($subquery) use ($searchFeeling) {
+                //                                     $subquery->whereIn('type', $searchFeeling);
+                //                                 });
+                //                             })
+                //                             ->when(empty($sortBy), function($query){
+                //                                 $query->orderBy('id', 'DESC');
+                //                             })
+                //                             ->when($sortBy=='new'||$sortBy=='propose', function($query){
+                //                                 $query->orderBy('id', 'DESC');
+                //                             })
+                //                             ->when($sortBy=='favourite', function($query){
+                //                                 $query->orderBy('heart', 'DESC')
+                //                                         ->orderBy('id', 'DESC');
+                //                             })
+                //                             ->when($sortBy=='old', function($query){
+                //                                 $query->orderBy('id', 'ASC');
+                //                             })
+                //                             ->skip(0)
+                //                             ->take($loaded)
+                //                             ->get();
+                //         $total          = FreeWallpaper::select('*')
+                //                             ->whereHas('categories', function($query) use($arrayIdCategory, $typeWhere) {
+                //                                 if(!empty($arrayIdCategory)){
+                //                                     if ($typeWhere == 'or') {
+                //                                         $query->whereIn('category_info_id', $arrayIdCategory);
+                //                                     } elseif ($typeWhere == 'and') {
+                //                                         $query->where(function($subquery) use($arrayIdCategory) {
+                //                                             foreach($arrayIdCategory as $c) {
+                //                                                 $subquery->where('category_info_id', $c);
+                //                                             }
+                //                                         });
+                //                                     }
+                //                                 }
+                //                             })
+                //                             ->count();
+                //         $xhtml              = view('wallpaper.category.index', compact('item', 'breadcrumb', 'content', 'wallpapers', 'arrayIdCategory', 'total', 'loaded', 'language', 'infoFreeWallpaper', 'typeWhere', 'user', 'searchFeeling'))->render();
+                //     }
+                // }
+
+                /* ===== Tag ==== */
+                if($checkExists->type=='tag_info'){
+                    $idSeo          = $language=='vi' ? $checkExists->id : $checkExists->seo->infoSeo->id;
+                    $flagMatch      = true;
+                    /* breadcrumb */
+                    $breadcrumb     = Url::buildBreadcrumb($checkExists->slug_full, $language);
+                    $idSeo          = $language=='vi' ? $checkExists->id : $checkExists->seo->infoSeo->id;
+                    $item           = Tag::select('*')
+                                        ->where('seo_id', $idSeo)
+                                        ->with('seo', 'en_seo', 'freeWallpapers')
+                                        ->first();
+                    /* content */
+                    if($language=='en'){
+                        $content        = Blade::render(Storage::get(config('main.storage.enContentTag').$item->en_seo->slug.'.blade.php'));
+                    }else {
+                        $content        = Blade::render(Storage::get(config('main.storage.contentTag').$item->seo->slug.'.blade.php'));
+                    }
+                    // /* tìm kiếm bằng feeling */
+                    // $searchFeeling = $request->get('search_feeling') ?? [];
+                    // foreach($searchFeeling as $feeling){
+                    //     if($feeling=='all'){ /* trường hợp tìm kiếm có all thì clear */
+                    //         $searchFeeling = [];
+                    //         break;
+                    //     }
+                    // }
+                    /* lấy wallpapers */
+                    $loaded         = 10;
+                    $sortBy         = Cookie::get('sort_by') ?? null;
+                    $filters        = $request->get('filters') ?? [];
+                    $user           = Auth::user();
+                    $arrayIdTag     = [$item->id];
+                    $arrayIdCategory    = [];
+                    $wallpapers     = FreeWallpaper::select('*')
+                                        ->when(!empty($arrayIdTag), function($query) use($arrayIdTag){
+                                            $query->whereHas('tags', function($subquery) use($arrayIdTag){
+                                                $subquery->whereIn('tag_info_id', $arrayIdTag);
+                                            });
+                                        })
+                                        ->when(!empty($filters), function($query) use($filters){
+                                            foreach($filters as $filter){
+                                                $query->whereHas('categories.infoCategory', function($query) use($filter){
+                                                    $query->where('id', $filter);
+                                                });
+                                            }
+                                        })
+                                        // ->when(!empty($searchFeeling), function($query) use ($searchFeeling) {
+                                        //     $query->whereHas('feeling', function($subquery) use ($searchFeeling) {
+                                        //         $subquery->whereIn('type', $searchFeeling);
+                                        //     });
+                                        // })
+                                        ->when(empty($sortBy), function($query){
+                                            $query->orderBy('id', 'DESC');
+                                        })
+                                        ->when($sortBy=='new'||$sortBy=='propose', function($query){
+                                            $query->orderBy('id', 'DESC');
+                                        })
+                                        ->when($sortBy=='favourite', function($query){
+                                            $query->orderBy('heart', 'DESC')
+                                                    ->orderBy('id', 'DESC');
+                                        })
+                                        ->when($sortBy=='old', function($query){
+                                            $query->orderBy('id', 'ASC');
+                                        })
+                                        ->skip(0)
+                                        ->take($loaded)
+                                        ->get();
+                    $total          = FreeWallpaper::select('*')
+                                        ->when(!empty($arrayIdTag), function($query) use($arrayIdTag){
+                                            $query->whereHas('tags', function($subquery) use($arrayIdTag){
+                                                $subquery->whereIn('tag_info_id', $arrayIdTag);
+                                            });
+                                        })
+                                        ->when(!empty($filters), function($query) use($filters){
+                                            foreach($filters as $filter){
+                                                $query->whereHas('categories.infoCategory', function($query) use($filter){
+                                                    $query->where('id', $filter);
+                                                });
+                                            }
+                                        })
+                                        // ->when(!empty($searchFeeling), function($query) use ($searchFeeling) {
+                                        //     $query->whereHas('feeling', function($subquery) use ($searchFeeling) {
+                                        //         $subquery->whereIn('type', $searchFeeling);
+                                        //     });
+                                        // })
+                                        ->count();
+                    $xhtml              = view('wallpaper.tag.index', compact('item', 'breadcrumb', 'content', 'wallpapers', 'total', 'arrayIdCategory', 'loaded', 'language', 'user'))->render();
+                }
+                /* ===== Sản phẩm ==== */
+                if($checkExists->type=='product_info'){
+                    $idSeo          = $language=='vi' ? $checkExists->id : $checkExists->seo->infoSeo->id;
+                    $flagMatch      = true;
+                    /* thông tin sản phẩm */
+                    $item           = Product::select('*')
+                        ->where('seo_id', $idSeo)
+                        ->with('seo', 'prices.wallpapers.infoWallpaper', 'contents', 'categories')
+                        ->first();
+                    /* danh sách category của sản phẩm */
+                    $arrayIdCategory  = [];
+                    foreach($item->categories as $category) $arrayIdCategory[] = $category->infoCategory->id;
+                    $total          = Product::select('*')
+                                        ->where('id', '!=', $item->id)
+                                        ->whereHas('categories.infoCategory', function($query) use($arrayIdCategory){
+                                            $query->whereIn('id', $arrayIdCategory);
+                                        })
+                                        ->count();
+                    $loaded         = 0;
+                    /* sản phẩm liên quan */
+                    $idSeoParent        = $item->seo->parent;
+                    $infoSeoParent      = Seo::select('type')
+                                            ->where('id', $idSeoParent)
+                                            ->first();
+                    $tmp                = Category::select('category_info.*')
+                                            ->join('seo', 'seo.id', '=', 'category_info.seo_id')
+                                            ->where('seo.id', $idSeoParent)
+                                            ->with('products')
+                                            ->first();
+                    $related            = $tmp->products;
+                    /* breadcrumb */
+                    $breadcrumb         = Url::buildBreadcrumb($checkExists->slug_full, $language);
+                    $xhtml              = view('wallpaper.product.index', compact('item', 'breadcrumb', 'total', 'arrayIdCategory', 'language'))->render();
+                }
+
                 /* ===== Các trang chủ đề/phong cách/sự kiện ==== */
                 foreach(config('main.category_type') as $type){
                     if($checkExists->type==$type['key']){
+                        $idSeo          = $language=='vi' ? $checkExists->id : $checkExists->seo->infoSeo->id;
                         $flagMatch      = true;
                         /* breadcrumb */
                         $breadcrumb     = Url::buildBreadcrumb($checkExists->slug_full, $language);
@@ -63,13 +288,13 @@ class RoutingController extends Controller{
                                             ->where('seo_id', $idSeo)
                                             ->with('seo', 'en_seo')
                                             ->first();
-                        
                         /* content */
                         if($language=='en'){
                             $content        = Blade::render(Storage::get(config('main.storage.enContentCategory').$item->en_seo->slug.'.blade.php'));
                         }else {
                             $content        = Blade::render(Storage::get(config('main.storage.contentCategory').$item->seo->slug.'.blade.php'));
                         }
+                        /* ===== miễn phí */
                         /* tìm kiếm bằng hình ảnh */
                         $idFreeWallpaper    = $request->get('idFreeWallpaper') ?? 0;
                         $infoFreeWallpaper  = FreeWallpaper::select('*')
@@ -100,6 +325,7 @@ class RoutingController extends Controller{
                         /* lấy wallpapers */
                         $loaded         = 10;
                         $sortBy         = Cookie::get('sort_by') ?? null;
+                        $filters        = $request->get('filters') ?? [];
                         $user           = Auth::user();
                         $wallpapers     = FreeWallpaper::select('*')
                                             ->whereHas('categories', function($query) use($arrayIdCategory, $typeWhere) {
@@ -113,6 +339,13 @@ class RoutingController extends Controller{
                                                             }
                                                         });
                                                     }
+                                                }
+                                            })
+                                            ->when(!empty($filters), function($query) use($filters){
+                                                foreach($filters as $filter){
+                                                    $query->whereHas('categories.infoCategory', function($query) use($filter){
+                                                        $query->where('id', $filter);
+                                                    });
                                                 }
                                             })
                                             ->when(!empty($searchFeeling), function($query) use ($searchFeeling) {
@@ -149,6 +382,18 @@ class RoutingController extends Controller{
                                                         });
                                                     }
                                                 }
+                                            })
+                                            ->when(!empty($filters), function($query) use($filters){
+                                                foreach($filters as $filter){
+                                                    $query->whereHas('categories.infoCategory', function($query) use($filter){
+                                                        $query->where('id', $filter);
+                                                    });
+                                                }
+                                            })
+                                            ->when(!empty($searchFeeling), function($query) use ($searchFeeling) {
+                                                $query->whereHas('feeling', function($subquery) use ($searchFeeling) {
+                                                    $subquery->whereIn('type', $searchFeeling);
+                                                });
                                             })
                                             ->count();
                         $xhtml              = view('wallpaper.category.index', compact('item', 'breadcrumb', 'content', 'wallpapers', 'arrayIdCategory', 'total', 'loaded', 'language', 'infoFreeWallpaper', 'typeWhere', 'user', 'searchFeeling'))->render();

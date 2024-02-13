@@ -67,8 +67,16 @@ class HomeController extends Controller{
             $arrayIdCategory = [];
             $loaded     = 10;
             $sortBy     = Cookie::get('sort_by') ?? null;
+            $filters    = $request->get('filters') ?? [];
             $user       = Auth::user();
             $wallpapers = FreeWallpaper::select('*')
+                            ->when(!empty($filters), function($query) use($filters){
+                                foreach($filters as $filter){
+                                    $query->whereHas('categories.infoCategory', function($query) use($filter){
+                                        $query->where('id', $filter);
+                                    });
+                                }
+                            })
                             ->when(!empty($searchFeeling), function($query) use ($searchFeeling) {
                                 $query->whereHas('feeling', function($subquery) use ($searchFeeling) {
                                     $subquery->whereIn('type', $searchFeeling);
@@ -91,7 +99,8 @@ class HomeController extends Controller{
                             ->take($loaded)
                             ->get();
             $total      = FreeWallpaper::count();
-            $xhtml      = view('wallpaper.category.index', compact('home', 'item', 'arrayIdCategory', 'wallpapers', 'total', 'loaded', 'language', 'user', 'searchFeeling'))->render();
+            $breadcrumb  = [];
+            $xhtml      = view('wallpaper.category.index', compact('home', 'breadcrumb', 'item', 'arrayIdCategory', 'wallpapers', 'total', 'loaded', 'language', 'user', 'searchFeeling'))->render();
             /* Ghi dữ liệu - Xuất kết quả */
             if(env('APP_CACHE_HTML')==true) Storage::put(config('main.cache.folderSave').$nameCache, $xhtml);
         }
