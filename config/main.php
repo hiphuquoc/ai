@@ -128,30 +128,35 @@ return [
             'en_name'   => 'Style'
         ],
         [
-            'key' => 'maintone_info',
-            'name' => 'Tông chính',
-            'en_name'   => 'Main Tone'
+            'key' => 'event_info',
+            'name' => 'Sự kiện',
+            'en_name'   => 'Event'
         ],
-        [
-            'key' => 'country_info',
-            'name' => 'Quốc gia',
-            'en_name' => 'Country'
-        ],
-        [
-            'key' => 'skin_info',
-            'name' => 'Trang phục',
-            'en_name'   => 'Clothes'
-        ],
-        [
-            'key' => 'eyecolor_info',
-            'name' => 'Màu mắt',
-            'en_name'   => 'Eye Color'
-        ],
-        [
-            'key' => 'haircolor_info',
-            'name' => 'Màu tóc',
-            'en_name'   => 'Hair Color'
-        ]
+        // [
+        //     'key' => 'maintone_info',
+        //     'name' => 'Tông chính',
+        //     'en_name'   => 'Main Tone'
+        // ],
+        // [
+        //     'key' => 'country_info',
+        //     'name' => 'Quốc gia',
+        //     'en_name' => 'Country'
+        // ],
+        // [
+        //     'key' => 'skin_info',
+        //     'name' => 'Trang phục',
+        //     'en_name'   => 'Clothes'
+        // ],
+        // [
+        //     'key' => 'eyecolor_info',
+        //     'name' => 'Màu mắt',
+        //     'en_name'   => 'Eye Color'
+        // ],
+        // [
+        //     'key' => 'haircolor_info',
+        //     'name' => 'Màu tóc',
+        //     'en_name'   => 'Hair Color'
+        // ]
     ],
     'sort_type' => [
         [
@@ -215,8 +220,8 @@ return [
             'en'    => 'Beautiful girl photo'
         ],
         'slug'  => [
-            'vi'    => 'anh-gai-xinh',
-            'en'    => 'photo-beautiful-girl'
+            'vi'    => 'tag-anh-gai-xinh',
+            'en'    => 'tag-photo-beautiful-girl'
         ]
     ],
 ];
