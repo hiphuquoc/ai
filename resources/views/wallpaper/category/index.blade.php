@@ -94,7 +94,11 @@
                 @if(!empty($home)&&$home==true)
                     <h1 style="display:none;">{{ empty($language)||$language=='vi' ? $item->name : $item->en_name }}</h1>
                 @else 
-                    <h1>Hình nền điện thoại {{ empty($language)||$language=='vi' ? $item->name : $item->en_name }}</h1>
+                    @if(!empty($item->seo->level)&&$item->seo->level==1)
+                        <h1>{{ empty($language)||$language=='vi' ? $item->name : $item->en_name }}</h1>
+                    @else 
+                        <h1>Ảnh gái xinh {{ empty($language)||$language=='vi' ? $item->name : $item->en_name }}</h1>
+                    @endif
                 @endif
             </div>
             <!-- Sort Box -->
