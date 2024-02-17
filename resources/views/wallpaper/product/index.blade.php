@@ -21,7 +21,7 @@
                     $lowPrice   = $price->price;
                 }
             }
-    }
+        }
     @endphp
     @include('wallpaper.schema.product', ['item' => $item, 'lowPrice' => $lowPrice, 'highPrice' => $highPrice, 'currentcy' => $currency])
     <!-- END:: Product Schema -->

@@ -36,6 +36,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\CacheController;
 use App\Http\Controllers\Admin\WallpaperController;
 use App\Http\Controllers\Admin\FreeWallpaperController;
+use App\Http\Controllers\Admin\SeoFreeWallpaperController;
 use App\Http\Controllers\Admin\ProductPriceController;
 use App\Http\Controllers\Admin\RedirectController;
 
@@ -81,7 +82,12 @@ Route::middleware('auth', 'role:admin')->group(function (){
             Route::post('/updateWallpaper', [FreeWallpaperController::class, 'updateWallpaper'])->name('admin.freeWallpaper.updateWallpaper');
             Route::post('/deleteWallpaper', [FreeWallpaperController::class, 'deleteWallpaper'])->name('admin.freeWallpaper.deleteWallpaper');
             Route::post('/addFormUpload', [FreeWallpaperController::class, 'addFormUpload'])->name('admin.freeWallpaper.addFormUpload');
-            // Route::post('/searchWallpapers', [FreeWallpaperController::class, 'searchWallpapers'])->name('admin.freeWallpaper.searchWallpapers');
+        });
+        /* seo free wallpaper */
+        Route::prefix('seoFreeWallpaper')->group(function(){
+            Route::get('/list', [SeoFreeWallpaperController::class, 'list'])->name('admin.seoFreeWallpaper.list');
+            Route::get('/view', [SeoFreeWallpaperController::class, 'view'])->name('admin.seoFreeWallpaper.view');
+            Route::post('/update', [SeoFreeWallpaperController::class, 'update'])->name('admin.seoFreeWallpaper.update');
         });
         /* product */
         Route::prefix('product')->group(function(){
@@ -262,6 +268,7 @@ Route::get('/setFeelingFreeWallpaper', [AjaxController::class, 'setFeelingFreeWa
 Route::get('/loadOneFreeWallpaper', [AjaxController::class, 'loadOneFreeWallpaper'])->name('ajax.loadOneFreeWallpaper');
 Route::get('/loadMoreWallpaper', [CategoryPublic::class, 'loadMoreWallpaper'])->name('main.category.loadMoreWallpaper');
 Route::get('/loadmoreFreeWallpapers', [CategoryPublic::class, 'loadmoreFreeWallpapers'])->name('main.category.loadmoreFreeWallpapers');
+Route::get('/toogleHeartFeelingFreeWallpaper', [AjaxController::class, 'toogleHeartFeelingFreeWallpaper'])->name('ajax.toogleHeartFeelingFreeWallpaper');
 /* SEARCH */
 Route::get('/searchByImage', [SearchController::class, 'searchByImage'])->name('search.searchByImage');
 /* login */
