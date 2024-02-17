@@ -54,7 +54,7 @@
                                         @php
                                             $xhtmlCategory      = null;
                                             foreach($item->categories as $category){
-                                                if($category->infoCategory->seo->type=='category_info'){
+                                                if(!empty($category->infoCategory->seo)&&$category->infoCategory->seo->type=='category_info'){
                                                     $xhtmlCategory  .= '<div class="badge bg-primary" style="margin-left:0.25rem;">'.$category->infoCategory->name.'</div>';
                                                 }
                                             }
@@ -67,7 +67,7 @@
                                         @php
                                             $xhtmlCategory      = null;
                                             foreach($item->categories as $category){
-                                                if($category->infoCategory->seo->type=='style_info'){
+                                                if(!empty($category->infoCategory->seo)&&$category->infoCategory->seo->type=='style_info'){
                                                     $xhtmlCategory  .= '<div class="badge bg-primary" style="margin-left:0.25rem;">'.$category->infoCategory->name.'</div>';
                                                 }
                                             }
@@ -80,7 +80,7 @@
                                         @php
                                             $xhtmlCategory      = null;
                                             foreach($item->categories as $category){
-                                                if($category->infoCategory->seo->type=='event_info'){
+                                                if(!empty($category->infoCategory->seo)&&$category->infoCategory->seo->type=='event_info'){
                                                     $xhtmlCategory  .= '<div class="badge bg-primary" style="margin-left:0.25rem;">'.$category->infoCategory->name.'</div>';
                                                 }
                                             }
