@@ -18,6 +18,7 @@ use App\Models\RelationFreewallpaperCategory;
 use App\Helpers\Charactor;
 use App\Models\Category;
 use App\Models\RelationTagInfoOrther;
+use App\Models\RelationFreeWallpaperUser;
 use App\Models\Tag;
 use App\Models\Seo;
 use App\Models\EnSeo;
@@ -267,9 +268,13 @@ class FreeWallpaperController extends Controller {
             Storage::disk('gcs')->delete(config('main.google_cloud_storage.freeWallpapers').$infoWallpaper->file_name.'-mini.'.$infoWallpaper->extension);
             /* xóa relation */
             /* categories */
+            RelationFreeWallpaperUser::select('*')
+                ->where('free_wallpaper_info_id', $infoWallpaper->id)
+                ->delete();
+            /* categories */
             RelationFreewallpaperCategory::select('*')
-            ->where('free_wallpaper_info_id', $infoWallpaper->id)
-            ->delete();
+                ->where('free_wallpaper_info_id', $infoWallpaper->id)
+                ->delete();
             /* tags */
             RelationTagInfoOrther::select('*')
                 ->where('reference_id', $infoWallpaper->id)
