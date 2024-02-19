@@ -82,7 +82,8 @@ class FreeWallpaperController extends Controller {
                 $heightW                        = $imageInfoW[1];
                 $miniTypeW                      = $imageInfoW['mime'];
                 $fileSizeW                      = filesize($wallpaper);
-                $extensionW                     = config('image.extension');
+                // $extensionW                     = config('image.extension');
+                $extensionW                     = $wallpaper->getClientOriginalExtension();
                 $fileNameNonHaveExtensionW      = Charactor::convertStrToUrl($request->get('name')).'-'.time().'-'.$i;
                 $folderW                        = config('main.google_cloud_storage.freeWallpapers');
                 $fileUrlW                       = $folderW.$fileNameNonHaveExtensionW.'.'.$extensionW;
