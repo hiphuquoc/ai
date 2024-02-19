@@ -85,7 +85,7 @@
             <input type="hidden" id="topLoad" name="topLoad" value="" />
             <div class="freeWallpaperBox">
                 @foreach($wallpapers as $wallpaper)
-                    @include('wallpaper.free.item', compact('wallpaper', 'language'))
+                    @include('wallpaper.category.item', compact('wallpaper', 'language'))
                 @endforeach
             </div>
 
