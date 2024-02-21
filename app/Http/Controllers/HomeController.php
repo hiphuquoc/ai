@@ -70,6 +70,9 @@ class HomeController extends Controller{
             $filters    = $request->get('filters') ?? [];
             $user       = Auth::user();
             $wallpapers = FreeWallpaper::select('*')
+                            ->whereHas('categories.infoCategory', function(){
+
+                            })
                             ->when(!empty($filters), function($query) use($filters){
                                 foreach($filters as $filter){
                                     $query->whereHas('categories.infoCategory', function($query) use($filter){
