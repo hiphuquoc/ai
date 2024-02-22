@@ -3,9 +3,35 @@
 <!-- ===== START:: SCHEMA ===== -->
     <!-- STRAT:: Product Schema -->
     @php
-        $highPrice          = 0;
-        $lowPrice           = 0;
-        $currency           = empty($language)||$language=='vi' ? 'VND' : 'USD';
+        if(empty($language)||$language=='vi'){
+            $currency           = 'VND';
+            $highPrice          = 0;
+            foreach($wallpapers as $wallpaper){
+                if($wallpaper->price_before_promotion>$highPrice) $highPrice = \App\Helpers\Number::convertUSDToVND($wallpaper->price_before_promotion);
+            }
+            $lowPrice           = $highPrice;
+            foreach($wallpapers as $wallpaper){
+                if(!empty($wallpaper->prices)){ /* trường hợp hình nền miễn phí không có giá */
+                    foreach($wallpaper->prices as $price){
+                        if($price->price<$lowPrice) $lowPrice   = \App\Helpers\Number::convertUSDToVND($price->price);
+                    }
+                }
+            }
+        }else {
+            $currency           = 'USD';
+            $highPrice          = 0;
+            foreach($wallpapers as $wallpaper){
+                if($wallpaper->price_before_promotion>$highPrice) $highPrice = $wallpaper->price_before_promotion;
+            }
+            $lowPrice           = $highPrice;
+            foreach($wallpapers as $wallpaper){
+                if(!empty($wallpaper->prices)){ /* trường hợp hình nền miễn phí không có giá */
+                    foreach($wallpaper->prices as $price){
+                        if($price->price<$lowPrice) $lowPrice = $price->price;
+                    }
+                }
+            }
+        }
     @endphp
     @include('wallpaper.schema.product', ['item' => $item, 'lowPrice' => $lowPrice, 'highPrice' => $highPrice, 'currency' => $currency])
     <!-- END:: Product Schema -->
@@ -34,7 +60,7 @@
     @include('wallpaper.schema.itemlist', ['data' => $wallpapers])
     <!-- END:: FAQ Schema -->
 
-    {{-- <!-- STRAT:: ImageObject Schema -->
+    <!-- STRAT:: ImageObject Schema -->
     @php
         $dataImages = new \Illuminate\Database\Eloquent\Collection;
         foreach($wallpapers as $wallpaper){
@@ -48,7 +74,7 @@
         }
     @endphp
     @include('wallpaper.schema.imageObject', ['data' => $dataImages])
-    <!-- END:: ImageObject Schema --> --}}
+    <!-- END:: ImageObject Schema -->
 
     <!-- STRAT:: FAQ Schema -->
     @include('wallpaper.schema.faq', ['data' => $item->faqs])
@@ -79,12 +105,14 @@
                 'language'          => $language ?? 'vi',
                 'total'             => $total
             ])
-            <!-- Box -->
+            <!-- Box 
+                vừa vào tải 0 phần tử -> tất cả tải bằng ajax
+            -->
             @include('wallpaper.category.box', [
+                'wallpapers'        => new \Illuminate\Database\Eloquent\Collection,
                 'total'             => $total,
-                'loaded'            => $loaded,
-                'arrayIdCategoyr'   => $arrayIdCategory,
-                'wallpapers'        => $wallpapers,
+                'loaded'            => 0,
+                'arrayIdCategory'   => $arrayIdCategory,
                 'language'          => $language
             ])
         </div>

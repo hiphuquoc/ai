@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Page;
 use App\Models\FreeWallpaper;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Cookie;
 use App\Models\Product;
 use App\Models\RelationSeoEnSeo;
@@ -26,7 +27,6 @@ use Illuminate\Support\Facades\Bus;
 
 class HomeController extends Controller{
     public static function home(Request $request){
-        $home                   = true;
         /* xác định trang tiếng anh hay tiếng việt */
         $currentRoute           = Route::currentRouteName();
         /* lưu ngôn ngữ sử dụng */
@@ -55,6 +55,7 @@ class HomeController extends Controller{
                                     })
                                     ->with('seo', 'en_seo', 'type')
                                     ->first();
+            $params     = [];
             /* tìm kiếm bằng feeling */
             $searchFeeling = $request->get('search_feeling') ?? [];
             foreach($searchFeeling as $feeling){
@@ -64,46 +65,20 @@ class HomeController extends Controller{
                 }
             }
             /* lấy wallpapers */
-            $arrayIdCategory = [];
-            $loaded     = 10;
-            $sortBy     = Cookie::get('sort_by') ?? null;
-            $filters    = $request->get('filters') ?? [];
-            $user       = Auth::user();
-            $wallpapers = FreeWallpaper::select('*')
-                            ->whereHas('categories.infoCategory', function(){
-
-                            })
-                            ->when(!empty($filters), function($query) use($filters){
-                                foreach($filters as $filter){
-                                    $query->whereHas('categories.infoCategory', function($query) use($filter){
-                                        $query->where('id', $filter);
-                                    });
-                                }
-                            })
-                            ->when(!empty($searchFeeling), function($query) use ($searchFeeling) {
-                                $query->whereHas('feeling', function($subquery) use ($searchFeeling) {
-                                    $subquery->whereIn('type', $searchFeeling);
-                                });
-                            })
-                            ->when(empty($sortBy), function($query){
-                                $query->orderBy('id', 'DESC');
-                            })
-                            ->when($sortBy=='new'||$sortBy=='propose', function($query){
-                                $query->orderBy('id', 'DESC');
-                            })
-                            ->when($sortBy=='favourite', function($query){
-                                $query->orderBy('heart', 'DESC')
-                                        ->orderBy('id', 'DESC');
-                            })
-                            ->when($sortBy=='old', function($query){
-                                $query->orderBy('id', 'ASC');
-                            })
-                            ->skip(0)
-                            ->take($loaded)
-                            ->get();
-            $total      = FreeWallpaper::count();
+            $arrayIdCategory                    = [];
+            $params['array_category_info_id']   = $arrayIdCategory;
+            $params['loaded']                   = 0;
+            $params['request_load']             = 20;
+            $params['sort_by']                  = Cookie::get('sort_by') ?? null;
+            $params['filters']                  = $request->get('filters') ?? [];
+            $tmp                                = CategoryController::getFreeWallpapers($params);
+            $wallpapers                         = $tmp['wallpapers'];
+            $total                              = $tmp['total'];
+            $loaded                             = $tmp['loaded'];
+            // dd($tmp);
+            $user                               = Auth::user();
             $breadcrumb  = [];
-            $xhtml      = view('wallpaper.category.index', compact('home', 'breadcrumb', 'item', 'arrayIdCategory', 'wallpapers', 'total', 'loaded', 'language', 'user', 'searchFeeling'))->render();
+            $xhtml      = view('wallpaper.category.index', compact('breadcrumb', 'item', 'arrayIdCategory', 'wallpapers', 'total', 'loaded', 'language', 'user', 'searchFeeling'))->render();
             /* Ghi dữ liệu - Xuất kết quả */
             if(env('APP_CACHE_HTML')==true) Storage::put(config('main.cache.folderSave').$nameCache, $xhtml);
         }
