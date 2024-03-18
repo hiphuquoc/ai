@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'free_wallpaper_info'   => [
+        'model_name'    => 'FreeWallpaper',
+    ],
+    'tag_info'              => [
+        'model_name'    => 'Tag',
+    ],
+    'category_info'     => [
+        'model_name'    => 'Category',
+    ],
+    'type_info'     => [
+        'model_name'    => 'Category',
+    ],
+    'style_info'        => [
+        'model_name'    => 'Category',
+    ],
+    'event_info'        => [
+        'model_name'    => 'Category',
+    ],
+    'page_info'        => [
+        'model_name'    => 'Page',
+    ],
+];

@@ -1,8 +1,6 @@
 <?php
 
 return [
-    'currency_unit'         => '<sup>đ</sup>',
-    'currency_unit_en'      => ' US$',
     'exchange_rate'         => [
         'usd_to_vnd'    => 22000
     ],
@@ -48,7 +46,6 @@ return [
         'contentBlog'       => 'public/contents/blogs/',
         'contentCategory'   => 'public/contents/categories/',
         'enContentCategory' => 'public/contents/enCategories/',
-
         'enContentPage'     => 'public/contents/enPages/'
     ],
     'google_cloud_storage' => [
@@ -118,7 +115,7 @@ return [
     ],
     'category_type' => [
         [
-            'key' => 'type_info',
+            'key' => 'category_info',
             'name' => 'Thể loại',
             'en_name'   => 'Category'
         ],

@@ -33,8 +33,6 @@
 
         /* check login để hiện thị button */
         checkLoginAndSetShow();
-
-        preventClickImgAndEffectDownload();
     });
     
     function lazyload(){

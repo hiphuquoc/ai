@@ -8,7 +8,7 @@
     }
 @endphp
 
-<form action="{{ empty($language)||$language=='vi' ? route('routing', ['slug' => 'anh-gai-xinh']) : route('routing', ['slug' => 'photo-beautiful-girl']) }}" method="GET">
+<form action="{{ empty($language)||$language=='vi' ? route('routing', ['slug' => 'hinh-nen-dien-thoai']) : route('routing', ['slug' => 'phone-wallpapers']) }}" method="GET">
     <div class="searchViewBefore">
         <div class="searchViewBefore_input">
             <!-- value = null không lưu giá trị search cũ -->
