@@ -36,7 +36,7 @@
 @pushonce('scriptCustom')
     <!-- Place the first <script> tag in your HTML's <head> -->
     
-    <script src="https://cdn.tiny.cloud/1/z43y634qr3riedcw4hg4jglz5hcij2w07mp0l45wm5peni8y/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.tiny.cloud/1/9o5f4pln8szwhf4r4idntwm77ak6hczjk1zfukrbnzhi0dz0/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
 
         tinymce.init({
