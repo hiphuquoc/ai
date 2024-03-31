@@ -8,12 +8,12 @@
                     if($language=='vi'){
                         if($prompt->reference_name=='content'){
                             if($prompt->type=='auto_content'||$prompt->type=='auto_content_for_image'){
-                                $chatgptDataAndEvent = \App\Helpers\Charactor::generateChatgptDataAndEvent($item, $prompt, $language, $idBox);
+                                $chatgptDataAndEvent = \App\Helpers\Charactor::generateChatgptDataAndEvent($item, $prompt, $language, $idBox, $idContent ?? 0);
                             }
                         }
                     }else {
                         if($prompt->reference_name=='content'&&$prompt->type=='translate_content'){
-                            $chatgptDataAndEvent = \App\Helpers\Charactor::generateChatgptDataAndEvent($item, $prompt, $language, $idBox);
+                            $chatgptDataAndEvent = \App\Helpers\Charactor::generateChatgptDataAndEvent($item, $prompt, $language, $idBox, $idContent ?? 0);
                         }
                     }
                 }
@@ -38,12 +38,12 @@
     
     <script src="https://cdn.tiny.cloud/1/9o5f4pln8szwhf4r4idntwm77ak6hczjk1zfukrbnzhi0dz0/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
-
+        // plugins: 'code anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount linkchecker',
         tinymce.init({
             selector: '.tinySelector',
             menubar: false,
             plugins: 'code anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags typography inlinecss',
-            toolbar: 'code | undo redo | blocks | bold italic underline strikethrough | link image media table | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            toolbar: 'code | blocks | bold italic underline strikethrough | link image media table | align lineheight | checklist numlist bullist indent | emoticons charmap | removeformat',
             tinycomments_mode: 'embedded',
             tinycomments_author: 'Author name',
             mergetags_list: [

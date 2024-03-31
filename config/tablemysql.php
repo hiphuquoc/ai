@@ -10,9 +10,6 @@ return [
     'category_info'     => [
         'model_name'    => 'Category',
     ],
-    'type_info'     => [
-        'model_name'    => 'Category',
-    ],
     'style_info'        => [
         'model_name'    => 'Category',
     ],
@@ -21,5 +18,8 @@ return [
     ],
     'page_info'        => [
         'model_name'    => 'Page',
+    ],
+    'product_info'        => [
+        'model_name'    => 'Product',
     ],
 ];

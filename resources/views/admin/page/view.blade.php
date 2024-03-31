@@ -112,60 +112,14 @@
                             </div>
                         </div>
                     </div>
-                    {{-- <!-- tiếng việt -> không có prompt viết bài -->
-                    @if($language=='vi') 
-                        @if($prompt->type=='auto_content'&&$prompt->reference_name=='content')
-                            <div class="pageAdminWithRightSidebar_main_content_item width100">
-                                <div class="card">
-                                    <div class="card-body">
-                                        @php
-                                            $xhtmlContent = '';
-                                            if(!empty($itemSeo->contents)) foreach($itemSeo->contents as $c) $xhtmlContent .= $c->content;
-                                        @endphp
-                                        @include('admin.form.formContent', [
-                                            'prompt'    => null,
-                                            'content' => $xhtmlContent, 
-                                            'idBox' => 'content_'.$i
-                                        ])
-                                            
-                                    </div>
-                                </div>
-                            </div>
-                            @php
-                                ++$i;
-                            @endphp
-                        @endif
-                    @else 
-                        <!-- tiếng khác -> form dịch (đối với bản dịch chỉ có duy nhất 1 box content - gom dữ liệu lại) -->
-                        @if($prompt->type=='translate_content'&&$prompt->reference_name=='content')
-                            <div class="pageAdminWithRightSidebar_main_content_item width100">
-                                <div class="card">
-                                    <div class="card-body">
-                                        @php
-                                            $xhtmlContent = '';
-                                            if(!empty($itemSeo->contents)) foreach($itemSeo->contents as $c) $xhtmlContent .= $c->content;
-                                        @endphp
-                                        @include('admin.form.formContent', [
-                                            'prompt'    => $prompt,
-                                            'content'   => $xhtmlContent, 
-                                            'idBox'     => 'content_'.$i
-                                        ])
-                                            
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-                    @endif
-                    @foreach($prompts as $prompt)
-                        
-                    @endforeach --}}
+                    
                 </div>
                 <!-- END:: Main content -->
 
                 <!-- START:: Sidebar content -->
                 <div class="pageAdminWithRightSidebar_main_rightSidebar">
                     <!-- Button Save -->
-                    <div class="pageAdminWithRightSidebar_main_rightSidebar_item buttonAction" style="padding-bottom:1rem;">
+                    <div class="pageAdminWithRightSidebar_main_rightSidebar_item buttonAction">
                         @if(!empty($itemSeo->slug_full))
                             <a href="/{{ $itemSeo->slug_full }}" target="_blank" style="font-size:1.4rem;"><i class="fa-regular fa-eye"></i></a>
                         @endif
@@ -185,7 +139,7 @@
                             @endif
                         </div>
                     </div>
-                    <div class="customScrollBar-y" style="height: calc(100% - 70px);border-top: 1px dashed #adb5bd;">
+                    <div class="customScrollBar-y" style="height: calc(100% - 90px);">
                         <!-- Form Upload -->
                         <div class="pageAdminWithRightSidebar_main_rightSidebar_item">
                             @include('admin.form.formImage')

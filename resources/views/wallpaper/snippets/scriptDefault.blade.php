@@ -8,11 +8,9 @@
         
         /* lazyload ảnh lần đầu */
         lazyload();
-        lazyloadWithResize();
         /* lazyload ảnh khi scroll */
         $(window).on('scroll', function() {
             lazyload();
-            lazyloadWithResize();
         });
         
         /* tải lại view sort cart */
@@ -58,47 +56,6 @@
                     $(this).addClass('loaded');
                 }
             }
-        });
-    }
-
-    /* lazyload và resize từ ảnh gốc */
-    function lazyloadWithResize() {
-        $('img.lazyloadWithResize, div.lazyloadWithResize').each(function() {
-            var boxThis = $(this);
-            if (!boxThis.hasClass('loaded')) {
-                var distance = $(window).scrollTop() - boxThis.offset().top + 900;
-                if (distance > 0) {
-                    loadImageWithResize(boxThis);
-                }
-            }
-        });
-    }
-    function loadImageWithResize(boxThis) {
-        const urlImage = boxThis.data('url-image');
-        const resize = boxThis.data('resize');
-        $.ajax({
-            url: "{{ route('ajax.loadImageWithResize') }}",
-            type: 'get',
-            dataType: 'html',
-            data: {
-                url_image: urlImage,
-                resize: resize
-            },
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-        }).done(function (response) {
-            if (boxThis.is('img')) {
-                boxThis.attr('src', response);
-            } else if (boxThis.is('div')) {
-                boxThis.css({
-                    background: 'url("' + response + '") no-repeat center center / cover',
-                    filter: 'unset'
-                });
-            }
-            boxThis.addClass('loaded');
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            console.error("Ajax request failed: " + textStatus, errorThrown);
         });
     }
 
@@ -328,46 +285,61 @@
         }
     }
     /* thêm sản phẩm vào giỏ hàng */
-    function addToCart(idProduct, idPrice, type){
-        let dataForm                = {};
-        dataForm.product_info_id    = idProduct;
-        dataForm.product_price_id   = idPrice;
-        dataForm.type               = type;
-        // $('#js_addToCart_options').children().each(function(){
-        //     if($(this).hasClass('selected')) {
-        //         /* lấy url riêng của option được chọn */ 
-        //         dataForm.product_price_id     = $(this).data('product_price_id');
-        //     }
-        // });
-        // /* lấy id sản phẩm */ 
-        // dataForm.product_info_id    = $('#product_info_id').val();
-        $.ajax({
-            url         : '{{ route("main.addToCart") }}',
-            type        : 'get',
-            dataType    : 'html',
-            data        : dataForm
-        }).done(function(data){
+    function addToCart(idProduct, idPrice, type) {
+        let dataForm = {};
+        dataForm.product_info_id = idProduct;
+        dataForm.product_price_id = idPrice;
+        dataForm.type = type;
+        
+        const queryString = new URLSearchParams(dataForm).toString();
+
+        fetch("{{ route('main.addToCart') }}?" + queryString, {
+            method: 'GET',
+            mode: 'cors',
+            // headers: {
+            //     'Content-Type': 'application/json',
+            //     'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            // }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(data => {
             /* reset lại value số lượng */
             $('#js_addToCart_quantity').val(1);
             /* hiện thông báo trong 5s */
             $('#js_addToCart_idWrite').html(data);
             openCloseModal('cartMessage');
-            // setTimeout(() => {
-            //     openCloseModal('cartMessage', 'close');
-            // }, 5000);
             /* cập nhật lại thông tin giỏ hàng */ 
             viewSortCart();
         })
+        .catch(error => {
+            console.error("Fetch request failed:", error);
+        });
     }
     /* tải lại thông tin icon giỏ hàng */
-    function viewSortCart(){
-        $.ajax({
-            url         : '{{ route("main.viewSortCart") }}',
-            type        : 'get',
-            dataType    : 'html',
-            success     : function(response){
-                $('#js_viewSortCart_idWrite').html(response);
+    function viewSortCart() {
+        fetch('{{ route("main.viewSortCart") }}', {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
+            return response.json();
+        })
+        .then(data => {
+            $('#js_viewSortCart_idWrite').html(data); // Sử dụng dữ liệu nhận được từ phản hồi để cập nhật HTML
+        })
+        .catch(error => {
+            console.error('There was a problem with your fetch operation:', error);
         });
     }
     // /* tải lại thành tiền khi thay đổi số lượng */
@@ -400,74 +372,89 @@
     //     });
     // }
     /* xóa sản phẩm khỏi cart */ 
-    function removeProductCart(idProduct, idProductPrice, idRow, idTotal, idCount){
+    function removeProductCart(idProduct, idProductPrice, idRow, idTotal, idCount) {
         /* tải loading */ 
         loadLoading(idRow);
-        $.ajax({
-            url         : '{{ route("main.removeProductCart") }}',
-            type        : 'get',
-            dataType    : 'json',
-            data        : {
-                product_info_id     : idProduct,
-                product_price_id    : idProductPrice
-            },
-            success     : function(response){
-                /* cart trống */
-                if(response.empty_cart!='') $('#js_checkEmptyCart_idWrite').html(response.empty_cart);
-                $('#'+idTotal).html(response.total);
-                $('#'+idCount).html(response.count);
-                setTimeout(() => {
-                    $('#'+idRow).remove();
-                }, 300);
-                /* trong page giỏ hàng => tải lại thành tiền */
-                if (typeof loadTotalCart === 'function') {
-                    loadTotalCart($('#payment_method_info_id').val());
-                }
-                /* trường hợp xóa không còn sản phẩm */
-                if(response.isEmpty!='') {
-                    $('#js_checkEmptyCart_idWrite').html(response.isEmpty);
-                    $('#js_scrollMenu').remove();
-                }
+
+        fetch("{{ route('main.removeProductCart') }}?product_info_id=" + idProduct + "&product_price_id=" + idProductPrice, {
+            method: 'GET',
+            mode: 'cors'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
+            return response.json();
+        })
+        .then(response => {
+            /* cart trống */
+            if (response.empty_cart !== '') $('#js_checkEmptyCart_idWrite').html(response.empty_cart);
+            $('#' + idTotal).html(response.total);
+            $('#' + idCount).html(response.count);
+            setTimeout(() => {
+                $('#' + idRow).remove();
+            }, 300);
+            /* trong page giỏ hàng => tải lại thành tiền */
+            if (typeof loadTotalCart === 'function') {
+                loadTotalCart($('#payment_method_info_id').val());
+            }
+            /* trường hợp xóa không còn sản phẩm */
+            if (response.isEmpty !== '') {
+                $('#js_checkEmptyCart_idWrite').html(response.isEmpty);
+                $('#js_scrollMenu').remove();
+            }
+        })
+        .catch(error => {
+            console.error("Fetch request failed:", error);
         });
     }
     /* add loading icon */
-    function loadLoading(idAppend, theme = 'loading_2'){
-        $.ajax({
-            url         : '{{ route("ajax.loadLoading") }}',
-            type        : 'get',
-            dataType    : 'html',
-            data        : {
-                theme       : theme
-            },
-            success     : function(response){
-                $('#'+idAppend).append(response);
+    function loadLoading(idAppend, theme = 'loading_2') {
+        fetch("{{ route('ajax.loadLoading') }}?theme=" + theme, {
+            method: 'GET',
+            mode: 'cors'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
+            return response.text();
+        })
+        .then(response => {
+            $('#' + idAppend).append(response);
+        })
+        .catch(error => {
+            console.error("Fetch request failed:", error);
         });
     }
     /* tính năng registry email ở footer */
-    function submitFormRegistryEmail(idForm){
-            event.preventDefault();
-            const inputEmail = $('#'+idForm).find('[name*=registry_email]');
-            const valueEmail = inputEmail.val();
-            if(isValidEmail(valueEmail)){
-                $.ajax({
-                    url         : '{{ route("ajax.registryEmail") }}',
-                    type        : 'get',
-                    dataType    : 'json',
-                    data        : {
-                        registry_email : valueEmail
-                    },
-                    success     : function(response){
-                        /* bật thông báo */
-                        setMessageModal(response.title, response.content);
-                    }
-                });
-            }else {
-                inputEmail.val('');
-                inputEmail.attr('placeholder', 'Email không hợp lệ!');
-            }
+    function submitFormRegistryEmail(idForm) {
+        event.preventDefault();
+        const inputEmail = $('#' + idForm).find('[name*=registry_email]');
+        const valueEmail = inputEmail.val();
+        if (isValidEmail(valueEmail)) {
+            fetch("{{ route('ajax.registryEmail') }}?registry_email=" + encodeURIComponent(valueEmail), {
+                method: 'GET',
+                mode: 'cors'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(response => {
+                /* bật thông báo */
+                setMessageModal(response.title, response.content);
+            })
+            .catch(error => {
+                console.error("Fetch request failed:", error);
+            });
+        } else {
+            inputEmail.val('');
+            inputEmail.attr('placeholder', 'Email không hợp lệ!');
         }
+    }
     function isValidEmail(email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
@@ -636,16 +623,21 @@
     /* load quận/huyện */
     function loadDistrictByIdProvince(elementProvince, idWrite){
         const valueProvince = $(elementProvince).val();
-        $.ajax({
-            url         : '{{ route("ajax.loadDistrictByIdProvince") }}',
-            type        : 'get',
-            dataType    : 'html',
-            data        : {
-                province_info_id : valueProvince
-            },
-            success     : function(response){
-                $('#'+idWrite).html(response);
+        fetch('{{ route("ajax.loadDistrictByIdProvince") }}?province_info_id='+valueProvince, {
+            method  : 'GET',
+            mode    : 'cors',
+        })
+        .then(response => {
+            if (!response.ok){
+                throw new Error('Network response was not ok');
             }
+            return response.json();
+        })
+        .then(response => {
+            $('#'+idWrite).html(response);
+        })
+        .catch(error => {
+            console.error("Fetch request failed:", error);
         });
     }
     /* validate form */
@@ -681,24 +673,166 @@
     // }
     /* check đăng nhập */
     function checkLoginAndSetShow(){
-        const language = $('#language').val();
-        $.ajax({
-            url         : '{{ route("ajax.checkLoginAndSetShow") }}',
-            type        : 'get',
-            dataType    : 'json',
-            data        : {
-                '_token'            : '{{ csrf_token() }}',
-                language
-            },
-            success     : function(response){
-                /* button desktop */
-                $('#js_checkLoginAndSetShow_button').html(response.button);
-                $('#js_checkLoginAndSetShow_button').css('display', 'flex');
-                /* button mobile */
-                $('#js_checkLoginAndSetShow_buttonMobile').html(response.button_mobile);
-                /* modal chung */
-                $('#js_checkLoginAndSetShow_modal').html(response.modal);
+        fetch('{{ route("ajax.checkLoginAndSetShow") }}', {
+            method  : 'GET',
+            mode    : 'cors',
+        })
+        .then(response => {
+            if (!response.ok){
+                throw new Error('Network response was not ok');
             }
+            return response.json();
+        })
+        .then(response => {
+            /* button desktop */
+            $('#js_checkLoginAndSetShow_button').html(response.button);
+            $('#js_checkLoginAndSetShow_button').css('display', 'flex');
+            /* button mobile */
+            $('#js_checkLoginAndSetShow_buttonMobile').html(response.button_mobile);
+            /* modal chung */
+            $('#js_checkLoginAndSetShow_modal').html(response.modal);
+        })
+        .catch(error => {
+            console.error("Fetch request failed:", error);
+        });
+    }
+    /* bật tắt bộ lọc nâng cao */
+    function toggleFilterAdvanced(idElement){
+        $('#'+idElement).toggleClass('active');
+    }
+    /* set chế độ xem */
+    function setViewBy(key) {
+        fetch("{{ route('ajax.setViewBy') }}?key=" + key, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            location.reload();
+        })
+        .catch(error => {
+            console.error("Fetch request failed:", error);
+        });
+    }
+    /* set chế độ sắp xếp */
+    function setSortBy(key) {
+        fetch("{{ route('ajax.setSortBy') }}?key=" + key, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            location.reload();
+        })
+        .catch(error => {
+            console.error("Fetch request failed:", error);
+        });
+    }
+
+        // function setFeelingAndSubmit(element) {
+        //     // Xác định input checkbox trong phần tử cha của element
+        //     var checkbox = $(element).find('input[type="checkbox"]');
+
+        //     // Toggle trạng thái checked của checkbox
+        //     checkbox.prop('checked', !checkbox.prop('checked'));
+
+        //     // Submit form
+        //     $(element).closest('form').submit();
+        // }
+    /* set filter */
+    function setFilter(element){
+        var checkbox = $(element).find('input[type="radio"]');
+        checkbox.prop('checked', true);
+        $(element).closest('form').submit();
+    }
+    /* tải box bộ lọc trang miễn phí */
+    function showSortBoxFreeWallpaper() {
+        const id = "{{ $item->id ?? 0 }}";
+        const total = "{{ $total ?? 0 }}";
+
+        // Lấy chuỗi query parameters từ URL
+        var queryString = window.location.search;
+        var urlParams = new URLSearchParams(queryString);
+        var params = {};
+        for (const [key, value] of urlParams) params[key] = value;
+
+        // Thêm các giá trị id và total vào params
+        params['id'] = id;
+        params['total'] = total;
+
+        const queryParams = new URLSearchParams(params).toString();
+
+        fetch("{{ route('ajax.showSortBoxFreeWallpaper') }}?" + queryParams, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(data => {
+            $('#formViewBy').html(data);
+        })
+        .catch(error => {
+            console.error("Fetch request failed:", error);
+        });
+    }
+    /* tải box bộ lọc trang trả phí */
+    function showSortBoxWallpaper() {
+        const id = "{{ $item->id ?? 0 }}";
+        const total = "{{ $total ?? 0 }}";
+
+        // Lấy chuỗi query parameters từ URL
+        var queryString = window.location.search;
+        
+        // Tạo một đối tượng URLSearchParams từ chuỗi query parameters
+        var urlParams = new URLSearchParams(queryString);
+
+        // Lấy tất cả các tham số truyền qua URL
+        var params = {};
+        for (const [key, value] of urlParams) {
+            params[key] = value;
+        }
+
+        // Thêm các giá trị id và total vào params
+        params['id'] = id;
+        params['total'] = total;
+
+        const queryParams = new URLSearchParams(params).toString();
+
+        fetch("{{ route('ajax.showSortBoxWallpaper') }}?" + queryParams, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(data => {
+            $('#formViewBy').html(data);
+        })
+        .catch(error => {
+            console.error("Fetch request failed:", error);
         });
     }
 </script>

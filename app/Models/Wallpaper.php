@@ -30,6 +30,7 @@ class Wallpaper extends Model {
         'ha_ha',
         'not_like',
         'vomit'
+
     ];
     public $timestamps = true;
 
@@ -77,11 +78,12 @@ class Wallpaper extends Model {
         }
         return $flag;
     }
-
-    // public function productPrices() {
-    //     return $this->hasMany(\App\Models\RelationCategoryBlogInfoBlogInfo::class, 'id', 'seo_id');
-    // }
+    
     public function priceUses(){
         return $this->hasMany(\App\Models\RelationProductPriceWallpaperInfo::class, 'wallpaper_info_id', 'id');
+    }
+
+    public function tags(){
+        return $this->hasMany(\App\Models\RelationTagInfoOrther::class, 'reference_id', 'id')->where('reference_type', 'wallpaper_info');
     }
 }

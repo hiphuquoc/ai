@@ -5,13 +5,12 @@
     @php
         $highPrice          = 0;
         $lowPrice           = 0;
-        $currency           = empty($language)||$language=='vi' ? 'VND' : 'USD';
     @endphp
-    @include('wallpaper.schema.product', ['item' => $item, 'lowPrice' => $lowPrice, 'highPrice' => $highPrice, 'currentcy' => $currency])
+    @include('wallpaper.schema.product', ['item' => $item, 'lowPrice' => $lowPrice, 'highPrice' => $highPrice])
     <!-- END:: Product Schema -->
 
     <!-- STRAT:: Title - Description - Social -->
-    @include('wallpaper.schema.social', compact('item', 'lowPrice', 'highPrice'))
+    @include('wallpaper.schema.social', ['item' => $item, 'lowPrice' => $lowPrice, 'highPrice' => $highPrice])
     <!-- END:: Title - Description - Social -->
 
     <!-- STRAT:: Organization Schema -->
@@ -22,15 +21,13 @@
     @include('wallpaper.schema.article', compact('item'))
     <!-- END:: Article Schema -->
 
-    {{-- <!-- STRAT:: ImageObject Schema -->
+    <!-- STRAT:: ImageObject Schema -->
     @php
         $dataImages = new \Illuminate\Database\Eloquent\Collection;
-        foreach($item->prices as $price){
-            foreach($price->wallpapers as $wallpaper) $dataImages[] = $wallpaper->infoWallpaper;
-        }
+        $dataImages->push($item);   
     @endphp
     @include('wallpaper.schema.imageObject', ['data' => $dataImages])
-    <!-- END:: ImageObject Schema --> --}}
+    <!-- END:: ImageObject Schema -->
 
     <!-- STRAT:: Article Schema -->
     @include('wallpaper.schema.creativeworkseries', compact('item'))
@@ -109,21 +106,29 @@
         })
 
         /* thả cảm xúc */
-        function toogleHeartFeelingFreeWallpaper(idFreeWallpaper){
-            $.ajax({
-                url         : '{{ route("ajax.toogleHeartFeelingFreeWallpaper") }}',
-                type        : 'get',
-                dataType    : 'html',
-                data        : {
-                    free_wallpaper_info_id : idFreeWallpaper
-                },
-                success     : function(response){
-                    if(response==true){
-                        $('.freeWallpaperDetailBox .heart').addClass('selected');
-                    }else {
-                        $('.freeWallpaperDetailBox .heart').removeClass('selected');
-                    }
+        function toogleHeartFeelingFreeWallpaper(idFreeWallpaper) {
+            fetch("{{ route('ajax.toogleHeartFeelingFreeWallpaper') }}?free_wallpaper_info_id=" + idFreeWallpaper, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(data => {
+                if (data === "true") {
+                    $('.freeWallpaperDetailBox .heart').addClass('selected');
+                } else {
+                    $('.freeWallpaperDetailBox .heart').removeClass('selected');
+                }
+            })
+            .catch(error => {
+                console.error("Fetch request failed:", error);
             });
         }
     </script>

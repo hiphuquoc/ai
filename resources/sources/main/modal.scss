@@ -259,7 +259,8 @@
     justify-content: center;
     &_box {
         max-width: 720px;
-        width: 100%;
+        min-width: 500px;
+        // width: calc(100% - 2rem);
         margin: 0 auto;
         background: $colorBackgroundLv2;
         border-radius: 10px;

@@ -1,9 +1,6 @@
 <?php
 
 return [
-    'exchange_rate'         => [
-        'usd_to_vnd'    => 22000
-    ],
     'author_name'           => 'Name.com.vn',
     'founder_name'          => 'Name.com.vn',
     'founder_address'       => '55 Cô Giang, Rạch Giá',
@@ -89,15 +86,13 @@ return [
         ]
     ],
     'view_by' => [
-        'set'   => [
+        [
             'icon'      => '<i class="fa-solid fa-gift"></i>',
-            'name'      => 'Từng bộ',
-            'en_name'   => 'Per set'
+            'key'       => 'each_set'
         ],
-        'wallpaper'   => [
+        [
             'icon'      => '<i class="fa-regular fa-image"></i>',
-            'name'      => 'Từng ảnh',
-            'en_name'   => 'Per wallpaper'
+            'key'       => 'each_image'
         ]
     ],
     'cache'     => [
@@ -116,18 +111,15 @@ return [
     'category_type' => [
         [
             'key' => 'category_info',
-            'name' => 'Thể loại',
-            'en_name'   => 'Category'
+            'name' => 'Thể loại'
         ],
         [
             'key' => 'style_info',
-            'name' => 'Phong cách',
-            'en_name'   => 'Style'
+            'name' => 'Phong cách'
         ],
         [
             'key' => 'event_info',
-            'name' => 'Sự kiện',
-            'en_name'   => 'Event'
+            'name' => 'Sự kiện'
         ],
         // [
         //     'key' => 'maintone_info',
@@ -159,26 +151,18 @@ return [
         [
             'icon'      => '<i class="fa-solid fa-star"></i>',
             'key'       => 'propose',
-            'name'      => 'Đề xuất',
-            'en_name'   => 'Propose'
         ],
         [
             'icon'      => '<i class="fa-solid fa-heart"></i>',
             'key'       => 'favourite',
-            'name'      => 'Yêu thích',
-            'en_name'   => 'Favourite'
         ],
         [
             'icon'      => '<i class="fa-solid fa-arrow-down"></i>',
-            'key'       => 'new',
-            'name'      => 'Mới nhất',
-            'en_name'   => 'Latest'
+            'key'       => 'newest',
         ],
         [
             'icon'      => '<i class="fa-solid fa-arrow-up"></i>',
-            'key'       => 'old',
-            'name'      => 'Cũ nhất',
-            'en_name'   => 'Oldest'
+            'key'       => 'oldest',
         ]
     ],
     'feeling_type'  => [
@@ -220,5 +204,8 @@ return [
             'vi'    => 'tag-anh-gai-xinh',
             'en'    => 'tag-photo-beautiful-girl'
         ]
+    ],
+    'tool_translate'    => [
+        'ai', 'google_translate'
     ],
 ];

@@ -277,16 +277,6 @@
     &_box {
         width: 100%;
         @include slickArrowCircle;
-        .slick-slider {
-            .slick-arrow {
-                &.slick-prev {
-                    left: -18px;
-                }
-                // &.slick-next {
-                //     right: 0;
-                // }
-            }
-        }
     }
     &_viewMore {
         padding: 0.35rem 2.5rem;
@@ -813,7 +803,56 @@
         }
     }
 }
-
+.sortBox {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    @include colorOpacity('color', $colorText, 0.7);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    &_left {
+        display: flex;
+        > * {
+            &:not(:first-child){
+                margin-left: 0.5rem;
+            }
+        }
+    }
+    &_right {
+        display: flex;
+        > * {
+            &:not(:first-child){
+                margin-left: 0.5rem;
+            }
+        }
+        &_item {
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-end;
+            > * {
+                &:not(:first-child){
+                    margin-left: 0.5rem;
+                }
+            }
+            select {
+                padding: 0;
+                @include colorOpacity('color', $colorText, 0.8);
+                border: none;
+                background: transparent;
+                font-size: 0.95rem;
+            }
+        }
+    }
+    .highLight {
+        @include highLight;
+    }
+    @media(max-width: 1023px){
+        margin-bottom: 0.75rem;
+    }
+    // @media(max-width: 1023px){
+    //     margin-bottom: 0.5rem;
+    // }
+}
 $heightSelect : 35px;
 .selectCustom {
     display: flex;
@@ -858,7 +897,7 @@ $heightSelect : 35px;
         top: $heightSelect;
         left: 0;
         background: $colorBackgroundLv2;
-        min-width: 180px;
+        min-width: 200px;
         border-radius: 10px;
         box-shadow: 0 0 10px $colorBackgroundLv1;
         z-index: 999;
