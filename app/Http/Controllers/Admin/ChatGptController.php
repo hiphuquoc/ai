@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 use App\Models\Prompt;
+use App\Models\ApiAI;
 use App\Models\Tag;
 use GoogleTranslate;
 
@@ -40,8 +41,8 @@ class ChatGptController extends Controller {
                                     ->where('seo_content.id', $idContent)
                                     ->first();
                     /* xử lý riêng cho dịch content -> vì lấy ra idContent */
-                    $prompt     = self::convertPrompt($item, $infoPrompt, $infoPrompt->reference_name, $language);
-                    $response   = self::callApi($prompt);
+                    $promptText = self::convertPrompt($item, $infoPrompt, $infoPrompt->reference_name, $language);
+                    $response   = self::callApi($promptText, $infoPrompt);
                     return json_encode($response);
                 }
 
@@ -51,8 +52,8 @@ class ChatGptController extends Controller {
                                 ->select($infoPrompt->reference_table . '.*', 'seo.*')
                                 ->where($infoPrompt->reference_table.'.id', $idTable)
                                 ->first();
-                $prompt     = self::convertPrompt($item, $infoPrompt, $infoPrompt->reference_name, $language);
-                $response   = self::callApi($prompt);
+                $promptText = self::convertPrompt($item, $infoPrompt, $infoPrompt->reference_name, $language);
+                $response   = self::callApi($promptText, $infoPrompt);
                 return json_encode($response);
             }
             /* dịch bằng google translate */
@@ -84,8 +85,8 @@ class ChatGptController extends Controller {
                             ->select($infoPrompt->reference_table . '.*', 'seo.*')
                             ->where($infoPrompt->reference_table.'.id', $idTable)
                             ->first();
-            $prompt     = self::convertPrompt($item, $infoPrompt, $infoPrompt->reference_name, $language);
-            $response   = self::callApi($prompt);
+            $promptText = self::convertPrompt($item, $infoPrompt, $infoPrompt->reference_name, $language);
+            $response   = self::callApi($promptText, $infoPrompt);
             return json_encode($response);
         }
         /* trường hợp viết content cho ảnh */
@@ -103,8 +104,8 @@ class ChatGptController extends Controller {
                     $arrayTag[] = $tag->seo->title;
                 }
                 $jsonTag    = json_encode($arrayTag);
-                $prompt     = str_replace('#jsonTag', $jsonTag, $infoPrompt->reference_prompt);
-                $tmp        = self::callApi($prompt, $urlImage);
+                $promptText = str_replace('#jsonTag', $jsonTag, $infoPrompt->reference_prompt);
+                $tmp        = self::callApi($promptText, $infoPrompt, $urlImage);
                 $pattern    = '/\{(?:[^{}]|(?R))*\}/';
                 preg_match($pattern, $tmp['content'], $matches);
                 $tmp        = $matches[0];
@@ -118,8 +119,8 @@ class ChatGptController extends Controller {
                 }
             }else {
                 /* content thông thường */
-                $prompt     = self::convertPrompt($item, $infoPrompt, $infoPrompt->reference_name, $language);
-                $response   = self::callApi($prompt, $urlImage);
+                $promptText = self::convertPrompt($item, $infoPrompt, $infoPrompt->reference_name, $language);
+                $response   = self::callApi($promptText, $infoPrompt, $urlImage);
             }
             return json_encode($response);
         }        
@@ -154,16 +155,28 @@ class ChatGptController extends Controller {
         return $response;
     }
 
-    private static function callApi($prompt, $urlImage = null){
+    private static function callApi($promptText, $infoPrompt, $urlImage = null, $retryCount = 0){
         $data       = [];
-        $apiKey     = env('CHAT_GPT_API_KEY');
+        /* nếu 3.5 thì lấy ngẫu nhiên các phần tử được active */
+        if($infoPrompt->version=='gpt-3.5-turbo-1106'){
+            $infoApiAI  = ApiAI::select('*')
+                            ->where('type', $infoPrompt->version)
+                            ->where('status', '1')
+                            ->inRandomOrder()
+                            ->first();
+        }else { /* nếu version 4.0 thì lấy duy nhất phần tử được active */
+            $infoApiAI  = ApiAI::select('*')
+                            ->where('type', $infoPrompt->version)
+                            ->where('status', '1')
+                            ->first();
+        }
+        $apiKey     = $infoApiAI->api ?? '';
         $timeoutSeconds = 0;
         /* call api */
         if(empty($urlImage)){
-            $model  = '4.0';
-            $body   = self::autoContent($prompt, $model);
+            $body   = self::autoContent($promptText, $infoPrompt->version);
         }else {
-            $body   = self::autoContentWithImage($prompt, $urlImage);
+            $body   = self::autoContentWithImage($promptText, $urlImage);
         }
         $response   = Http::withHeaders([
             'Content-Type' => 'application/json',
@@ -176,33 +189,48 @@ class ChatGptController extends Controller {
             $data['error']      = '';
         }else {
             $data['content']    = '';
-            $data['error']       = $result['error']['message'];
+                $data['error']       = $result['error']['message'];
+            /* kiểm tra nếu hết credit -> đổi trạng thái của API */
+            if(strpos($result['error']['message'], 'You exceeded your current quota')!==false){
+                ApiAI::updateItem($infoApiAI->id, ['status' => 0]);
+            }
+            // /* nếu lỗi vì bất kì nguyên nhân gì sẽ gọi lại API 1 lần */
+            // if ($retryCount < 1) {
+            //     $retryCount++;
+            //     return self::callApi($promptText, $infoPrompt, $urlImage, $retryCount);
+            // }else {
+            //     $data['content']    = '';
+            //     $data['error']       = $result['error']['message'];
+            // }
         }
         return $data;
     }
 
-    private static function autoContent($prompt, $version = '3.5'){
-        if($version=='3.5'){
-            return [
-                'model'     => 'gpt-3.5-turbo-1106',
-                'messages'  => [
-                    [
-                        'role'      => 'user',
-                        'content'   => $prompt
-                    ],
+    private static function autoContent($prompt, $model){
+
+        return [
+            'model'     => $model,
+            'messages'  => [
+                [
+                    'role'      => 'user',
+                    'content'   => $prompt
                 ],
-            ];
-        }else if($version=='4.0'){
-            return [
-                'model'     => 'gpt-4-0125-preview',
-                'messages'  => [
-                    [
-                        'role'      => 'user',
-                        'content'   => $prompt
-                    ],
-                ],
-            ];
-        }
+            ],
+        ];
+
+        // if($version=='3.5'){
+            
+        // }else if($version=='4.0'){
+        //     return [
+        //         'model'     => 'gpt-4-0125-preview',
+        //         'messages'  => [
+        //             [
+        //                 'role'      => 'user',
+        //                 'content'   => $prompt
+        //             ],
+        //         ],
+        //     ];
+        // }
     }
 
     private static function autoContentWithImage($prompt, $imageUrl){

@@ -25,6 +25,12 @@
                 <strong>Meta description:</strong> {{ $item->seo->seo_description }}
             </div>
         @endif
+        <div class="oneLine">
+            @include('admin.template.languageBox', [
+                    'item' => $item,
+                    'routeName' => 'admin.seoFreeWallpaper.view',
+                ])
+        </div>
     </td>
     <td>
         @if(!empty($item->categories)&&$item->categories->isNotEmpty())

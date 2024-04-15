@@ -278,4 +278,76 @@ class HomeController extends Controller{
     //     }
     //     return $response;
     // }
+
+    public static function filterContent(Request $request){
+        $response   = [];
+        $url        = 'https://rootytrip.com/san-pham/combo-du-lich-phu-quoc-3-ngay-2-dem-danh-cho-cap-doi-2450k-khach-san-the-juliet-phu-quoc/';
+        if(!empty($url)){
+            $client = new Client(HttpClient::create(['timeout' => 60]));
+            // Gửi yêu cầu HTTP để lấy nội dung từ URL
+            $crawler = $client->request('GET', $url);
+
+            // Lấy những thẻ img trong class "side-nine" và kiểm tra thuộc tính alt và src không phải base64
+            $imagesInSideNine = $crawler->filterXPath('//div[contains(@class, "side-nine")]//img')->each(function ($node) {
+                $alt = $node->attr('alt');
+                $src = $node->attr('src');
+
+                // Kiểm tra xem src có bắt đầu bằng "data:image" không (base64)
+                $isBase64 = strpos($src, 'data:image') === 0;
+
+                // Chỉ thêm vào mảng nếu src không phải là base64
+                if (!$isBase64) {
+                    $response['check'] = !empty($alt);
+                    $response['src'] = $src;
+                    $response['alt'] = $alt;
+                    return $response;
+                }
+
+                return null; // Trả về null để loại bỏ khỏi kết quả cuối cùng
+            });
+            // Loại bỏ các giá trị null từ mảng kết quả
+            $imagesInSideNine = array_filter($imagesInSideNine);
+
+            // // Lấy những thẻ img nằm ngoài class "side-nine" không có thuộc tính alt hoặc alt rỗng
+            // $imagesOutsideSideNine = $crawler->filterXPath('//*[not(contains(@class, "side-nine"))]//img[not(@alt) or @alt=""]')->each(function ($node) {
+            //     return '<img alt="" src="'.$node->attr('src').'" />';
+            // });
+            $imagesOutsideSideNine = $crawler->filterXPath('//img')->each(function ($node) {
+                return '<img alt="'.$node->attr('alt').'" src="'.$node->attr('src').'" />';
+            });
+
+            // Link
+            $clientGuzzle = new ClientGuzzle();
+            $links = [];
+            $filteredLinksInSideNine = $crawler->filterXPath('//a');
+            $i = 0;
+            if ($filteredLinksInSideNine->count() > 0) {
+                $filteredLinksInSideNine->each(function ($node) use (&$links, &$i, &$clientGuzzle) {
+                    $links[$i]['href'] = $node->attr('href');
+                    $links[$i]['anchor_text'] = trim($node->html());
+                    $links[$i]['full'] = '<a href="'.$links[$i]['href'].'">'.$links[$i]['anchor_text'].'</a>';
+                    ++$i;
+                });
+            }
+
+            // Thêm dữ liệu vào mảng kết quả
+            $response = [
+                'links'             => $links,
+                'images_incontent' => $imagesInSideNine,
+                'images_notincontent' => $imagesOutsideSideNine
+            ];
+        }
+
+        foreach($response['images_incontent'] as $img){
+            // if(empty($img['alt'])) echo htmlspecialchars('<img alt="" src='.$img['src'].' />').'<br/>';
+            echo htmlspecialchars('<img alt="'.$img['alt'].'" src="'.$img['src'].'" />').'<br/>';
+        }
+
+        // foreach($links as $link){
+        //     if(empty($link['href'])) echo htmlspecialchars($link['full']).'<br/>';
+        // }
+
+        dd(123);
+        return $response;
+    }
 }

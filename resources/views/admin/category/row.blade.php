@@ -12,6 +12,12 @@
             <div class="oneLine">
             Đường dẫn: {{ $item->seo->slug_full ?? null }}
             </div>
+            <div class="oneLine">
+                @include('admin.template.languageBox', [
+                    'item' => $item,
+                    'routeName' => 'admin.category.view',
+                ])
+            </div>
         </td>
         <td>
             <div class="oneLine">
