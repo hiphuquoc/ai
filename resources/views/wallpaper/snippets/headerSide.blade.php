@@ -167,7 +167,7 @@
                 @endforeach
             </ul>
         </li>
-        {{-- <li>
+        <li>
             @php
                 $icon                   = file_get_contents('storage/images/svg/icon-share-1.svg');
                 $wallpaperFreeText      = config('language.'.$language.'.data.free_wallpaper');
@@ -187,7 +187,7 @@
                 {!! $icon !!}
                 <div>{{ $wallpaperFreeText }}</div>
             </a>
-        </li> --}}
+        </li>
         <li>
             <div class="close">
                 @php
