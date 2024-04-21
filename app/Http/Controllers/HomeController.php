@@ -10,8 +10,8 @@ use App\Models\FreeWallpaper;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Cookie;
-use App\Models\Product;
-use App\Models\RelationSeoEnSeo;
+use App\Models\Seo;
+use App\Models\Category;
 use Intervention\Image\ImageManagerStatic;
 
 use GuzzleHttp\Client as ClientGuzzle;
@@ -26,75 +26,62 @@ use App\Jobs\ReadWebsiteFix;
 use Illuminate\Support\Facades\Bus;
 
 class HomeController extends Controller{
-    public static function home(Request $request){
-        // /* xác định trang tiếng anh hay tiếng việt */
-        // $currentRoute           = Route::currentRouteName();
-        // /* lưu ngôn ngữ sử dụng */
-        // $language               = $currentRoute=='main.home' ? 'vi' : 'en';
-        // SettingController::settingLanguage($language);
-        // /* cache HTML */
-        // $nameCache              = $language.'home.'.config('main.cache.extension');
-        // $pathCache              = Storage::path(config('main.cache.folderSave')).$nameCache;
-        // $cacheTime    	        = env('APP_CACHE_TIME') ?? 1800;
-        // if(file_exists($pathCache)&&$cacheTime>(time() - filectime($pathCache))){
-        //     $xhtml              = file_get_contents($pathCache);
-        // }else {
-        //     $item               = Page::select('*')
-        //                             ->whereHas('type', function($query){
-        //                                 $query->where('code', 'home');
-        //                             })
-        //                             ->when($language=='vi', function($query){
-        //                                 $query->whereHas('seo', function($query){
-        //                                     $query->where('slug', '/');
-        //                                 });
-        //                             })
-        //                             ->with('seo', 'type')
-        //                             ->first();
-        //     $params     = [];
-        //     /* tìm kiếm bằng feeling */
-        //     $searchFeeling = $request->get('search_feeling') ?? [];
-        //     foreach($searchFeeling as $feeling){
-        //         if($feeling=='all'){ /* trường hợp tìm kiếm có all thì clear */
-        //             $searchFeeling = [];
-        //             break;
-        //         }
-        //     }
-        //     /* lấy wallpapers */
-        //     $arrayIdCategory                    = [];
-        //     $params['array_category_info_id']   = $arrayIdCategory;
-        //     $params['loaded']                   = 0;
-        //     $params['request_load']             = 20;
-        //     $params['sort_by']                  = Cookie::get('sort_by') ?? null;
-        //     $params['filters']                  = $request->get('filters') ?? [];
-        //     $tmp                                = CategoryController::getFreeWallpapers($params);
-        //     $wallpapers                         = $tmp['wallpapers'];
-        //     $total                              = $tmp['total'];
-        //     $loaded                             = $tmp['loaded'];
-        //     // dd($tmp);
-        //     $user                               = Auth::user();
-        //     $breadcrumb  = [];
-        //     $xhtml      = view('wallpaper.category.index', compact('breadcrumb', 'item', 'arrayIdCategory', 'wallpapers', 'total', 'loaded', 'language', 'user', 'searchFeeling'))->render();
-        //     /* Ghi dữ liệu - Xuất kết quả */
-        //     if(env('APP_CACHE_HTML')==true) Storage::put(config('main.cache.folderSave').$nameCache, $xhtml);
-        // }
-        // echo $xhtml;
-        return redirect()->route('routing', ['slug' => 'anh-gai-xinh']);
+    public static function home($language){
+        /* ngôn ngữ */
+        SettingController::settingLanguage($language);
+        /* cache HTML */
+        $nameCache              = $language.'home.'.config('main.cache.extension');
+        $pathCache              = Storage::path(config('main.cache.folderSave')).$nameCache;
+        $cacheTime    	        = env('APP_CACHE_TIME') ?? 1800;
+        if(file_exists($pathCache)&&$cacheTime>(time() - filectime($pathCache))){
+            $xhtml              = file_get_contents($pathCache);
+        }else {
+        $item               = Page::select('*')
+            ->whereHas('seos.infoSeo', function ($query) use ($language) {
+                $query->where('slug', $language);
+            })
+            ->with('seo', 'seos', 'type')
+            ->first();
+        /* lấy item seo theo ngôn ngữ được chọn */
+        $itemSeo            = [];
+        if (!empty($item->seos)) {
+            foreach ($item->seos as $s) {
+                if ($s->infoSeo->language == $language) {
+                    $itemSeo = $s->infoSeo;
+                    break;
+                }
+            }
+        }
+        $categories = Category::select('*')
+                        ->whereHas('seo', function($query){
+                            $query->where('level', 2);
+                        })
+                        ->where('flag_show', 1)
+                        ->with('seo')
+                        ->with('seos.infoSeo', function($query) use($language){
+                            $query->where('language', $language);
+                        })
+                        ->get();
+        $xhtml      = view('wallpaper.home.index', compact('item', 'itemSeo', 'language', 'categories'))->render();
+            /* Ghi dữ liệu - Xuất kết quả */
+            if(env('APP_CACHE_HTML')==true) Storage::put(config('main.cache.folderSave').$nameCache, $xhtml);
+        }
+        echo $xhtml;
+        // return redirect()->route('routing', ['slug' => 'anh-gai-xinh']);
     }
 
-    // public static function test(Request $request){
-    //     $tags   = \App\Models\FreeWallpaper::select('*')
-    //                 ->with('seo')
-    //                 ->get();
-    //     foreach($tags as $tag){
-    //         if(!empty($tag->seo)){
-    //             \App\Models\RelationSeoFreeWallpaperInfo::insertItem([
-    //                 'seo_id'    => $tag->seo->id,
-    //                 'free_wallpaper_info_id'   => $tag->id,
-    //             ]);
-    //         }
-    //     }
-    //     dd($tags);
-    // }
+    public static function test(Request $request){
+        $tmp = FreeWallpaper::all();
+        foreach($tmp as $t){
+            if(!empty($t->seo)){
+                $imgUrl = $t->file_cloud;
+                Seo::updateItem($t->seo->id, [
+                    'image' => $imgUrl
+                ]);
+            }
+        }
+        dd(132);
+    }
 
     // public static function test(Request $request){
 

@@ -232,7 +232,14 @@ Route::prefix('payment')->group(function(){
     Route::get('/zaloCreate', [ZalopayController::class, 'create'])->name('main.zalo.create');
 });
 /* trang chủ */
-Route::get('/', [HomeController::class, 'home'])->name('main.home');
+$validLanguages = ['']; // Ngôn ngữ mặc định
+foreach (config('language') as $key => $value) {
+    $validLanguages[] = $key;
+}
+Route::get('/{language?}', [HomeController::class, 'home'])
+    ->where('language', implode('|', $validLanguages))
+    ->name('main.home');
+/* nháp */
 Route::get('/filter', [HomeController::class, 'filterContent'])->name('main.filterContent');
 Route::get('/test123', [HomeController::class, 'test'])->name('main.test');
 Route::get('/exportReport', [RootytripController::class, 'exportReport'])->name('main.rootytrip.exportReport');
