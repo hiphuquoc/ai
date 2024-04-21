@@ -26,7 +26,7 @@ use App\Jobs\ReadWebsiteFix;
 use Illuminate\Support\Facades\Bus;
 
 class HomeController extends Controller{
-    public static function home($language){
+    public static function home(Request $request, $language = 'vi'){
         /* ngôn ngữ */
         SettingController::settingLanguage($language);
         /* cache HTML */
