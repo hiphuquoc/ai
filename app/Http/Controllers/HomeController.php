@@ -71,16 +71,8 @@ class HomeController extends Controller{
     }
 
     public static function test(Request $request){
-        $tmp = FreeWallpaper::all();
-        foreach($tmp as $t){
-            if(!empty($t->seo)){
-                $imgUrl = $t->file_cloud;
-                Seo::updateItem($t->seo->id, [
-                    'image' => $imgUrl
-                ]);
-            }
-        }
-        dd(132);
+        
+        
     }
 
     // public static function test(Request $request){
