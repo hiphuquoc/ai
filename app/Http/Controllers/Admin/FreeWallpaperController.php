@@ -63,7 +63,7 @@ class FreeWallpaperController extends Controller {
             /* tag name */
             $tags           = Tag::all();
             $arrayTag       = [];
-            foreach($tags as $tag) $arrayTag[] = $tag->name;
+            foreach($tags as $tag) if(!empty($tag->seo->title)) $arrayTag[] = $tag->seo->title;
             // $strTag         = implode(',', $arrayTag);
             foreach($request->get('data_id') as $idBox){
                 $xhtml .= view('admin.freeWallpaper.oneFormUpload', compact('idBox', 'categories', 'tags', 'arrayTag'))->render();
@@ -94,9 +94,6 @@ class FreeWallpaperController extends Controller {
                 /* Lưu thông tin vào CSDL */
                 $idWallpaper = FreeWallpaper::insertItem([
                     'user_id'       => Auth::user()->id,
-                    'name'          => $request->get('name'),
-                    'en_name'       => strtolower(Charactor::translateViToEn($request->get('name'))),
-                    'description'   => $request->get('description') ?? null,
                     'file_name'     => $fileNameNonHaveExtensionW,
                     'extension'     => $extensionW,
                     'file_cloud'    => $fileUrlW,
@@ -108,7 +105,7 @@ class FreeWallpaperController extends Controller {
                 /* lưu categories */
                 self::saveCategories($idWallpaper, $request->all());
                 /* lưu tag name */
-                if(!empty($request->get('tag'))) self::createOrGetTagName($idWallpaper, $request->get('tag'));
+                if(!empty($request->get('tags'))) self::createOrGetTagName($idWallpaper, 'free_wallpaper_info', $request->get('tags'));
                 DB::commit();
                 if(!empty($idWallpaper)){
                     $response = [];
@@ -140,7 +137,7 @@ class FreeWallpaperController extends Controller {
             /* lưu categories */
             self::saveCategories($idWallpaper, $request->all());
             /* lưu tag name */
-            if(!empty($request->get('tag'))) self::createOrGetTagName($idWallpaper, $request->get('tag'));
+            if(!empty($request->get('tags'))) self::createOrGetTagName($idWallpaper, 'free_wallpaper_info', $request->get('tags'));
             DB::commit();
             return true;
         } catch (\Exception $exception){
@@ -169,10 +166,10 @@ class FreeWallpaperController extends Controller {
         }
     }
 
-    public static function createOrGetTagName($idWallpaper, $jsonTagName = null){
+    public static function createOrGetTagName($idWallpaper, $table, $jsonTagName = null){
         if(!empty($idWallpaper)&&!empty($jsonTagName)){
             RelationTagInfoOrther::select('*')
-                ->where('reference_type', 'free_wallpaper_info')
+                ->where('reference_type', $table)
                 ->where('reference_id', $idWallpaper)
                 ->delete();
             $tag    = json_decode($jsonTagName, true);
@@ -191,7 +188,7 @@ class FreeWallpaperController extends Controller {
                 /* insert relation */
                 RelationTagInfoOrther::insertItem([
                     'tag_info_id'       => $idTag,
-                    'reference_type'    => 'free_wallpaper_info',
+                    'reference_type'    => $table,
                     'reference_id'      => $idWallpaper
                 ]);
             }
@@ -290,7 +287,7 @@ class FreeWallpaperController extends Controller {
         /* tag name */
         $tags           = Tag::all();
         $arrayTag       = [];
-        foreach($tags as $tag) $arrayTag[] = $tag->name;
+        foreach($tags as $tag) if(!empty($tag->seo->title)) $arrayTag[] = $tag->seo->title;
         $result         = view('admin.freeWallpaper.formModalUploadAndEdit', compact('wallpaper', 'categories', 'arrayTag', 'tags'))->render();
         echo $result;
     }
