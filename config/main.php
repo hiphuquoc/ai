@@ -111,41 +111,19 @@ return [
     'category_type' => [
         [
             'key' => 'category_info',
-            'name' => 'Thể loại'
+            'key_filter_language'   => 'filter_by_themes',
+            'name' => 'Chủ đề'
         ],
         [
             'key' => 'style_info',
+            'key_filter_language'   => 'filter_by_styles',
             'name' => 'Phong cách'
         ],
         [
             'key' => 'event_info',
-            'name' => 'Sự kiện'
-        ],
-        // [
-        //     'key' => 'maintone_info',
-        //     'name' => 'Tông chính',
-        //     'en_name'   => 'Main Tone'
-        // ],
-        // [
-        //     'key' => 'country_info',
-        //     'name' => 'Quốc gia',
-        //     'en_name' => 'Country'
-        // ],
-        // [
-        //     'key' => 'skin_info',
-        //     'name' => 'Trang phục',
-        //     'en_name'   => 'Clothes'
-        // ],
-        // [
-        //     'key' => 'eyecolor_info',
-        //     'name' => 'Màu mắt',
-        //     'en_name'   => 'Eye Color'
-        // ],
-        // [
-        //     'key' => 'haircolor_info',
-        //     'name' => 'Màu tóc',
-        //     'en_name'   => 'Hair Color'
-        // ]
+            'key_filter_language'   => 'filter_by_events',
+            'name' => 'Sự kiện'
+        ]
     ],
     'sort_type' => [
         [
