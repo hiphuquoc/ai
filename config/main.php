@@ -205,6 +205,42 @@ return [
             'en'    => 'tag-photo-beautiful-girl'
         ]
     ],
+    'url_free_wallpaper_category'   => [
+        'hinh-nen-dien-thoai-mien-phi',
+        'free-phone-wallpapers',
+        'fonds-d-ecran-gratuits-pour-telephone',
+        'fondos-de-pantalla-gratis-para-celular',
+        'zh-free-phone-wallpapers',
+        'ru-free-phone-wallpapers',
+        'ja-free-phone-wallpapers',
+        'ko-free-phone-wallpapers',
+        'hi-free-phone-wallpapers',
+        'wallpaper-ponsel-gratis',
+    ],
+    'url_confirm_page'   => [
+        'xac-nhan',
+        'confirm',
+        'commande',
+        'confirmacion',
+        'zh-confirm',
+        'ru-confirm',
+        'ja-confirm',
+        'ko-confirm',
+        'hi-confirm',
+        'konfirmasi',
+    ],
+    'url_cart_page'   => [
+        'gio-hang',
+        'shopping-cart',
+        'panier',
+        'carro-de-compras',
+        'zh-shopping-cart',
+        'ru-shopping-cart',
+        'ja-shopping-cart',
+        'ko-shopping-cart',
+        'hi-shopping-cart',
+        'keranjang-belanja',
+    ],
     'tool_translate'    => [
         'ai', 'google_translate'
     ],

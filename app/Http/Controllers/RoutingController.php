@@ -195,14 +195,15 @@ class RoutingController extends Controller{
                     $related            = $tmp->products;
                     $xhtml              = view('wallpaper.product.index', compact('item', 'itemSeo', 'breadcrumb', 'total', 'arrayIdCategory', 'language'))->render();
                 }
-                /* ===== Các trang chủ đề/phong cách/sự kiện ==== */
+                // /* ===== Các trang chủ đề/phong cách/sự kiện ==== */
                 foreach(config('main.category_type') as $type){
-                    if($itemSeo->type==$type['key']){
-                        $flagMatch      = true;
-                        /* ===== miễn phí */
-                        $flagFree       = false;
-                        if(in_array($itemSeo->slug, config('main.url_free_wallpaper_category'))){
-                            $flagFree   = true;
+                    dd(123);
+                //     if($itemSeo->type==$type['key']){
+                //         $flagMatch      = true;
+                //         /* ===== miễn phí */
+                //         $flagFree       = false;
+                //         if(in_array($itemSeo->slug, config('main.url_free_wallpaper_category'))){
+                //             $flagFree   = true;
                             $params     = [];
                             /* tìm kiếm bằng feeling */
                             $searchFeeling = $request->get('search_feeling') ?? [];
@@ -227,31 +228,31 @@ class RoutingController extends Controller{
                             $loaded                             = $tmp['loaded'];
                             $user                               = Auth::user();
                             $xhtml              = view('wallpaper.category.index', compact('item', 'itemSeo', 'breadcrumb', 'wallpapers', 'arrayIdCategory', 'total', 'loaded', 'language', 'user', 'searchFeeling'))->render();
-                        }
-                        /* ===== trả phí */
-                        if($flagFree==false){
-                            $params         = [];
-                            /* key_search */
-                            $params['key_search'] = request('search') ?? null;
-                            $arrayIdCategory  = Category::getArrayIdCategoryRelatedByIdCategory($item, [$item->id]);
-                            // dd($request->all());
-                            $params['array_category_info_id'] = $arrayIdCategory;
-                            /* chế độ xem */
-                            $viewBy             = request()->cookie('view_by') ?? 'each_set';
-                            /* filter nếu có */
-                            $params['filters']  = $request->get('filters') ?? [];
-                            /* danh sách product => lấy riêng để dễ truyền vào template */
-                            $params['loaded']   = 0;
-                            $params['request_load'] = 10;
-                            $params['sort_by']  = Cookie::get('sort_by') ?? null;
-                            /* lấy thông tin dựa vào params */
-                            $response           = CategoryMoneyController::getWallpapers($params, $language);
-                            $wallpapers         = $response['wallpapers'];
-                            $total              = $response['total'];
-                            $loaded             = $response['loaded'];
-                            $xhtml              = view('wallpaper.categoryMoney.index', compact('item', 'itemSeo', 'breadcrumb', 'wallpapers', 'arrayIdCategory', 'total', 'loaded', 'language', 'viewBy'))->render();
-                        }
-                    }
+                    //     }
+                    //     /* ===== trả phí */
+                    //     if($flagFree==false){
+                    //         $params         = [];
+                    //         /* key_search */
+                    //         $params['key_search'] = request('search') ?? null;
+                    //         $arrayIdCategory  = Category::getArrayIdCategoryRelatedByIdCategory($item, [$item->id]);
+                    //         // dd($request->all());
+                    //         $params['array_category_info_id'] = $arrayIdCategory;
+                    //         /* chế độ xem */
+                    //         $viewBy             = request()->cookie('view_by') ?? 'each_set';
+                    //         /* filter nếu có */
+                    //         $params['filters']  = $request->get('filters') ?? [];
+                    //         /* danh sách product => lấy riêng để dễ truyền vào template */
+                    //         $params['loaded']   = 0;
+                    //         $params['request_load'] = 10;
+                    //         $params['sort_by']  = Cookie::get('sort_by') ?? null;
+                    //         /* lấy thông tin dựa vào params */
+                    //         $response           = CategoryMoneyController::getWallpapers($params, $language);
+                    //         $wallpapers         = $response['wallpapers'];
+                    //         $total              = $response['total'];
+                    //         $loaded             = $response['loaded'];
+                    //         $xhtml              = view('wallpaper.categoryMoney.index', compact('item', 'itemSeo', 'breadcrumb', 'wallpapers', 'arrayIdCategory', 'total', 'loaded', 'language', 'viewBy'))->render();
+                    //     }
+                    // }
                 }
                 /* ===== Trang ==== */
                 if($itemSeo->type=='page_info'){
