@@ -1,12 +1,24 @@
 @extends('layouts.wallpaper')
 @push('headCustom')
+    <!-- Event snippet for Lượt xem trang conversion page -->
+    @php
+        $tmp = \App\Helpers\Number::getPriceByLanguage($order->total, 'vi');
+        $priceConfirm = $tmp['number'];
+    @endphp
+    <script>
+        gtag('event', 'conversion', {
+            'send_to': 'AW-16558810206/GKHLCKSGg64ZEN7I7dc9',
+            'value': '{{ $priceConfirm }}',
+            'currency': 'VND'
+        });
+    </script>
+@endpush
 @section('content')
     <div style="overflow:hidden;">
         <div class="contentBox">
             <div class="container">
                 @php
                     $xhtmlTotal = null;
-
                 @endphp
                 <div class="pageCartBox">
                     <div id="js_checkEmptyCart_idWrite" class="pageCartBox_left" style="width:100%;">
@@ -102,17 +114,22 @@
 
                         <div class="wallpaperSourceGrid">
                             @foreach($order->products as $product)
-                                @foreach($product->infoPrice->wallpapers as $wallpaper)
-                                    <a href="{{ route('ajax.downloadImgFreeWallpaper', ['file_cloud' => $wallpaper->infoWallpaper->file_cloud_source]) }}" class="wallpaperSourceGrid_item" download>
-                                        <div class="wallpaperSourceGrid_item_image">
-                                            <img class="lazyload" src="{{ \App\Helpers\Image::getUrlImageCloud($wallpaper->infoWallpaper->file_cloud_source) }}" />
-                                        </div>
-                                        <div class="wallpaperSourceGrid_item_action">
-                                            <img src="{{ Storage::url('images/svg/download.svg') }}" />
-                                        </div>
-                                        <div class="wallpaperSourceGrid_item_background"></div>
-                                    </a>
-                                @endforeach
+                                {{-- @php
+                                    dd($product->toArray());
+                                @endphp --}}
+                                @if(!empty($product->infoPrice))
+                                    @foreach($product->infoPrice->wallpapers as $wallpaper)
+                                        <a href="{{ route('ajax.downloadImgFreeWallpaper', ['file_cloud' => $wallpaper->infoWallpaper->file_cloud_source]) }}" class="wallpaperSourceGrid_item" download>
+                                            <div class="wallpaperSourceGrid_item_image">
+                                                <img class="lazyload" src="{{ \App\Helpers\Image::getUrlImageCloud($wallpaper->infoWallpaper->file_cloud_source) }}" />
+                                            </div>
+                                            <div class="wallpaperSourceGrid_item_action">
+                                                <img src="{{ Storage::url('images/svg/download.svg') }}" />
+                                            </div>
+                                            <div class="wallpaperSourceGrid_item_background"></div>
+                                        </a>
+                                    @endforeach
+                                @endif
                             @endforeach
                         </div>
 

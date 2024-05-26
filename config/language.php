@@ -7,6 +7,7 @@ return [
         "currency_code" => "đ",
         "money_value"     => "25000",
         "key"       => "vi",
+        "slug_page" => "hinh-nen-dien-thoai",
         "data"      => [
             "home"              => "Trang chủ",
             "about_us"          => "Về chúng tôi",
@@ -70,6 +71,7 @@ return [
             'wallpaper_by_themes' => 'Ảnh Gái Xinh theo Chủ Đề',
             'wallpaper_by_styles' => 'Ảnh Gái Xinh theo Phong Cách',
             'wallpaper_by_events' => 'Ảnh Gái Xinh theo Sự Kiện',
+            'search_wallpapers' => 'Tìm kiếm Hình Nền',
         ]
     ],
     "en"    => [
@@ -78,6 +80,7 @@ return [
         "currency_code" => "$",
         "money_value"     => "1",
         "key"   => "en",
+        "slug_page" => "phone-wallpapers",
         "data"      => [
             "home"          => "Home",
             "about_us"      => "About us",
@@ -141,6 +144,7 @@ return [
             'wallpaper_by_themes' => 'Beautiful Girl Photos by Themes',
             'wallpaper_by_styles' => 'Beautiful Girl Photos by Styles',
             'wallpaper_by_events' => 'Beautiful Girl Photos by Events',
+            'search_wallpapers' => 'Search Wallpapers',
         ]
     ],
     "fr"    => [
@@ -149,6 +153,7 @@ return [
         "currency_code" => "$",
         "money_value"     => "1",
         "key"   => "fr",
+        "slug_page" => "fonds-d-ecran-de-telephone",
         "data"      => [
             "home"              => "Accueil",
             "about_us"          => "À propos de nous",
@@ -212,6 +217,7 @@ return [
             'wallpaper_by_themes' => 'Photos de Belles Filles par Thèmes',
             'wallpaper_by_styles' => 'Photos de Belles Filles par Styles',
             'wallpaper_by_events' => 'Photos de Belles Filles par Événements',
+            'search_wallpapers' => 'Rechercher des Fond d\'écran',
         ]
     ],
     "es"    => [
@@ -220,6 +226,7 @@ return [
         "currency_code" => "$",
         "money_value"     => "1",
         "key"   => "es",
+        "slug_page" => "fondos-de-pantalla-del-telefono",
         "data"      => [
             "home"          => "Inicio",
             "about_us"      => "Sobre nosotros",
@@ -283,14 +290,16 @@ return [
             'wallpaper_by_themes' => 'Fotos de Chicas Bonitas por Temas',
             'wallpaper_by_styles' => 'Fotos de Chicas Bonitas por Estilos',
             'wallpaper_by_events' => 'Fotos de Chicas Bonitas por Eventos',
+            'search_wallpapers' => 'Buscar Fondos de Pantalla',
         ]
     ],
-    "cn"    => [
+    "zh"    => [
         "name"  => "Trung Quốc (Quan Thoại)",
         "currency"  => "USD",
         "currency_code" => "$",
         "money_value"     => "1",
-        "key"   => "cn",
+        "key"   => "zh",
+        "slug_page" => "zh-phone-wallpapers",
         "data"      => [
             "home"          => "首页",
             "about_us"      => "关于我们",
@@ -354,6 +363,7 @@ return [
             'wallpaper_by_themes' => '主题美女照片',
             'wallpaper_by_styles' => '风格美女照片',
             'wallpaper_by_events' => '活动美女照片',
+            'search_wallpapers' => '搜索壁纸',
         ]
     ],
     "ru"    => [
@@ -362,6 +372,7 @@ return [
         "currency_code" => "$",
         "money_value"     => "1",
         "key"   => "ru",
+        "slug_page" => "ru-phone-wallpapers",
         "data"      => [
             "home"          => "Главная",
             "about_us"      => "О нас",
@@ -425,6 +436,7 @@ return [
             'wallpaper_by_themes' => 'Фотографии красивых девушек по темам',
             'wallpaper_by_styles' => 'Фотографии красивых девушек по стилям',
             'wallpaper_by_events' => 'Фотографии красивых девушек по событиям',
+            'search_wallpapers' => 'Поиск Обоев',
         ]
     ],
     "ja"    => [
@@ -433,6 +445,7 @@ return [
         "currency_code" => "$",
         "money_value"     => "1",
         "key"   => "ja",
+        "slug_page" => "ja-phone-wallpapers",
         "data"      => [
             "home"          => "ホーム",
             "about_us"      => "私たちについて",
@@ -496,6 +509,7 @@ return [
             'wallpaper_by_themes' => 'テーマ別の美しい女の子の写真',
             'wallpaper_by_styles' => 'スタイル別の美しい女の子の写真',
             'wallpaper_by_events' => 'イベント別の美しい女の子の写真',
+            'search_wallpapers' => '壁紙を検索',
         ]
     ],
     "ko"    => [
@@ -504,6 +518,7 @@ return [
         "currency_code" => "$",
         "money_value"     => "1",
         "key"   => "ko",
+        "slug_page" => "ko-phone-wallpapers",
         "data"      => [
             "home"          => "홈",
             "about_us"      => "우리에 관하여",
@@ -567,6 +582,7 @@ return [
             'wallpaper_by_themes' => '테마별 아름다운 소녀 사진',
             'wallpaper_by_styles' => '스타일별 아름다운 소녀 사진',
             'wallpaper_by_events' => '이벤트별 아름다운 소녀 사진',
+            'search_wallpapers' => '바탕 화면 검색',
         ]
     ],
     "hi"    => [
@@ -575,6 +591,7 @@ return [
         "currency_code" => "$",
         "money_value"     => "1",
         "key"   => "hi",
+        "slug_page" => "hi-phone-wallpapers",
         "data"      => [
             "home"          => "होम",
             "about_us"      => "हमारे बारे में",
@@ -638,6 +655,7 @@ return [
             'wallpaper_by_themes' => 'थीम के अनुसार सुंदर लड़कियों की फोटो',
             'wallpaper_by_styles' => 'शैली के अनुसार सुंदर लड़कियों की फोटो',
             'wallpaper_by_events' => 'इवेंट के अनुसार सुंदर लड़कियों की फोटो',
+            'search_wallpapers' => 'वॉलपेपर खोजें',
         ]
     ],
     "id"    => [
@@ -646,6 +664,7 @@ return [
         "currency_code" => "$",
         "money_value"     => "1",
         "key"   => "id",
+        "slug_page" => "wallpaper-ponsel",
         "data"      => [
             "home"          => "Beranda",
             "about_us"      => "Tentang kami",
@@ -709,6 +728,7 @@ return [
             'wallpaper_by_themes' => 'Foto Gadis Cantik menurut Tema',
             'wallpaper_by_styles' => 'Foto Gadis Cantik menurut Gaya',
             'wallpaper_by_events' => 'Foto Gadis Cantik menurut Acara',
+            'search_wallpapers' => 'Cari Wallpaper',
         ]
     ]
 ];

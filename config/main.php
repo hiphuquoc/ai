@@ -100,14 +100,6 @@ return [
         'folderSave'    => 'public/caches/',
     ],
     'main.password_user_default' => 'hitourVN@mk123',
-    'message'   => [
-        'vi'    => [
-            'product_empty' => 'Không có hình nền phù hợp!'
-        ],
-        'en'    => [
-            'product_empty' => 'No wallpapers matching your search!'
-        ]
-    ],
     'category_type' => [
         [
             'key' => 'category_info',
@@ -223,6 +215,6 @@ return [
         'ai', 'google_translate'
     ],
     'ai_version'    => [
-        'gpt-3.5-turbo-1106', 'gpt-4-0125-preview'
+        'gpt-3.5-turbo-1106', 'gpt-4o'
     ],
 ];

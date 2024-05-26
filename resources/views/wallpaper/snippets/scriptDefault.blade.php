@@ -1,7 +1,16 @@
 <!-- BEGIN: SLICK -->
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script defer type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-16558810206"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'AW-16558810206');
+</script>
 <!-- END: SLICK -->
-<script type="text/javascript">
+<script defer type="text/javascript">
     $(window).ready(function(){
         /* check để xem có cookie csrf chưa (do lần đầu truy cập trang không có lỗi google login) */
         // checkToSetCsrfFirstTime();
@@ -409,23 +418,14 @@
         });
     }
     /* add loading icon */
-    function loadLoading(idAppend, theme = 'loading_2') {
-        fetch("/loadLoading?theme=" + theme, {
-            method: 'GET',
-            mode: 'cors'
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.text();
-        })
-        .then(response => {
-            $('#' + idAppend).append(response);
-        })
-        .catch(error => {
-            console.error("Fetch request failed:", error);
-        });
+    function loadLoading(action = 'show') {
+        if(action == 'show'){
+            $('.loadingBox').addClass('show');
+        }else if(action == 'hide'){
+            $('.loadingBox').removeClass('show');
+        }else {
+            $('.loadingBox').toggleClass('show');
+        }
     }
     /* tính năng registry email ở footer */
     function submitFormRegistryEmail(idForm) {

@@ -12,11 +12,11 @@
                 <img type="submit" src="{{ Storage::url('images/svg/search.svg') }}" alt="tìm kiếm hình nền điện thoại" title="tìm kiếm hình nền điện thoại" />
             </div>
         </div>
-        {{-- @if(empty($item->type->code)||$item->type->code!='cart')
+        @if(empty($item->type->code)||$item->type->code!='cart')
             <div id="js_viewSortCart_idWrite">
                 @include('wallpaper.cart.cartSort', ['products' => null])
             </div>
-        @endif --}}
+        @endif
         <!-- button đăng nhập desktop -->
         <div id="js_checkLoginAndSetShow_button" class="hide-1023" style="height:100%;display:none !important;">
             <!-- tải ajax checkLoginAndSetShow() -->
@@ -42,9 +42,6 @@
             @endif
             <div class="languageBox_background"></div>
         </div>
-        {{-- <div class="settingViewBox hide-1023">
-            <i class="fa-solid fa-eye"></i>
-        </div> --}}
         <div class="iconMenuMobile show-1023" onClick="toggleMenuMobile('js_toggleMenuMobile');">
             <i class="fa-regular fa-bars"></i>
         </div>

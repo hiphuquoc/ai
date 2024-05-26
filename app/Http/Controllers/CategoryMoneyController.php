@@ -18,10 +18,11 @@ class CategoryMoneyController extends Controller {
         $viewBy             = Cookie::get('view_by') ?? 'each_set';
         $params             = [];
         /* data params */
-        $params['key_search']               = null;
+        $params['search']                   = $request->get('search') ?? null;
         $params['loaded']                   = $request->get('loaded');
         $params['request_load']             = $request->get('request_load');
         $params['array_category_info_id']   = json_decode($request->get('array_category_info_id'));
+        $params['array_tag_info_id']        = json_decode($request->get('array_tag_info_id'));
         $params['sort_by']                  = Cookie::get('sort_by') ?? config('main.sort_type')[0]['key'];
         $params['filters']                  = $request->get('filters') ?? [];
         $tmp                                = self::getWallpapers($params, $language);
@@ -57,23 +58,20 @@ class CategoryMoneyController extends Controller {
     }
 
     public static function getWallpapers($params, $language){
-        $keySearch      = $params['key_search'] ?? null;
+        $keySearch      = $params['search'] ?? null;
         $filters        = $params['filters'] ?? [];
         $sortBy         = $params['sort_by'] ?? null;
         $loaded         = $params['loaded'] ?? 0;
         $arrayIdCategory = $params['array_category_info_id'] ?? [];
+        $arrayIdTag     = $params['array_tag_info_id'] ?? [];
         $requestLoad    = $params['request_load'] ?? 10;
         $response       = [];
         $wallpapers = Product::select('product_info.*')
                             ->join('seo', 'seo.id', '=', 'product_info.seo_id')
                             ->whereHas('prices.wallpapers', function() {})
-                            ->whereHas('seos.infoSeo', function($query) use ($language) {
-                                $query->where('language', $language);
-                            })
-                            ->when(!empty($keySearch), function($query) use ($keySearch) {
-                                $query->where('code', 'like', '%' . $keySearch . '%')
-                                    ->orWhere('name', 'like', '%' . $keySearch . '%')
-                                    ->orWhere('en_name', 'like', '%' . $keySearch . '%');
+                            ->whereHas('seos.infoSeo', function ($query) use ($language, $keySearch) {
+                                $query->where('language', $language)
+                                    ->where('title', 'like', '%' . $keySearch . '%');
                             })
                             ->when(!empty($filters), function($query) use ($filters) {
                                 foreach ($filters as $filter) {
@@ -85,6 +83,12 @@ class CategoryMoneyController extends Controller {
                             ->when(!empty($arrayIdCategory), function($query) use ($arrayIdCategory) {
                                 $query->whereHas('categories', function($query) use ($arrayIdCategory) {
                                     $query->whereIn('category_info_id', $arrayIdCategory);
+                                });
+                            })
+                            ->when(!empty($arrayIdTag), function($query) use ($arrayIdTag) {
+                                $query->whereHas('tags', function($query) use ($arrayIdTag) {
+                                    $query->where('reference_type', 'product_info')
+                                        ->whereIn('tag_info_id', $arrayIdTag);
                                 });
                             })
                             ->when(empty($sortBy), function($query) {
@@ -111,13 +115,9 @@ class CategoryMoneyController extends Controller {
         $total          = Product::select('product_info.*')
                             ->join('seo', 'seo.id', '=', 'product_info.seo_id')
                             ->whereHas('prices.wallpapers', function(){})
-                            ->whereHas('seos.infoSeo', function($query) use ($language) {
-                                $query->where('language', $language);
-                            })
-                            ->when(!empty($keySearch), function($query) use($keySearch){
-                                $query->where('code', 'like', '%'.$keySearch.'%')
-                                    ->orWhere('name', 'like', '%'.$keySearch.'%')
-                                    ->orWhere('en_name', 'like', '%'.$keySearch.'%');
+                            ->whereHas('seos.infoSeo', function ($query) use ($language, $keySearch) {
+                                $query->where('language', $language)
+                                    ->where('title', 'like', '%' . $keySearch . '%');
                             })
                             ->when(!empty($filters), function($query) use($filters){
                                 foreach($filters as $filter){
@@ -129,6 +129,12 @@ class CategoryMoneyController extends Controller {
                             ->when(!empty($arrayIdCategory), function($query) use($arrayIdCategory){
                                 $query->whereHas('categories', function($query) use($arrayIdCategory) {
                                     $query->whereIn('category_info_id', $arrayIdCategory);
+                                });
+                            })
+                            ->when(!empty($arrayIdTag), function($query) use ($arrayIdTag) {
+                                $query->whereHas('tags', function($query) use ($arrayIdTag) {
+                                    $query->where('reference_type', 'product_info')
+                                        ->whereIn('tag_info_id', $arrayIdTag);
                                 });
                             })
                             ->count();

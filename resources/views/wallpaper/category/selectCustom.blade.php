@@ -39,6 +39,7 @@
             }
         }
     }
+    // dd($type);
 @endphp
 <div class="selectCustom_text maxLine_1">
     {!! config('language.'.$language.'.data.'.$type['key_filter_language']) !!}
