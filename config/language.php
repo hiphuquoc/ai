@@ -11,10 +11,10 @@ return [
         "data"      => [
             "home"              => "Trang chủ",
             "about_us"          => "Về chúng tôi",
-            "wallpaper_theme"   => "Chủ đề Hình Nền",
-            "wallpaper_style"   => "Phong cách Hình Nền",
+            "wallpaper_theme"   => "Chủ đề Ảnh",
+            "wallpaper_style"   => "Phong cách Ảnh",
             "event"             => "Sự kiện",
-            "free_wallpaper"    => "Hình nền Miễn Phí",
+            "free_wallpaper"    => "Ảnh Miễn Phí",
             "support"           => "Hỗ trợ",
             "connect_with_us"   => "Kết nối với chúng tôi",
             "table_of_contents" => "Mục lục",
@@ -71,7 +71,7 @@ return [
             'wallpaper_by_themes' => 'Ảnh Gái Xinh theo Chủ Đề',
             'wallpaper_by_styles' => 'Ảnh Gái Xinh theo Phong Cách',
             'wallpaper_by_events' => 'Ảnh Gái Xinh theo Sự Kiện',
-            'search_wallpapers' => 'Tìm kiếm Hình Nền',
+            'search_wallpapers' => 'Tìm kiếm Ảnh',
         ]
     ],
     "en"    => [
@@ -84,10 +84,10 @@ return [
         "data"      => [
             "home"          => "Home",
             "about_us"      => "About us",
-            "wallpaper_theme"  => "Wallpaper Theme",
-            "wallpaper_style"   => "Wallpaper Style",
+            "wallpaper_theme"  => "Photo Theme",
+            "wallpaper_style"   => "Photo Style",
             "event"             => "Event",
-            "free_wallpaper"    => "Free Wallpaper",
+            "free_wallpaper"    => "Free Photo",
             "support"           => "Support",
             "connect_with_us"   => "Connect with us",
             "table_of_contents" => "Table of Contents",
@@ -144,7 +144,7 @@ return [
             'wallpaper_by_themes' => 'Beautiful Girl Photos by Themes',
             'wallpaper_by_styles' => 'Beautiful Girl Photos by Styles',
             'wallpaper_by_events' => 'Beautiful Girl Photos by Events',
-            'search_wallpapers' => 'Search Wallpapers',
+            'search_wallpapers' => 'Search Photos',
         ]
     ],
     "fr"    => [
@@ -157,10 +157,10 @@ return [
         "data"      => [
             "home"              => "Accueil",
             "about_us"          => "À propos de nous",
-            "wallpaper_theme"  => "Thème de fond d'écran",
-            "wallpaper_style"   => "Style de fond d'écran",
+            "wallpaper_theme"  => "Thème de Photo",
+            "wallpaper_style"   => "Style de Photo",
             "event"             => "Événement",
-            "free_wallpaper"    => "Fond d'écran gratuit",
+            "free_wallpaper"    => "Photo Gratuite",
             "support"           => "Support",
             "connect_with_us"       => "Connectez-vous avec nous",
             "table_of_contents"     => "Table des matières",
@@ -217,7 +217,7 @@ return [
             'wallpaper_by_themes' => 'Photos de Belles Filles par Thèmes',
             'wallpaper_by_styles' => 'Photos de Belles Filles par Styles',
             'wallpaper_by_events' => 'Photos de Belles Filles par Événements',
-            'search_wallpapers' => 'Rechercher des Fond d\'écran',
+            'search_wallpapers' => 'Recherche de Photo',
         ]
     ],
     "es"    => [
@@ -230,10 +230,10 @@ return [
         "data"      => [
             "home"          => "Inicio",
             "about_us"      => "Sobre nosotros",
-            "wallpaper_theme"  => "Tema de fondo de pantalla",
-            "wallpaper_style"   => "Estilo de fondo de pantalla",
+            "wallpaper_theme"  => "Tema de Foto",
+            "wallpaper_style"   => "Estilo de Foto",
             "event"             => "Evento",
-            "free_wallpaper"    => "Fondo de pantalla gratis",
+            "free_wallpaper"    => "Foto Gratis",
             "support"           => "Soporte",
             "connect_with_us"   => "Conéctate con nosotros",
             "table_of_contents" => "Tabla de contenido",
@@ -290,7 +290,7 @@ return [
             'wallpaper_by_themes' => 'Fotos de Chicas Bonitas por Temas',
             'wallpaper_by_styles' => 'Fotos de Chicas Bonitas por Estilos',
             'wallpaper_by_events' => 'Fotos de Chicas Bonitas por Eventos',
-            'search_wallpapers' => 'Buscar Fondos de Pantalla',
+            'search_wallpapers' => 'Búsqueda de Foto',
         ]
     ],
     "zh"    => [
@@ -303,10 +303,10 @@ return [
         "data"      => [
             "home"          => "首页",
             "about_us"      => "关于我们",
-            "wallpaper_theme"  => "壁纸主题",
-            "wallpaper_style"   => "壁纸风格",
+            "wallpaper_theme"  => "图片主题",
+            "wallpaper_style"   => "图片风格",
             "event"             => "事件",
-            "free_wallpaper"    => "免费壁纸",
+            "free_wallpaper"    => "免费图片",
             "support"           => "支持",
             "connect_with_us"   => "与我们联系",
             "table_of_contents" => "目录",
@@ -363,7 +363,7 @@ return [
             'wallpaper_by_themes' => '主题美女照片',
             'wallpaper_by_styles' => '风格美女照片',
             'wallpaper_by_events' => '活动美女照片',
-            'search_wallpapers' => '搜索壁纸',
+            'search_wallpapers' => '图片搜索',
         ]
     ],
     "ru"    => [
@@ -376,10 +376,10 @@ return [
         "data"      => [
             "home"          => "Главная",
             "about_us"      => "О нас",
-            "wallpaper_theme"  => "Тема обоев",
-            "wallpaper_style"   => "Стиль обоев",
+            "wallpaper_theme"  => "Тема Фото",
+            "wallpaper_style"   => "Стиль Фото",
             "event"             => "Событие",
-            "free_wallpaper"    => "Бесплатный обои",
+            "free_wallpaper"    => "Бесплатное Фото",
             "support"           => "Поддержка",
             "connect_with_us"   => "Свяжитесь с нами",
             "table_of_contents" => "Оглавление",
@@ -436,7 +436,7 @@ return [
             'wallpaper_by_themes' => 'Фотографии красивых девушек по темам',
             'wallpaper_by_styles' => 'Фотографии красивых девушек по стилям',
             'wallpaper_by_events' => 'Фотографии красивых девушек по событиям',
-            'search_wallpapers' => 'Поиск Обоев',
+            'search_wallpapers' => 'Поиск Фото',
         ]
     ],
     "ja"    => [
@@ -449,10 +449,10 @@ return [
         "data"      => [
             "home"          => "ホーム",
             "about_us"      => "私たちについて",
-            "wallpaper_theme"  => "壁紙のテーマ",
-            "wallpaper_style"   => "壁紙のスタイル",
+            "wallpaper_theme"  => "写真のテーマ",
+            "wallpaper_style"   => "写真のスタイル",
             "event"             => "イベント",
-            "free_wallpaper"    => "無料壁紙",
+            "free_wallpaper"    => "無料写真",
             "support"           => "サポート",
             "connect_with_us"   => "私たちとつながる",
             "table_of_contents" => "目次",
@@ -509,7 +509,7 @@ return [
             'wallpaper_by_themes' => 'テーマ別の美しい女の子の写真',
             'wallpaper_by_styles' => 'スタイル別の美しい女の子の写真',
             'wallpaper_by_events' => 'イベント別の美しい女の子の写真',
-            'search_wallpapers' => '壁紙を検索',
+            'search_wallpapers' => '写真検索',
         ]
     ],
     "ko"    => [
@@ -522,10 +522,10 @@ return [
         "data"      => [
             "home"          => "홈",
             "about_us"      => "우리에 관하여",
-            "wallpaper_theme"  => "벽지 테마",
-            "wallpaper_style"   => "벽지 스타일",
+            "wallpaper_theme"  => "사진 주제",
+            "wallpaper_style"   => "사진 스타일",
             "event"             => "이벤트",
-            "free_wallpaper"    => "무료 배경 화면",
+            "free_wallpaper"    => "무료 사진",
             "support"           => "지원",
             "connect_with_us"   => "우리와 연락",
             "table_of_contents" => "목차",
@@ -582,7 +582,7 @@ return [
             'wallpaper_by_themes' => '테마별 아름다운 소녀 사진',
             'wallpaper_by_styles' => '스타일별 아름다운 소녀 사진',
             'wallpaper_by_events' => '이벤트별 아름다운 소녀 사진',
-            'search_wallpapers' => '바탕 화면 검색',
+            'search_wallpapers' => '사진 검색',
         ]
     ],
     "hi"    => [
@@ -595,10 +595,10 @@ return [
         "data"      => [
             "home"          => "होम",
             "about_us"      => "हमारे बारे में",
-            "wallpaper_theme"  => "वॉलपेपर थीम",
-            "wallpaper_style"   => "वॉलपेपर शैली",
+            "wallpaper_theme"  => "फोटो थीम",
+            "wallpaper_style"   => "फोटो शैली",
             "event"             => "आयोजन",
-            "free_wallpaper"    => "मुफ्त वॉलपेपर",
+            "free_wallpaper"    => "मुफ्त फोटो",
             "support"           => "समर्थन",
             "connect_with_us"   => "हमसे जुड़ें",
             "table_of_contents" => "सामग्री",
@@ -655,7 +655,7 @@ return [
             'wallpaper_by_themes' => 'थीम के अनुसार सुंदर लड़कियों की फोटो',
             'wallpaper_by_styles' => 'शैली के अनुसार सुंदर लड़कियों की फोटो',
             'wallpaper_by_events' => 'इवेंट के अनुसार सुंदर लड़कियों की फोटो',
-            'search_wallpapers' => 'वॉलपेपर खोजें',
+            'search_wallpapers' => 'फोटो खोज',
         ]
     ],
     "id"    => [
@@ -668,10 +668,10 @@ return [
         "data"      => [
             "home"          => "Beranda",
             "about_us"      => "Tentang kami",
-            "wallpaper_theme"  => "Tema Wallpaper",
-            "wallpaper_style"   => "Gaya Wallpaper",
+            "wallpaper_theme"  => "Tema Foto",
+            "wallpaper_style"   => "Gaya Foto",
             "event"             => "Acara",
-            "free_wallpaper"    => "Wallpaper Gratis",
+            "free_wallpaper"    => "Foto Gratis",
             "support"           => "Dukungan",
             "connect_with_us"   => "Terhubung dengan kami",
             "table_of_contents" => "Daftar Isi",
@@ -728,7 +728,7 @@ return [
             'wallpaper_by_themes' => 'Foto Gadis Cantik menurut Tema',
             'wallpaper_by_styles' => 'Foto Gadis Cantik menurut Gaya',
             'wallpaper_by_events' => 'Foto Gadis Cantik menurut Acara',
-            'search_wallpapers' => 'Cari Wallpaper',
+            'search_wallpapers' => 'Pencarian Foto',
         ]
     ]
 ];

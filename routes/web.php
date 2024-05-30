@@ -3,8 +3,8 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\RootytripController;
 use App\Http\Controllers\CategoryController as CategoryPublic;
+use App\Http\Controllers\CategoryMoneyController as CategoryMoneyPublic;
 use App\Http\Controllers\MomoController;
 use App\Http\Controllers\ZalopayController;
 use App\Http\Controllers\RoutingController;
@@ -15,7 +15,6 @@ use App\Http\Controllers\OrderController as OrderPublic;
 use App\Http\Controllers\PageController as PagePublic;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AjaxController;
-use App\Http\Controllers\SearchController;
 use App\Http\Controllers\CookieController;
 use App\Http\Controllers\SitemapController;
 
@@ -40,13 +39,15 @@ use App\Http\Controllers\Admin\SeoFreeWallpaperController;
 use App\Http\Controllers\Admin\ProductPriceController;
 use App\Http\Controllers\Admin\RedirectController;
 use App\Http\Controllers\Admin\PromptController;
-use App\Http\Controllers\Admin\ChatGptController;
 use App\Http\Controllers\Admin\ApiAIController;
+use App\Http\Controllers\Admin\ChatGptController;
 use App\Http\Controllers\Admin\HelperController;
 use App\Http\Controllers\Admin\ToolCopyProductController;
+use App\Http\Controllers\CheckOnpageController;
 
 use App\Http\Controllers\Auth\ProviderController;
 use App\Http\Controllers\GoogledriveController;
+use App\Http\Controllers\PaypalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -114,8 +115,9 @@ Route::middleware('auth', 'role:admin')->group(function (){
         Route::prefix('product')->group(function(){
             Route::get('/list', [ProductController::class, 'list'])->name('admin.product.list');
             Route::get('/view', [ProductController::class, 'view'])->name('admin.product.view');
-            Route::post('/create', [ProductController::class, 'create'])->name('admin.product.create');
-            Route::post('/update', [ProductController::class, 'update'])->name('admin.product.update');
+            Route::post('/createAndUpdate', [ProductController::class, 'createAndUpdate'])->name('admin.product.createAndUpdate');
+            // Route::post('/create', [ProductController::class, 'create'])->name('admin.product.create');
+            // Route::post('/update', [ProductController::class, 'update'])->name('admin.product.update');
             Route::get('/delete', [ProductController::class, 'delete'])->name('admin.product.delete');
         });
         /* product price */
@@ -222,7 +224,9 @@ Route::middleware('auth', 'role:admin')->group(function (){
         });
     });
 });
-
+/* check onpage website */
+Route::get('/buildListPostByUrl', [CheckOnpageController::class, 'buildListPostByUrl'])->name('main.checkOnpage.buildListPostByUrl');
+Route::get('/crawler', [CheckOnpageController::class, 'crawler'])->name('main.checkOnpage.crawler');
 /* login với google */
 Route::get('/setCsrfFirstTime', [CookieController::class, 'setCsrfFirstTime'])->name('main.setCsrfFirstTime');
 Route::post('/auth/google/callback', [ProviderController::class, 'googleCallback'])->name('main.google.callback');
@@ -245,21 +249,21 @@ foreach (config('language') as $key => $value) {
 Route::get('/{language?}', [HomeController::class, 'home'])
     ->where('language', implode('|', $validLanguages))
     ->name('main.home');
+/* trang giỏ hàng */
+$validCarts     = config('main.url_cart_page');
+Route::get('/{slugCart}', [CartController::class, 'index'])
+    ->where('slugCart', implode('|', $validCarts))
+    ->name('main.cart');
+/* trang xác nhận */
+$validSlugs = config('main.url_confirm_page');
+Route::get('/{slug}', [ConfirmController::class, 'confirm'])
+    ->where('slug', implode('|', $validSlugs))
+    ->name('main.confirm');
 /* nháp */
-Route::get('/filter', [HomeController::class, 'filterContent'])->name('main.filterContent');
 Route::get('/test123', [HomeController::class, 'test'])->name('main.test');
-Route::get('/exportReport', [RootytripController::class, 'exportReport'])->name('main.rootytrip.exportReport');
-/* trang category */
-Route::prefix('category')->group(function(){
-    Route::get('/loadMore', [CategoryPublic::class, 'loadMore'])->name('main.category.loadMore');
-    // Route::get('/loadMorePromotion', [CategoryPublic::class, 'loadMorePromotion'])->name('main.category.loadMorePromotion');
-    // Route::get('/loadMoreSearch', [CategoryPublic::class, 'loadMoreSearch'])->name('main.category.loadMoreSearch');
-});
+Route::get('/chatgpt', [HomeController::class, 'chatGPT'])->name('main.chatGPT');
 /* lỗi */
 Route::get('/error', [\App\Http\Controllers\ErrorController::class, 'handle'])->name('error.handle');
-/* cart */
-Route::get('/gio-hang', [CartController::class, 'index'])->name('main.cart');
-Route::get('/cart', [CartController::class, 'index'])->name('main.enCart');
 Route::get('/addToCart', [CartController::class, 'addToCart'])->name('main.addToCart');
 Route::get('/updateCart', [CartController::class, 'updateCart'])->name('main.updateCart');
 Route::get('/removeProductCart', [CartController::class, 'removeProductCart'])->name('main.removeProductCart');
@@ -267,7 +271,6 @@ Route::get('/viewSortCart', [CartController::class, 'viewSortCart'])->name('main
 Route::get('/loadTotalCart', [CartController::class, 'loadTotalCart'])->name('main.loadTotalCart');
 Route::get('/paymentNow', [CheckoutController::class, 'paymentNow'])->name('main.paymentNow');
 Route::post('/paymentCart', [CheckoutController::class, 'paymentCart'])->name('main.paymentCart');
-Route::get('/confirm', [ConfirmController::class, 'confirm'])->name('main.confirm');
 Route::get('/handlePaymentMomo', [ConfirmController::class, 'handlePaymentMomo'])->name('main.handlePaymentMomo');
 Route::get('/handlePaymentZalopay', [ConfirmController::class, 'handlePaymentZalopay'])->name('main.handlePaymentZalopay');
 Route::get('/handlePaymentPaypal', [ConfirmController::class, 'handlePaymentPaypal'])->name('main.handlePaymentPaypal');
@@ -285,7 +288,7 @@ Route::get('/loadLoading', [AjaxController::class, 'loadLoading'])->name('ajax.l
 Route::get('/loadDistrictByIdProvince', [AjaxController::class, 'loadDistrictByIdProvince'])->name('ajax.loadDistrictByIdProvince');
 Route::get('/searchProductAjax', [AjaxController::class, 'searchProductAjax'])->name('ajax.searchProductAjax');
 Route::get('/registryEmail', [AjaxController::class, 'registryEmail'])->name('ajax.registryEmail');
-Route::get('/registrySeller', [AjaxController::class, 'registrySeller'])->name('ajax.registrySeller');
+// Route::get('/registrySeller', [AjaxController::class, 'registrySeller'])->name('ajax.registrySeller');
 Route::get('/setMessageModal', [AjaxController::class, 'setMessageModal'])->name('ajax.setMessageModal');
 Route::get('/checkLoginAndSetShow', [AjaxController::class, 'checkLoginAndSetShow'])->name('ajax.checkLoginAndSetShow');
 Route::get('/loadImageFromGoogleCloud', [AjaxController::class, 'loadImageFromGoogleCloud'])->name('ajax.loadImageFromGoogleCloud');
@@ -299,11 +302,9 @@ Route::get('/setSortBy', [AjaxController::class, 'setSortBy'])->name('ajax.setSo
 Route::get('/downloadImgFreeWallpaper', [AjaxController::class, 'downloadImgFreeWallpaper'])->name('ajax.downloadImgFreeWallpaper');
 Route::get('/setFeelingFreeWallpaper', [AjaxController::class, 'setFeelingFreeWallpaper'])->name('ajax.setFeelingFreeWallpaper');
 Route::get('/loadOneFreeWallpaper', [AjaxController::class, 'loadOneFreeWallpaper'])->name('ajax.loadOneFreeWallpaper');
-Route::get('/loadMoreWallpaper', [CategoryPublic::class, 'loadMoreWallpaper'])->name('main.category.loadMoreWallpaper');
+Route::get('/loadMoreWallpaper', [CategoryMoneyPublic::class, 'loadMoreWallpaper'])->name('main.category.loadMoreWallpaper');
 Route::get('/loadmoreFreeWallpapers', [CategoryPublic::class, 'loadmoreFreeWallpapers'])->name('main.category.loadmoreFreeWallpapers');
 Route::get('/toogleHeartFeelingFreeWallpaper', [AjaxController::class, 'toogleHeartFeelingFreeWallpaper'])->name('ajax.toogleHeartFeelingFreeWallpaper');
-/* SEARCH */
-Route::get('/searchByImage', [SearchController::class, 'searchByImage'])->name('search.searchByImage');
 /* login */
 Route::get('/he-thong', [LoginController::class, 'loginForm'])->name('admin.loginForm');
 Route::post('/loginAdmin', [LoginController::class, 'loginAdmin'])->name('admin.loginAdmin');
