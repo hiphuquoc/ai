@@ -1,7 +1,8 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/hitourvn/gaixinhai.com/
+    # - export DEPLOYPATH=/home/hitourvn/gaixinhai.com/
+    - export DEPLOYPATH=/home/eqeqmgjz/topanime.com.vn/
     - /bin/cp -R * $DEPLOYPATH
     # - rm $DEPLOYPATH/public/build/assets/style-main.css
     
