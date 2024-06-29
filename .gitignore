@@ -16,4 +16,4 @@ vite.config.js
 /.fleet
 /.idea
 /.vscode
-# .cpanel.yml
+.cpanel.yml
