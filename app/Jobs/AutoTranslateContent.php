@@ -44,6 +44,7 @@ class AutoTranslateContent implements ShouldQueue {
         $languageCode       = config('language.'.$this->language.'.code');
         $promptText         = str_replace(['#language', '#code'], [$languageName, $languageCode], $infoPrompt->reference_prompt);
         /* dịch content */
+        // $resultContent      = $this->content->content;
         $arrayPartContent   = \App\Helpers\Charactor::splitString($stringContent, 4000);
         $resultContent      = '';
         foreach($arrayPartContent as $contentPart){
@@ -82,7 +83,7 @@ class AutoTranslateContent implements ShouldQueue {
                     JobAutoTranslateLinks::insertItem([
                         'seo_id'            => $this->idSeo,
                         'ordering'          => $this->content->ordering,
-                        'lanuguage'         => $this->language,
+                        'language'          => $this->language,
                         'link_source'       => $l['vi'],
                         'link_translate'    => $l['translate']
                     ]);
