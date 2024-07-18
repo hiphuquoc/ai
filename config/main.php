@@ -1,29 +1,29 @@
 <?php
 
 return [
-    'author_name'           => 'Name.com.vn',
-    'founder_name'          => 'Name.com.vn',
-    'founder_address'       => '55 Cô Giang, Rạch Giá',
-    'founding'              => '2023-03-30',
-    'company_name'          => 'Name.com.vn',
-    'hotline'               => '0968.6171.68',
-    'email'                 => 'anhnendienthoai@gmail.com',
-    'address'               => '55 Cô Giang, Rạch Giá',
+    'author_name'           => env('APP_NAME'),
+    'founder_name'          => env('APP_NAME'),
+    'founder_address'       => 'Viet Nam',
+    'founding'              => '2024-05-30',
+    'company_name'          => env('APP_NAME'),
+    'hotline'               => '0869.112.676',
+    'email'                 => 'topgirl.com.vn@gmail.com',
+    'address'               => 'Viet Nam',
     'company_description'   => 'Giới thiệu dịch vụ',
     // 'logo_750x460'          => 'public/images/upload/trang-diem-750.webp',
     'logo_main'             => 'images/upload/logo-type-manager-upload.webp',
     'contacts'          => [
         [
             'type'      => 'customer service',
-            'phone'     => '0968617168'
+            'phone'     => '0869112676'
         ],
         [
             'type'      => 'technical support',
-            'phone'     => '0968617168'
+            'phone'     => '0869112676'
         ],
         [
             'type'      => 'sales',
-            'phone'     => '0968617168'
+            'phone'     => '0869112676'
         ]
     ],
     'products'          => [
@@ -33,10 +33,10 @@ return [
         ]
     ],
     'socials'           => [
-        'https://facebook.com/name',
-        'https://twitter.com/name',
-        'https://pinterest.com/name',
-        'https://youtube.com/name'
+        'https://facebook.com/topgirlcomvn',
+        'https://twitter.com/topgirlcomvn',
+        'https://pinterest.com/topgirlcomvn',
+        'https://youtube.com/topgirlcomvn'
     ],
     'storage'   => [
         'contentPage'       => 'public/contents/pages/',
